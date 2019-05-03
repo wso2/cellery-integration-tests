@@ -16,4 +16,6 @@
 #  specific language governing permissions and limitations
 #  under the License.
 
-echo "Running test case..."
+echo "Running hello world web test case"
+
+cellery build hello-world.bal
