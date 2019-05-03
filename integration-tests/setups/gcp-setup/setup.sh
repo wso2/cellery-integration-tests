@@ -15,6 +15,39 @@
 #  KIND, either express or implied.  See the License for the
 #  specific language governing permissions and limitations
 #  under the License.
+set -e
 
-echo "Installing cellery GCP setup..."
+source_root=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
+samples_root=$source_root/samples
+docker_hub_org="wso2-cellery"
+date=`date +%Y-%m-%d`
+time=`date +%H:%M:%S`
+log_prefix="[$date $time]"
 
+setyp_type=$1
+
+log_info() {
+    echo "${log_prefix}[INFO]" $1
+}
+
+cd $source_root
+log_info "Installing Cellery GCP $setup_type setup..."
+if [ "$setup_type" = "basic" ]; then
+    setup_command="cellery setup create gcp"
+else
+	setup_command="cellery setup create gcp --complete"
+fi
+
+#setup_stdout=$($setup_command | tee /dev/tty)
+exec 5>&1
+setup_stdout=$($setup_command | tee >(cat - >&5))
+cluster_name=$(echo $setup_stdout | grep -oP "cellery-cluster[0-9]{1,5}" | head -1)
+echo $cluster_name
+echo CLUSTER_NAME=$cluster_name > cluster.properties
+
+host_ip=$(kubectl get svc ingress-nginx -n ingress-nginx -o jsonpath="{.status.loadBalancer.ingress[*].ip}")
+
+sudo cp /etc/hosts /etc/hosts.bkp
+echo "$host_ip  hello-world.com" | sudo tee -a /etc/hosts
+
+log_info "Successfully installed cellery GCP $setup_type setup."

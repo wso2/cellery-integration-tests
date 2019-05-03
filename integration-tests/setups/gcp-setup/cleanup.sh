@@ -16,10 +16,13 @@
 #  specific language governing permissions and limitations
 #  under the License.
 
-# Creates a k8s cluster with minikube for installing Cellery
-set -e
+log_info() {
+    echo "${log_prefix}[INFO]" $1
+}
+sudo mv /etc/hosts.bkp /etc/hosts
+source cluster.properties
 
-sudo minikube start --vm-driver=none
-sudo chown -R $USER $HOME/.minikube
-sudo chown -R $USER $HOME/.kube/
-kubectl config use-context minikube
+log_info "Destroying gcp cluster $CLUSTER_NAME..."
+cellery setup cleanup gcp $CLUSTER_NAME
+
+log_info "Cleanup complete."

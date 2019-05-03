@@ -16,4 +16,13 @@
 #  specific language governing permissions and limitations
 #  under the License.
 
-# Destroys the environments/resources created and revert file changes done in init.sh
+# Destroys the created setup
+
+set -e
+
+log_info() {
+    echo "${log_prefix}[INFO]" $1
+}  
+
+log_info "Cleaning up existing cellery setup..."
+cellery setup cleanup existing 
