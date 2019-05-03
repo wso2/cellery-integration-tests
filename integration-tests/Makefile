@@ -16,19 +16,28 @@
 
 PROJECT_ROOT := $(realpath $(dir $(abspath $(lastword $(MAKEFILE_LIST)))))
 
+
+.EXPORT_ALL_VARIABLES:
+    CELLERY_AUTOMATION_TESTS_ROOT = $(PROJECT_ROOT)
+
+.PHONY: build-test-base
+build-test-base:
+	cd $(PROJECT_ROOT)/test-cases/base; \
+	mvn clean install
+
 .PHONY: setup-local-basic
 setup-local-basic:
-	cd $(PROJECT_ROOT)/local-setup; \
+	cd $(PROJECT_ROOT)/setups/local-setup; \
 	bash setup.sh basic
 
 .PHONY: test-local-basic
-test-local-basic: setup-local-basic
-	cd $(PROJECT_ROOT)/test-cases/test-case-01; \
-	bash test.sh
+test-local-basic: setup-local-basic build-test-base
+	cd $(PROJECT_ROOT)/test-cases/hello-world-web/test; \
+	mvn clean install
 
 .PHONY: setup-local-complete
 setup-local-complete:
-	cd $(PROJECT_ROOT)/local-setup; \
+	cd $(PROJECT_ROOT)/setups/local-setup; \
 	bash setup.sh complete
 
 .PHONY: test-local-complete
