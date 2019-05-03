@@ -16,4 +16,28 @@
 #  specific language governing permissions and limitations
 #  under the License.
 
-echo "Installing Cellery into minikube k8s cluster..."
+set -e
+
+source_root=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
+samples_root=$source_root/samples
+docker_hub_org="wso2-cellery"
+date=`date +%Y-%m-%d`
+time=`date +%H:%M:%S`
+log_prefix="[$date $time]"
+
+setyp_type=$1
+
+log_info() {
+    echo "${log_prefix}[INFO]" $1
+}   
+
+cd $source_root
+if [ $setyp_type = "basic" ]; then
+	log_info "Installing Cellery basic setup on Minikube..."
+	cellery setup create existing
+else
+    log_info "Installing Cellery complete setup on Minikube..."
+	cellery setup create existing --complete
+fi
+
+log_info "Successfully installed cellery $setyp_type setup on Minikube."

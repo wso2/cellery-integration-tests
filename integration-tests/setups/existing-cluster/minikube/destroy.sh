@@ -16,10 +16,17 @@
 #  specific language governing permissions and limitations
 #  under the License.
 
-# Creates a k8s cluster with minikube for installing Cellery
+# Destroys minikube cluster created and revert file changes done in init.sh
+
 set -e
 
-sudo minikube start --vm-driver=none
-sudo chown -R $USER $HOME/.minikube
-sudo chown -R $USER $HOME/.kube/
-kubectl config use-context minikube
+date=`date +%Y-%m-%d`
+time=`date +%H:%M:%S`
+log_prefix="[$date $time]"
+
+log_info() {
+    echo "${log_prefix}[INFO]" $1
+}  
+
+log_info "Destroying minikube k8s cluster..."
+sudo minikube delete
