@@ -24,5 +24,5 @@ import java.io.File;
  */
 public class Constants {
 
-    public static final String SCENARIO_TEST_SRC_PATH = "scenario-test" + File.separator + "src";
+    public static final String SCENARIO_TEST_SRC_PATH = "scenario-test" + File.separator + "cells";
 }

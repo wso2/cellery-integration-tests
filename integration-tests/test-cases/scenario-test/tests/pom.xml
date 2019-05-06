@@ -28,9 +28,9 @@
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>hello-world-web-test</artifactId>
+    <artifactId>scenario-test</artifactId>
     <version>0.2.1-SNAPSHOT</version>
-    <name>Cellery Integrations Test - Hello world web</name>
+    <name>Cellery Integrations Test - Scenario Test</name>
     <packaging>bundle</packaging>
 
     <dependencies>
