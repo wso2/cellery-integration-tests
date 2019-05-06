@@ -52,7 +52,7 @@ public class HelloworldWebTestCase extends BaseTestCase {
                 Paths.get(CELLERY_SCENARIO_TEST_ROOT, "hello-world-web").toFile().getAbsolutePath());
     }
 
-    @Test
+    @Test(dependsOnMethods = "build")
     public void run() throws Exception {
         run(orgName, imageName, version, helloWorldInstance, 120);
     }
