@@ -148,14 +148,4 @@ public class BaseTestCase {
         return CELLERY_TEST_ROOT;
     }
 
-//    protected String getPlatform() throws Exception {
-//        if (OS.contains("mac")) {
-//            return ;
-//        } else if (OS.contains("nix") || OS.contains("nux") || OS.contains("aix")) {
-//            return Platform.UNIX;
-//        } else {
-//            throw new Exception("Unsupported operating system for tests");
-//        }
-//    }
-
 }

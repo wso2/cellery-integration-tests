@@ -33,7 +33,7 @@
 
     <modules>
         <module>base</module>
-        <module>hello-world-web/test</module>
+        <module>scenario-test/test</module>
     </modules>
 
     <dependencyManagement>
