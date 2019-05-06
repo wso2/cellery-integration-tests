@@ -52,6 +52,11 @@
                 <artifactId>selenium-java</artifactId>
                 <version>${selenium.java.version}</version>
             </dependency>
+            <dependency>
+                <groupId>io.github.bonigarcia</groupId>
+                <artifactId>webdrivermanager</artifactId>
+                <version>${bonigarcia.webdriver.manager}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -169,5 +174,6 @@
         <testng.version>6.9.10</testng.version>
         <io.cellery.integration.tests.version>0.2.1-SNAPSHOT</io.cellery.integration.tests.version>
         <selenium.java.version>3.141.59</selenium.java.version>
+        <bonigarcia.webdriver.manager>3.4.0</bonigarcia.webdriver.manager>
     </properties>
 </project>
