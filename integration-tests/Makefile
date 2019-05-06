@@ -32,7 +32,7 @@ setup-local-basic:
 
 .PHONY: test-local-basic
 test-local-basic: setup-local-basic build-test-base
-	cd $(PROJECT_ROOT)/test-cases/scenario-test/test; \
+	cd $(PROJECT_ROOT)/test-cases/scenario-test/tests; \
 	mvn clean install -Dsuite=src/test/resources/basic.xml
 
 .PHONY: setup-local-complete

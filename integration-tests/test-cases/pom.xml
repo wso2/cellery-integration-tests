@@ -33,7 +33,7 @@
 
     <modules>
         <module>base</module>
-        <module>scenario-test/test</module>
+        <module>scenario-test/tests</module>
     </modules>
 
     <dependencyManagement>
