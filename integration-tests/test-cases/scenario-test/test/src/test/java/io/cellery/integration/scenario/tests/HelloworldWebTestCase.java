@@ -15,7 +15,7 @@
  * under the License.
  *
  */
-package io.cellery.integration.hello.web.test;
+package io.cellery.integration.scenario.tests;
 
 import io.cellery.integration.base.test.BaseTestCase;
 import io.github.bonigarcia.wdm.WebDriverManager;
@@ -26,14 +26,13 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
-import org.testng.annotations.ExpectedExceptions;
 import org.testng.annotations.Test;
 
 import java.nio.file.Paths;
 
 import static io.github.bonigarcia.wdm.DriverManagerType.CHROME;
 
-public class DeploymentTestCase extends BaseTestCase {
+public class HelloworldWebTestCase extends BaseTestCase {
     private static final String orgName = "wso2cellerytest";
     private static final String imageName = "hello-world-web";
     private static final String version = "1.0.0";
@@ -51,7 +50,8 @@ public class DeploymentTestCase extends BaseTestCase {
     @Test
     public void build() throws Exception {
         build("hello-world.bal", orgName, imageName, version,
-                Paths.get(getCelleryTestRoot(), "hello-world-web", "src").toFile().getAbsolutePath());
+                Paths.get(getCelleryTestRoot(), Constants.SCENARIO_TEST_SRC_PATH, "hello-world-web").
+                        toFile().getAbsolutePath());
     }
 
     @Test
@@ -70,8 +70,7 @@ public class DeploymentTestCase extends BaseTestCase {
         terminateCell(helloWorldInstance);
     }
 
-    @Test(dependsOnMethods = "terminate")
-    @ExpectedExceptions(Exception.class)
+    @Test(dependsOnMethods = "terminate", expectedExceptions = Exception.class)
     public void repeatTerminate() throws Exception {
         terminateCell(helloWorldInstance);
     }
