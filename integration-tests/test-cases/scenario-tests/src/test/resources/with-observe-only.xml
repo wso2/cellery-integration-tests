@@ -18,8 +18,8 @@
   ~ under the License.
   -->
 
-<suite name="basic">
-    <test name="basictests" >
+<suite name="basic-observe">
+    <test name="basic-and-observe" >
         <classes>
             <class name="io.cellery.integration.scenario.tests.HelloworldWebTestCase" />
         </classes>

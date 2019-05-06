@@ -19,7 +19,7 @@
   -->
 
 <suite name="basic">
-    <test name="basictests" >
+    <test name="basic-setup-tests" >
         <classes>
             <class name="io.cellery.integration.scenario.tests.HelloworldWebTestCase" />
         </classes>
