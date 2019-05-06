@@ -17,7 +17,6 @@
  */
 package io.cellery.integration.scenario.tests;
 
-import io.cellery.integration.base.test.BaseTestCase;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -50,8 +49,7 @@ public class HelloworldWebTestCase extends BaseTestCase {
     @Test
     public void build() throws Exception {
         build("hello-world.bal", orgName, imageName, version,
-                Paths.get(getCelleryTestRoot(), Constants.SCENARIO_TEST_SRC_PATH, "hello-world-web").
-                        toFile().getAbsolutePath());
+                Paths.get(CELLERY_SCENARIO_TEST_ROOT, "hello-world-web").toFile().getAbsolutePath());
     }
 
     @Test
