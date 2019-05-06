@@ -32,8 +32,7 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>base</module>
-        <module>scenario-test/tests</module>
+        <module>scenario-tests</module>
     </modules>
 
     <dependencyManagement>
