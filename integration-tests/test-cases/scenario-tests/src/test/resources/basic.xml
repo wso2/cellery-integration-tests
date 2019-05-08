@@ -19,9 +19,11 @@
   -->
 
 <suite name="basic">
-    <test name="basic-setup-tests" >
+    <test name="basic-setup-tests">
         <classes>
-            <class name="io.cellery.integration.scenario.tests.HelloworldWebTestCase" />
+            <class name="io.cellery.integration.scenario.tests.cli.ImageBasedTestCase"/>
+            <class name="io.cellery.integration.scenario.tests.HelloworldWebTestCase"/>
+            <class name="io.cellery.integration.scenario.tests.cli.InstanceBasedTestCase"/>
         </classes>
     </test>
 </suite>

@@ -40,11 +40,6 @@
             <artifactId>testng</artifactId>
         </dependency>
         <dependency>
-            <groupId>io.cellery.integration.tests</groupId>
-            <artifactId>base-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-java</artifactId>
         </dependency>
