@@ -31,13 +31,13 @@ import java.nio.file.Paths;
 
 import static io.github.bonigarcia.wdm.DriverManagerType.CHROME;
 
+/**
+ * This includes the test cases related to hello world web scenario.
+ */
 public class HelloworldWebTestCase extends BaseTestCase {
-    private static final String orgName = "wso2cellerytest";
-    private static final String imageName = "hello-world-web";
-    private static final String version = "1.0.0";
-    private static final String helloWorldInstance = "hello-world-inst";
-    private static final String defaultURL = "http://hello-world.com";
-    private static final String webPageContent = "hello cellery";
+    private final String imageName = "hello-world-web";
+    private final String version = "1.0.0";
+    private final String helloWorldInstance = "hello-world-inst";
     private WebDriver webDriver;
 
     @BeforeClass
@@ -48,18 +48,18 @@ public class HelloworldWebTestCase extends BaseTestCase {
 
     @Test
     public void build() throws Exception {
-        build("hello-world.bal", orgName, imageName, version,
+        build("hello-world.bal", Constants.TEST_CELL_ORG_NAME, imageName, version,
                 Paths.get(CELLERY_SCENARIO_TEST_ROOT, "hello-world-web").toFile().getAbsolutePath());
     }
 
     @Test
     public void run() throws Exception {
-        run(orgName, imageName, version, helloWorldInstance, 120);
+        run(Constants.TEST_CELL_ORG_NAME, imageName, version, helloWorldInstance, 120);
     }
 
     @Test(dependsOnMethods = "run")
     public void invoke() {
-        webDriver.get(defaultURL);
+        webDriver.get(Constants.DEFAULT_HELLO_WORLD_URL);
         validateWebPage();
     }
 
@@ -75,7 +75,7 @@ public class HelloworldWebTestCase extends BaseTestCase {
 
     private void validateWebPage() {
         String searchHeader = webDriver.findElement(By.cssSelector("H1")).getText().toLowerCase();
-        Assert.assertEquals(searchHeader, webPageContent, "Web page is content is not as expected");
+        Assert.assertEquals(searchHeader, Constants.HELLO_WORLD_WEB_CONTENT, "Web page is content is not as expected");
     }
 
     @AfterClass

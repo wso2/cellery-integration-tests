@@ -34,15 +34,21 @@ public class BaseTestCase {
 
     private static final String INSTANCE_NAME_HEADING = "INSTANCE NAME";
     private static final String CELLERY_AUTOMATION_TESTS_ROOT_ENV = "CELLERY_AUTOMATION_TESTS_ROOT";
-    private static final String READY_STATUS = " Ready";
 
     private static final String CELLERY_BUILD = "cellery build";
     private static final String CELLERY_RUN = "cellery run";
     private static final String CELLERY_STATUS = "cellery status";
     private static final String CELLERY_TERM = "cellery term";
 
+    private static final String TEST_CASES_DIR = "test-cases";
+    private static final String CELLS_DIR = "cells";
+    private static final String SCENARIO_TEST_DIR = "scenario-tests";
+    private static final String TARGET = "target";
+
     protected static final String CELLERY_SCENARIO_TEST_ROOT = System.getenv(CELLERY_AUTOMATION_TESTS_ROOT_ENV) +
-            File.separator + "test-cases" + File.separator + "cells";
+            File.separator + TEST_CASES_DIR + File.separator + CELLS_DIR;
+    protected static final String CELLERY_ROOT_TARGET = System.getenv(CELLERY_AUTOMATION_TESTS_ROOT_ENV)
+            + File.separator + TEST_CASES_DIR + File.separator + SCENARIO_TEST_DIR + File.separator + TARGET;
 
     protected void build(String cellFileName, String orgName, String imageName, String version, String executionDirPath)
             throws Exception {
@@ -53,7 +59,7 @@ public class BaseTestCase {
         readOutputResult(process, SUCCESSFUL_BUILD_MSG, errorString);
     }
 
-    protected void run(String orgName, String imageName, String version, String instanceName, int timeoutSec)
+    protected String run(String orgName, String imageName, String version, String instanceName, int timeoutSec)
             throws Exception {
         String cellImageName = getCellImageName(orgName, imageName, version);
         String command = CELLERY_RUN + " " + cellImageName + " -y";
@@ -63,34 +69,17 @@ public class BaseTestCase {
         Process process = Runtime.getRuntime().exec(command);
         String result = readOutputResult(process, SUCCESSFUL_RUN_MSG, "Unable to run cell: "
                 + cellImageName + " , with instance name: " + instanceName, timeoutSec);
+        String instancesResult = result.substring(result.indexOf(INSTANCE_NAME_HEADING));
         if (instanceName != null && !instanceName.isEmpty()) {
-            int index = result.indexOf(INSTANCE_NAME_HEADING);
-            String instancesResult = result.substring(index);
             if (!instancesResult.contains(instanceName + " ")) {
                 throw new Exception("Cell instance is not started with the instance name specified : " + instanceName +
                         " , result output is: " + result);
             }
+        } else {
+            int index = instancesResult.indexOf(getInstanceNamePrefix(orgName, imageName, version));
+            instanceName = instancesResult.substring(index).split(" ")[0];
         }
-    }
-
-    protected void waitForCellReady(String cellInstanceName, long timeout, TimeUnit timeUnit,
-                                    long pollIntervalInMilliSec) throws Exception {
-        long endTime = System.currentTimeMillis() + TimeUnit.MILLISECONDS.convert(timeout, timeUnit);
-        Exception lastException = null;
-        while (System.currentTimeMillis() < endTime) {
-            Process process = Runtime.getRuntime().exec(CELLERY_STATUS + " " + cellInstanceName);
-            try {
-                readOutputResult(process, READY_STATUS, "Error while reading the status of cell instance :"
-                        + cellInstanceName);
-                Thread.sleep(pollIntervalInMilliSec);
-                return;
-            } catch (Exception ex) {
-                lastException = ex;
-            }
-        }
-        if (lastException != null) {
-            throw lastException;
-        }
+        return instanceName;
     }
 
     protected void terminateCell(String cellInstanceName) throws Exception {
@@ -100,8 +89,9 @@ public class BaseTestCase {
         process = Runtime.getRuntime().exec(CELLERY_STATUS + " " + cellInstanceName);
         try {
             String errorMessage = "Cell instance is not terminated properly:" + cellInstanceName;
+            //TODO: Ideally the error shouldn't be thrown, and the terminate command should wait until the cell
+            // is completely removed from the system. And once it's fixed, we can remove this section.
             readOutputResult(process, "Cannot find cell", errorMessage);
-            throw new Exception(errorMessage);
         } catch (Exception ex) {
             if (!ex.getMessage().contains("(NotFound): cells.mesh.cellery.io \"" + cellInstanceName + "\"")) {
                 throw ex;
@@ -109,11 +99,11 @@ public class BaseTestCase {
         }
     }
 
-    private String readOutputResult(Process process, String successOutput, String errorMessage) throws Exception {
-        return readOutputResult(process, successOutput, errorMessage, 10);
+    protected String readOutputResult(Process process, String successOutput, String errorMessage) throws Exception {
+        return readOutputResult(process, successOutput, errorMessage, 180);
     }
 
-    private String readOutputResult(Process process, String successOutput, String errorMessage, int timeout)
+    protected String readOutputResult(Process process, String successOutput, String errorMessage, int timeout)
             throws Exception {
         try (BufferedReader stdOutput = new BufferedReader(new InputStreamReader(process.getInputStream(),
                 Charset.defaultCharset().name()));
@@ -141,5 +131,9 @@ public class BaseTestCase {
 
     protected String getCellImageName(String orgName, String imageName, String version) {
         return orgName + "/" + imageName + ":" + version;
+    }
+
+    private String getInstanceNamePrefix(String org, String image, String version) {
+        return org + "-" + image + "-";
     }
 }

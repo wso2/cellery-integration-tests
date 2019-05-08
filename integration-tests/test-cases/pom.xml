@@ -43,11 +43,6 @@
                 <version>${testng.version}</version>
             </dependency>
             <dependency>
-                <groupId>io.cellery.integration.tests</groupId>
-                <artifactId>base-test</artifactId>
-                <version>${io.cellery.integration.tests.version}</version>
-            </dependency>
-            <dependency>
                 <groupId>org.seleniumhq.selenium</groupId>
                 <artifactId>selenium-java</artifactId>
                 <version>${selenium.java.version}</version>
