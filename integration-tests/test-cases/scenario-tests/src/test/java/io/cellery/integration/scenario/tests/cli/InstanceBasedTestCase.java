@@ -28,8 +28,8 @@ import org.testng.annotations.Test;
  * This test case includes combinations of cellery cli commands with instance names.
  */
 public class InstanceBasedTestCase extends BaseTestCase {
-    private final String orgName = "wso2cellery";
-    private final String imageName = "hello-world-cell";
+    private static final String orgName = "wso2cellery";
+    private static final String imageName = "hello-world-cell";
     private String instanceName;
 
     @BeforeClass
