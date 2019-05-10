@@ -26,7 +26,7 @@ public class Constants {
     }
 
     public static final String TEST_CELL_ORG_NAME = "wso2cellerytest";
-    public static final String SAMPLE_CELLS_VERSION = "0.2.0";
+    public static final String SAMPLE_CELLS_VERSION = "latest";
     public static final String HELLO_WORLD_WEB_CONTENT = "hello cellery";
     public static final String DEFAULT_HELLO_WORLD_URL = "http://hello-world.com";
 }
