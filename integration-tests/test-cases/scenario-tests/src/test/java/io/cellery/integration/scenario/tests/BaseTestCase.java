@@ -87,13 +87,12 @@ public class BaseTestCase {
         readOutputResult(process, "",
                 "Error while terminating the instance :" + cellInstanceName);
         process = Runtime.getRuntime().exec(CELLERY_STATUS + " " + cellInstanceName);
+        String expectedOutput = "cannot find cell " + cellInstanceName;
         try {
             String errorMessage = "Cell instance is not terminated properly:" + cellInstanceName;
-            //TODO: Ideally the error shouldn't be thrown, and the terminate command should wait until the cell
-            // is completely removed from the system. And once it's fixed, we can remove this section.
-            readOutputResult(process, "Cannot find cell", errorMessage);
+            readOutputResult(process, expectedOutput, errorMessage);
         } catch (Exception ex) {
-            if (!ex.getMessage().contains("(NotFound): cells.mesh.cellery.io \"" + cellInstanceName + "\"")) {
+            if (!ex.getMessage().contains(expectedOutput)) {
                 throw ex;
             }
         }
