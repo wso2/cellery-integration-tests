@@ -35,9 +35,9 @@ import static io.github.bonigarcia.wdm.DriverManagerType.CHROME;
  * This includes the test cases related to hello world web scenario.
  */
 public class HelloworldWebTestCase extends BaseTestCase {
-    private final String imageName = "hello-world-web";
-    private final String version = "1.0.0";
-    private final String helloWorldInstance = "hello-world-inst";
+    private static final String imageName = "hello-world-web";
+    private static final String version = "1.0.0";
+    private static final String helloWorldInstance = "hello-world-inst";
     private WebDriver webDriver;
 
     @BeforeClass
@@ -46,13 +46,13 @@ public class HelloworldWebTestCase extends BaseTestCase {
         webDriver = new ChromeDriver(new ChromeOptions().setHeadless(true));
     }
 
-    @Test
+    @Test(groups = "build")
     public void build() throws Exception {
         build("hello-world.bal", Constants.TEST_CELL_ORG_NAME, imageName, version,
                 Paths.get(CELLERY_SCENARIO_TEST_ROOT, "hello-world-web").toFile().getAbsolutePath());
     }
 
-    @Test
+    @Test(dependsOnGroups = "build")
     public void run() throws Exception {
         run(Constants.TEST_CELL_ORG_NAME, imageName, version, helloWorldInstance, 120);
     }

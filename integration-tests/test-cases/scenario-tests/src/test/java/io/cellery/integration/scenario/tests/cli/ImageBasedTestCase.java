@@ -29,21 +29,31 @@ import java.nio.file.Paths;
  * This test includes the test cases related to the CLI and images.
  */
 public class ImageBasedTestCase extends BaseTestCase {
-    private final String orgName = "wso2cellery";
-    private final String imageName = "hello-world-cell";
-    private final String employeeImage = "employee-test-cell";
-    private final String employeeVersion = "latest";
+    private static final String helloWorldImage = "hello-world-cell";
+    private static final String employeeImage = "employee-test-cell";
 
     @Test
+    public void buildResourceImage() throws Exception {
+        // Build employee image
+        build("employee.bal", Constants.TEST_CELL_ORG_NAME, employeeImage, Constants.SAMPLE_CELLS_VERSION,
+                Paths.get(CELLERY_SCENARIO_TEST_ROOT, "employee-portal",
+                        "employee").toFile().getAbsolutePath());
+        // Build hello-world image
+        build("hello-world.bal", Constants.TEST_CELL_ORG_NAME, helloWorldImage, Constants.SAMPLE_CELLS_VERSION,
+                Paths.get(CELLERY_SCENARIO_TEST_ROOT, "hello-world-web").toFile().getAbsolutePath());
+    }
+
+    @Test(dependsOnMethods = "buildResourceImage")
     public void describeImage() throws Exception {
-        String cellImageName = getCellImageName(orgName, imageName, Constants.SAMPLE_CELLS_VERSION);
+        String cellImageName = getCellImageName(Constants.TEST_CELL_ORG_NAME, helloWorldImage,
+                Constants.SAMPLE_CELLS_VERSION);
         Process process = Runtime.getRuntime().exec("cellery describe " + cellImageName);
         String errorString = "Unable to describe cell image: " + cellImageName;
-        String expectedOut = "name: " + imageName;
+        String expectedOut = "name: " + helloWorldImage;
         readOutputResult(process, expectedOut, errorString);
     }
 
-    @Test(expectedExceptions = Exception.class)
+    @Test(dependsOnMethods = "buildResourceImage", expectedExceptions = Exception.class)
     public void describeNonExistingImage() throws Exception {
         String cellImageName = "wso2/test-foo:1.2.3";
         Process process = Runtime.getRuntime().exec("cellery describe " + cellImageName);
@@ -51,18 +61,20 @@ public class ImageBasedTestCase extends BaseTestCase {
         readOutputResult(process, "", errorString);
     }
 
-    @Test
+    @Test(dependsOnMethods = "buildResourceImage")
     public void extractNonResourceImage() throws Exception {
-        String cellImageName = getCellImageName(orgName, imageName, Constants.SAMPLE_CELLS_VERSION);
+        String cellImageName = getCellImageName(Constants.TEST_CELL_ORG_NAME, helloWorldImage,
+                Constants.SAMPLE_CELLS_VERSION);
         Process process = Runtime.getRuntime().exec("cellery extract-resources " + cellImageName);
         String errorString = "Unable to extract non resource cell image: " + cellImageName;
         String expectedOut = "No resources available in " + cellImageName;
         readOutputResult(process, expectedOut, errorString);
     }
 
-    @Test
+    @Test(dependsOnMethods = "buildResourceImage")
     public void extractNonExistingImage() throws Exception {
-        String cellImageName = getCellImageName(orgName, "test-1234", Constants.SAMPLE_CELLS_VERSION);
+        String cellImageName = getCellImageName(Constants.TEST_CELL_ORG_NAME, "test-1234",
+                Constants.SAMPLE_CELLS_VERSION);
         Process process = Runtime.getRuntime().exec("cellery extract-resources " + cellImageName);
         try {
             readOutputResult(process, "", "");
@@ -74,19 +86,12 @@ public class ImageBasedTestCase extends BaseTestCase {
         }
     }
 
-    @Test
-    public void buildResourceImage() throws Exception {
-        build("employee.bal", Constants.TEST_CELL_ORG_NAME, employeeImage, employeeVersion,
-                Paths.get(CELLERY_SCENARIO_TEST_ROOT, "employee-portal",
-                        "employee").toFile().getAbsolutePath());
-    }
-
-    @Test
+    @Test(dependsOnMethods = "buildResourceImage")
     public void extractResourceImage() throws Exception {
         extractImage(null);
     }
 
-    @Test
+    @Test(dependsOnMethods = "buildResourceImage")
     public void extractResourceImageWithProvidedOutput() throws Exception {
         extractImage(CELLERY_ROOT_TARGET);
         File file = new File(CELLERY_ROOT_TARGET + File.separator + "employee.swagger.json");
@@ -94,19 +99,24 @@ public class ImageBasedTestCase extends BaseTestCase {
     }
 
     private void extractImage(String outputPath) throws Exception {
+        boolean dirCreated = false;
         String cellImageName = getCellImageName(Constants.TEST_CELL_ORG_NAME, employeeImage,
-                employeeVersion);
+                Constants.SAMPLE_CELLS_VERSION);
         String command = "cellery extract-resources " + cellImageName;
         if (outputPath != null) {
             File file = new File(outputPath);
-            file.mkdirs();
-            command = command + " -o " + file.getAbsolutePath();
+            if (file.exists()) {
+                dirCreated = true;
+            } else {
+                dirCreated = file.mkdirs();
+            }
+            if (dirCreated) {
+                command = command + " -o " + outputPath;
+            }
         }
         Process process = Runtime.getRuntime().exec(command);
         String errorString = "Unable to extract non resource cell image: " + cellImageName;
-        //TODO: there is a typo in the success message, CLI message should be fixed. Then, this should be updated
-        String expectedOut = "Successfully extracred cell image resources: " + cellImageName;
+        String expectedOut = "Successfully extracted cell image resources: " + cellImageName;
         readOutputResult(process, expectedOut, errorString);
     }
-
 }
