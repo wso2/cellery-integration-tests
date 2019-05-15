@@ -82,6 +82,36 @@ public class BaseTestCase {
         return instanceName;
     }
 
+    protected String run(String orgName, String imageName, String version, String instanceName,
+                                       String link, boolean startDependencies, int timeoutSec)
+            throws Exception {
+        String cellImageName = getCellImageName(orgName, imageName, version);
+        String command = CELLERY_RUN + " " + cellImageName + " -y";
+        if (instanceName != null && !instanceName.isEmpty()) {
+            command += " -n " + instanceName;
+        }
+        if (link != null && !link.isEmpty()) {
+            command += " -l " + link;
+        }
+        if (startDependencies) {
+            command += " -d";
+        }
+        Process process = Runtime.getRuntime().exec(command);
+        String result = readOutputResult(process, SUCCESSFUL_RUN_MSG, "Unable to run cell: "
+                + cellImageName + " , with instance name: " + instanceName, timeoutSec);
+        String instancesResult = result.substring(result.indexOf(INSTANCE_NAME_HEADING));
+        if (instanceName != null && !instanceName.isEmpty()) {
+            if (!instancesResult.contains(instanceName + " ")) {
+                throw new Exception("Cell instance is not started with the instance name specified : " + instanceName +
+                        " , result output is: " + result);
+            }
+        } else {
+            int index = instancesResult.indexOf(getInstanceNamePrefix(orgName, imageName, version));
+            instanceName = instancesResult.substring(index).split(" ")[0];
+        }
+        return instanceName;
+    }
+
     protected void terminateCell(String cellInstanceName) throws Exception {
         Process process = Runtime.getRuntime().exec(CELLERY_TERM + " " + cellInstanceName);
         readOutputResult(process, "",

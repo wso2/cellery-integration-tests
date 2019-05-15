@@ -15,8 +15,10 @@
  * under the License.
  *
  */
-package io.cellery.integration.scenario.tests;
+package io.cellery.integration.scenario.tests.petstore;
 
+import io.cellery.integration.scenario.tests.BaseTestCase;
+import io.cellery.integration.scenario.tests.Constants;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -34,10 +36,12 @@ import static io.github.bonigarcia.wdm.DriverManagerType.CHROME;
 /**
  * This includes the test cases related to hello world web scenario.
  */
-public class HelloworldWebTestCase extends BaseTestCase {
-    private static final String imageName = "hello-world-web";
-    private static final String version = "1.0.0";
-    private static final String helloWorldInstance = "hello-world-inst";
+public class PetStoreFrontendTestCase extends BaseTestCase {
+    private static final String instanceName = "pet-fe-inst";
+    private static final String dependentInstanceName = "pet-be-inst";
+    private static final String imageName = "pet-fe-cell";
+    private static final String version = "latest";
+    private static final String link = "petStoreBackend:pet-be-inst";
     private WebDriver webDriver;
 
     @BeforeClass
@@ -48,41 +52,40 @@ public class HelloworldWebTestCase extends BaseTestCase {
 
     @Test
     public void build() throws Exception {
-        build("hello-world.bal", Constants.TEST_CELL_ORG_NAME, imageName, version,
-                Paths.get(CELLERY_SCENARIO_TEST_ROOT, "hello-world-web").toFile().getAbsolutePath());
+        build("pet-fe.bal", Constants.TEST_CELL_ORG_NAME, imageName, version,
+                Paths.get(CELLERY_SCENARIO_TEST_ROOT, "pet-store", "pet-fe").toFile().getAbsolutePath());
     }
 
     @Test
     public void run() throws Exception {
-        run(Constants.TEST_CELL_ORG_NAME, imageName, version, helloWorldInstance, 120);
+        run(Constants.TEST_CELL_ORG_NAME, imageName, version, instanceName, link, true,
+                600);
     }
 
     @Test
     public void invoke() {
-        webDriver.get(Constants.DEFAULT_HELLO_WORLD_URL);
+        webDriver.get(Constants.DEFAULT_PET_STORE_URL);
         validateWebPage();
     }
 
     @Test
     public void terminate() throws Exception {
-        terminateCell(helloWorldInstance);
-    }
-
-    @Test(expectedExceptions = Exception.class)
-    public void repeatTerminate() throws Exception {
-        terminateCell(helloWorldInstance);
+        terminateCell(instanceName);
+        terminateCell(dependentInstanceName);
     }
 
     private void validateWebPage() {
         String searchHeader = webDriver.findElement(By.cssSelector("H1")).getText().toLowerCase();
-        Assert.assertEquals(searchHeader, Constants.HELLO_WORLD_WEB_CONTENT, "Web page is content is not as expected");
+        Assert.assertEquals(searchHeader, Constants.PET_STORE_WEB_CONTENT,
+                "Web page is content is not as expected");
     }
 
     @AfterClass
     public void cleanup() {
         webDriver.close();
         try {
-            terminateCell(helloWorldInstance);
+            terminateCell(instanceName);
+            terminateCell(dependentInstanceName);
         } catch (Exception ignored) {
         }
     }
