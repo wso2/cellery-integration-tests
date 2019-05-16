@@ -51,7 +51,7 @@ cellery:Component portalComponent = {
         BASE_PATH: { value: "." }
     },
     dependencies: {
-        petStoreBackend: <cellery:ImageName>{ org: "wso2cellerytest", name: "pet-be-cell", ver: "latest" }
+        petStoreBackend: <cellery:ImageName>{ org: "wso2cellery", name: "pet-be-cell", ver: "latest" }
     }
 };
 
