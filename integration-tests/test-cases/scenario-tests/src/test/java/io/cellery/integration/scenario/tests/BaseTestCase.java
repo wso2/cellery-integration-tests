@@ -18,6 +18,8 @@
 
 package io.cellery.integration.scenario.tests;
 
+import org.testng.Assert;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStreamReader;
@@ -164,5 +166,9 @@ public class BaseTestCase {
 
     private String getInstanceNamePrefix(String image, String version) {
         return image + "-" + version;
+    }
+
+    protected void validateWebPage(String expected, String actual, String error) {
+        Assert.assertEquals(expected, actual, error);
     }
 }
