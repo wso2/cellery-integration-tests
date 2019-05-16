@@ -47,7 +47,7 @@ echo CLUSTER_NAME=$cluster_name > cluster.properties
 
 host_ip=$(kubectl get svc ingress-nginx -n ingress-nginx -o jsonpath="{.status.loadBalancer.ingress[*].ip}")
 
-sudo cp /etc/hosts /etc/hosts.bkp
-echo "$host_ip  hello-world.com" | sudo tee -a /etc/hosts
+sudo cp /etc/hosts /etc/hosts.back
+echo "$host_ip  hello-world.com pet-store.com idp.cellery-system" | sudo tee -a /etc/hosts
 
 log_info "Successfully installed cellery GCP $setup_type setup."
