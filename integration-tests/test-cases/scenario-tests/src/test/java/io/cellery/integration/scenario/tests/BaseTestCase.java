@@ -76,7 +76,7 @@ public class BaseTestCase {
                         " , result output is: " + result);
             }
         } else {
-            int index = instancesResult.indexOf(getInstanceNamePrefix(orgName, imageName, version));
+            int index = instancesResult.indexOf(getInstanceNamePrefix(imageName, version));
             instanceName = instancesResult.substring(index).split(" ")[0];
         }
         return instanceName;
@@ -132,7 +132,7 @@ public class BaseTestCase {
         return orgName + "/" + imageName + ":" + version;
     }
 
-    private String getInstanceNamePrefix(String org, String image, String version) {
-        return org + "-" + image + "-";
+    private String getInstanceNamePrefix(String image, String version) {
+        return image + "-" + version;
     }
 }
