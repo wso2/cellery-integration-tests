@@ -30,11 +30,11 @@ import org.testng.annotations.Test;
 public class InstanceBasedTestCase extends BaseTestCase {
     private static final String orgName = "wso2cellery";
     private static final String imageName = "hello-world-cell";
-    private String instanceName;
+    private String instanceName = "hello-world-inst";
 
     @BeforeClass
     public void quickRunSample() throws Exception {
-        this.instanceName = run(orgName, imageName, Constants.SAMPLE_CELLS_VERSION, null, 120);
+        this.instanceName = run(orgName, imageName, Constants.SAMPLE_CELLS_VERSION, instanceName, 120);
         Assert.assertTrue(instanceName != null && !instanceName.isEmpty(), "Instance name is empty!");
     }
 

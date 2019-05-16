@@ -37,8 +37,6 @@ setup-local-complete:
 
 .PHONY: test-local-complete
 test-local-complete: setup-local-complete
-	cd $(PROJECT_ROOT)/test-cases/test-case-01; \
-	bash test.sh
-	cd $(PROJECT_ROOT)/test-cases/test-case-02; \
-	bash test.sh
+	cd $(PROJECT_ROOT)/test-cases/scenario-tests/; \
+	mvn clean install -Dsuite=src/test/resources/complete.xml
 
