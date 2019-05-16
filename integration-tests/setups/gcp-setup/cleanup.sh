@@ -19,7 +19,7 @@
 log_info() {
     echo "${log_prefix}[INFO]" $1
 }
-sudo mv /etc/hosts.bkp /etc/hosts
+sudo mv /etc/hosts.back /etc/hosts
 source cluster.properties
 
 log_info "Destroying gcp cluster $CLUSTER_NAME..."
