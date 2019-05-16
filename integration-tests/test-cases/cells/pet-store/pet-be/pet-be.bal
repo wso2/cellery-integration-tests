@@ -100,7 +100,7 @@ cellery:CellImage petStoreBackendCell = {
 # + return - The created Cell Image
 public function build(cellery:ImageName iName) returns error? {
     cellery:ApiDefinition controllerApiDef = (<cellery:ApiDefinition>cellery:readSwaggerFile(
-        "./components/controller/resources/pet-store.swagger.json"));
+        "./resources/pet-store.swagger.json"));
     cellery:HttpApiIngress controllerApi = <cellery:HttpApiIngress>(controllerComponent.ingresses.controller);
     controllerApi.definition = controllerApiDef;
 
