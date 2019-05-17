@@ -16,6 +16,9 @@
 
 PROJECT_ROOT := $(realpath $(dir $(abspath $(lastword $(MAKEFILE_LIST)))))
 
+USERNAME ?= celleryio
+PASSWORD ?= celleryio
+
 run-local-basic: setup-local-basic test-local-basic cleanup-local-basic
 run-local-complete: setup-local-complete test-local-complete cleanup-local-complete
 run-gcp-basic: setup-gcp-basic test-gcp-basic cleanup-gcp-basic
@@ -29,7 +32,7 @@ run-minikube-basic: setup-minikube-basic test-minikube-basic cleanup-minikube-ba
 .PHONY: setup-local-basic
 setup-local-basic:
 	cd $(PROJECT_ROOT)/setups/local-setup; \
-	bash setup.sh basic
+	bash setup.sh basic $(USERNAME) $(PASSWORD)
 
 .PHONY: test-local-basic
 test-local-basic:
@@ -44,7 +47,7 @@ cleanup-local-basic:
 .PHONY: setup-local-complete
 setup-local-complete:
 	cd $(PROJECT_ROOT)/setups/local-setup; \
-	bash setup.sh complete
+	bash setup.sh complete $(USERNAME) $(PASSWORD)
 
 .PHONY: test-local-complete
 test-local-complete: setup-local-complete
@@ -109,7 +112,7 @@ cleanup-docker-desktop-basic:
 .PHONY: setup-gcp-basic
 setup-gcp-basic:
 	cd $(PROJECT_ROOT)/setups/gcp-setup; \
-	bash setup.sh basic
+	bash setup.sh basic $(USERNAME) $(PASSWORD)
 
 .PHONY: test-gcp-basic
 test-gcp-basic:
@@ -124,7 +127,7 @@ cleanup-gcp-basic:
 .PHONY: setup-gcp-complete
 setup-gcp-complete:
 	cd $(PROJECT_ROOT)/setups/gcp-setup; \
-	bash setup.sh complete
+	bash setup.sh complete $(USERNAME) $(PASSWORD)
 
 .PHONY: test-gcp-complete
 test-gcp-complete:
