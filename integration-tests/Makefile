@@ -19,46 +19,82 @@ PROJECT_ROOT := $(realpath $(dir $(abspath $(lastword $(MAKEFILE_LIST)))))
 USERNAME ?= celleryio
 PASSWORD ?= celleryio
 
-run-local-basic: setup-local-basic test-local-basic cleanup-local-basic
-run-local-complete: setup-local-complete test-local-complete cleanup-local-complete
-run-gcp-basic: setup-gcp-basic test-gcp-basic cleanup-gcp-basic
-run-gcp-complete: setup-gcp-complete test-gcp-basic cleanup-gcp-complete
+run-local-basic: setup-local-basic test-basic cleanup-local
+run-local-complete: setup-local-complete test-complete cleanup-local
+run-gcp-basic: setup-gcp-basic test-basic cleanup-gcp
+run-gcp-complete: setup-gcp-complete test-complete cleanup-gcp
+run-kubeadm-basic: setup-kubeadm-basic test-basic cleanup-kubeadm
+run-kubeadm-complete: setup-kubeadm-complete test-complete cleanup-kubeadm
 
-run-minikube-basic: setup-minikube-basic test-minikube-basic cleanup-minikube-basic
+run-minikube-basic: setup-minikube-basic test-basic cleanup-minikube-basic
 
 .EXPORT_ALL_VARIABLES:
     CELLERY_AUTOMATION_TESTS_ROOT = $(PROJECT_ROOT)
+    
+.PHONY: test-basic
+test-basic:
+	cd $(PROJECT_ROOT)/test-cases/scenario-tests/; \
+	mvn clean install -Dsuite=src/test/resources/basic.xml -fae
 
+.PHONY: test-complete
+test-complete:
+	cd $(PROJECT_ROOT)/test-cases/scenario-tests/; \
+	mvn clean install -Dsuite=src/test/resources/complete.xml
+
+# Local setup targets
 .PHONY: setup-local-basic
 setup-local-basic:
 	cd $(PROJECT_ROOT)/setups/local-setup; \
 	bash setup.sh basic $(USERNAME) $(PASSWORD)
-
-.PHONY: test-local-basic
-test-local-basic:
-	cd $(PROJECT_ROOT)/test-cases/scenario-tests/; \
-	mvn clean install -Dsuite=src/test/resources/basic.xml -fae
-
-.PHONY: cleanup-local-basic
-cleanup-local-basic:
-	cd $(PROJECT_ROOT)/setups/local-setup; \
-	bash cleanup.sh
 
 .PHONY: setup-local-complete
 setup-local-complete:
 	cd $(PROJECT_ROOT)/setups/local-setup; \
 	bash setup.sh complete $(USERNAME) $(PASSWORD)
 
-.PHONY: test-local-complete
-test-local-complete: setup-local-complete
-	cd $(PROJECT_ROOT)/test-cases/scenario-tests/; \
-	mvn clean install -Dsuite=src/test/resources/complete.xml
-
-.PHONY: cleanup-local-complete
-cleanup-local-complete:
+.PHONY: cleanup-local
+cleanup-local:
 	cd $(PROJECT_ROOT)/setups/local-setup; \
 	bash cleanup.sh
 
+# GCP setup targets
+.PHONY: setup-gcp-basic
+setup-gcp-basic:
+	cd $(PROJECT_ROOT)/setups/gcp-setup; \
+	bash setup.sh basic $(USERNAME) $(PASSWORD)
+
+.PHONY: setup-gcp-complete
+setup-gcp-complete:
+	cd $(PROJECT_ROOT)/setups/gcp-setup; \
+	bash setup.sh complete $(USERNAME) $(PASSWORD)
+
+.PHONY: cleanup-gcp
+cleanup-gcp:
+	cd $(PROJECT_ROOT)/setups/gcp-setup; \
+	bash cleanup.sh
+
+# Kubeadm setup targets
+.PHONY: init-kubeadm
+init-kubeadm:
+	cd $(PROJECT_ROOT)/setups/existing-cluster/kube-admin; \
+	sudo bash init.sh
+
+.PHONY: setup-kubeadm-basic
+setup-kubeadm-basic:
+	cd $(PROJECT_ROOT)/setups/existing-cluster/kube-admin; \
+	bash setup.sh basic $(USERNAME) $(PASSWORD)
+
+.PHONY: setup-kubeadm-complete
+setup-kubeadm-complete:
+	cd $(PROJECT_ROOT)/setups/existing-cluster/kube-admin; \
+	bash setup.sh complete $(USERNAME) $(PASSWORD)
+
+.PHONY: cleanup-kubeadm
+cleanup-kubeadm:
+	cd $(PROJECT_ROOT)/setups/existing-cluster/kube-admin; \
+	bash cleanup.sh
+
+# Minikube setup targets
 .PHONY: start-minikube
 start-minikube:
 	cd $(PROJECT_ROOT)/setups/existing-cluster/minikube; \
@@ -73,11 +109,6 @@ delete-minikube:
 setup-minikube-basic:
 	cd $(PROJECT_ROOT)/setups/existing-cluster/minikube; \
 	bash setup.sh basic
-
-.PHONY: test-minikube-basic
-test-minikube-basic:
-	cd $(PROJECT_ROOT)/test-cases/scenario-tests/; \
-	mvn clean install -Dsuite=src/test/resources/basic.xml
 
 .PHONY: cleanup-minikube-basic
 cleanup-minikube-basic:
@@ -107,34 +138,4 @@ test-docker-desktop-basic:
 .PHONY: cleanup-docker-desktop-basic
 cleanup-docker-desktop-basic:
 	cd $(PROJECT_ROOT)/setups/existing-cluster/docker-desktop; \
-	bash cleanup.sh
-
-.PHONY: setup-gcp-basic
-setup-gcp-basic:
-	cd $(PROJECT_ROOT)/setups/gcp-setup; \
-	bash setup.sh basic $(USERNAME) $(PASSWORD)
-
-.PHONY: test-gcp-basic
-test-gcp-basic:
-	cd $(PROJECT_ROOT)/test-cases/scenario-tests/; \
-	mvn clean install -Dsuite=src/test/resources/basic.xml -fae
-
-.PHONY: cleanup-gcp-basic
-cleanup-gcp-basic:
-	cd $(PROJECT_ROOT)/setups/gcp-setup; \
-	bash cleanup.sh
-
-.PHONY: setup-gcp-complete
-setup-gcp-complete:
-	cd $(PROJECT_ROOT)/setups/gcp-setup; \
-	bash setup.sh complete $(USERNAME) $(PASSWORD)
-
-.PHONY: test-gcp-complete
-test-gcp-complete:
-	cd $(PROJECT_ROOT)/test-cases/scenario-tests/; \
-	mvn clean install -Dsuite=src/test/resources/complete.xml -fae
-
-.PHONY: cleanup-gcp-complete
-cleanup-gcp-complete:
-	cd $(PROJECT_ROOT)/setups/gcp-setup; \
 	bash cleanup.sh
