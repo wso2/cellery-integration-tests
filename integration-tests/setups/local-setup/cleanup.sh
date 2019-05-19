@@ -20,6 +20,7 @@ log_info() {
     echo "${log_prefix}[INFO]" $1
 }
 
+sudo mv /etc/hosts.back /etc/hosts
 log_info "Destroying local setup..."
 cellery setup cleanup local
 
