@@ -131,7 +131,7 @@ public class BaseTestCase {
     }
 
     protected String readOutputResult(Process process, String successOutput, String errorMessage) throws Exception {
-        return readOutputResult(process, successOutput, errorMessage, 180);
+        return readOutputResult(process, successOutput, errorMessage, 600);
     }
 
     protected String readOutputResult(Process process, String successOutput, String errorMessage, int timeout)

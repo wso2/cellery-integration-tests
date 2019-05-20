@@ -22,6 +22,8 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -41,11 +43,13 @@ public class PetStoreTestCase extends BaseTestCase {
     private static final String version = "latest";
     private static final String link = "petStoreBackend:pet-be-inst";
     private WebDriver webDriver;
+    private WebDriverWait wait;
 
     @BeforeClass
     public void setup() {
         WebDriverManager.getInstance(CHROME).setup();
         webDriver = new ChromeDriver(new ChromeOptions().setHeadless(true));
+        wait = new WebDriverWait(webDriver, 120);
     }
 
     @Test
@@ -56,7 +60,7 @@ public class PetStoreTestCase extends BaseTestCase {
 
     @Test
     public void runBackEnd() throws Exception {
-        run(Constants.CELL_ORG_NAME, backEndImageName, version, backEndInstanceName, 180);
+        run(Constants.CELL_ORG_NAME, backEndImageName, version, backEndInstanceName, 600);
     }
 
     @Test
@@ -68,7 +72,7 @@ public class PetStoreTestCase extends BaseTestCase {
     @Test
     public void runFrontEnd() throws Exception {
         run(Constants.CELL_ORG_NAME, frontEndImageName, version, frontEndInstanceName, link, false,
-                300);
+                600);
     }
 
     @Test
@@ -95,6 +99,7 @@ public class PetStoreTestCase extends BaseTestCase {
         WebElement password = webDriver.findElement(By.id("password"));
         username.sendKeys("admin");
         password.sendKeys("admin");
+        wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"loginForm\"]/div[6]/div/button")));
         webDriver.findElement(By.xpath("//*[@id=\"loginForm\"]/div[6]/div/button")).click();
         String personalInfoHeader = webDriver.findElement(By.cssSelector("H2")).getText();
         validateWebPage(personalInfoHeader, Constants.IDENTITY_SERVER_HEADER, "Identity server web page " +
