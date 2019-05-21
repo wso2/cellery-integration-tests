@@ -25,6 +25,8 @@ time=`date +%H:%M:%S`
 log_prefix="[$date $time]"
 
 setup_type=$1
+username=$2
+password=$3
 
 log_info() {
     echo "${log_prefix}[INFO]" $1
@@ -39,4 +41,11 @@ else
 	cellery setup create local --complete -y
 fi
 
+host_ip="192.168.56.10"
+host_names="cellery-dashboard wso2sp-observability-api cellery-k8s-metrics wso2-apim-gateway wso2-apim hello-world.com pet-store.com idp.cellery-system"
+sudo cp /etc/hosts /etc/hosts.back
+echo "$host_ip  $host_names" | sudo tee -a /etc/hosts
+
 log_info "Successfully installed cellery local $setup_type setup."
+
+cellery login -u ${username} -p ${password}
