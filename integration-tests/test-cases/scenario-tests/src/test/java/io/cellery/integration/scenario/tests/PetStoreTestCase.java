@@ -82,7 +82,7 @@ public class PetStoreTestCase extends BaseTestCase {
     @Test
     public void signIn() {
         // Click sign in button
-        webDriver.findElement(By.xpath("//*[@id=\"app\"]/div/header/div/button/span[1]")).click();
+        webDriver.findElement(By.xpath("//*[@id=\"app\"]/div/header/div/button")).click();
         String singInHeader = webDriver.findElement(By.cssSelector("H2")).getText();
         validateWebPage(singInHeader, Constants.PET_STORE_SIGN_IN_WEB_CONTENT, "Pet store sign in web page content "
                 + "is not as expected");
@@ -96,9 +96,9 @@ public class PetStoreTestCase extends BaseTestCase {
         username.sendKeys("admin");
         password.sendKeys("admin");
         webDriver.findElement(By.xpath("//*[@id=\"loginForm\"]/div[6]/div/button")).click();
-        String personalInfoHeader = webDriver.findElement(By.cssSelector("H6")).getText();
-        validateWebPage(personalInfoHeader, Constants.PET_STORE_PERSONAL_INFORMATION_HEADER, "Pet store sign in " +
-                "web page content is not as expected");
+        String personalInfoHeader = webDriver.findElement(By.cssSelector("H2")).getText();
+        validateWebPage(personalInfoHeader, Constants.IDENTITY_SERVER_HEADER, "Identity server web page " +
+                "content is not as expected");
     }
 
     @Test
