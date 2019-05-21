@@ -18,6 +18,7 @@
 package io.cellery.integration.scenario.tests;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -29,6 +30,7 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.nio.file.Paths;
+import java.util.concurrent.TimeUnit;
 
 import static io.github.bonigarcia.wdm.DriverManagerType.CHROME;
 
@@ -84,7 +86,14 @@ public class PetStoreTestCase extends BaseTestCase {
     }
 
     @Test
-    public void signIn() {
+    public void signIn() throws InterruptedException {
+        clickSignIn();
+        submitCredentials();
+        acceptPrivacyPolicy();
+        submitUserInfo();
+    }
+
+    public void clickSignIn() {
         // Click sign in button
         webDriver.findElement(By.xpath("//*[@id=\"app\"]/div/header/div/button")).click();
         String singInHeader = webDriver.findElement(By.cssSelector("H2")).getText();
@@ -92,23 +101,28 @@ public class PetStoreTestCase extends BaseTestCase {
                 + "is not as expected");
     }
 
-    @Test
     public void submitCredentials() {
         // Submit username, password
         WebElement username = webDriver.findElement(By.id("username"));
         WebElement password = webDriver.findElement(By.id("password"));
         username.sendKeys("admin");
         password.sendKeys("admin");
-        wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"loginForm\"]/div[6]/div/button")));
         webDriver.findElement(By.xpath("//*[@id=\"loginForm\"]/div[6]/div/button")).click();
         String personalInfoHeader = webDriver.findElement(By.cssSelector("H2")).getText();
         validateWebPage(personalInfoHeader, Constants.IDENTITY_SERVER_HEADER, "Identity server web page " +
                 "content is not as expected");
     }
 
-    @Test
-    public void submitUserInfo() {
-        // Submit user information
+    public void acceptPrivacyPolicy() {
+        JavascriptExecutor js = (JavascriptExecutor) webDriver;
+        webDriver.findElement(By.id("approveCb")).click();
+        webDriver.findElement(By.id("consent_select_all")).click();
+        js.executeScript("window.scrollTo(0, document.body.scrollHeight)");
+        webDriver.findElement(By.id("approve")).click();
+    }
+
+    public void submitUserInfo() throws InterruptedException {
+        wait.until(ExpectedConditions.elementToBeClickable(By.id("first-name")));
         WebElement firstName = webDriver.findElement(By.id("first-name"));
         WebElement lastName = webDriver.findElement(By.id("last-name"));
         WebElement address = webDriver.findElement(By.id("address"));
@@ -117,15 +131,16 @@ public class PetStoreTestCase extends BaseTestCase {
         address.sendKeys("No 60, Regent street, New York.");
         webDriver.findElement(By.xpath("//*[@id=\"app\"]/div/main/div/div/div/div[1]/div/div/div/div/div[4]/button[2]"))
                 .click();
-
         // Submit pet preferences
+        TimeUnit.SECONDS.sleep(5);
         webDriver.findElement(By.xpath("//*[@id=\"app\"]/div/main/div/div/div/div[3]/div/div/div/div/div[1]/label[1]" +
                 "/span[1]/span[1]/input")).click();
         webDriver.findElement(By.xpath("//*[@id=\"app\"]/div/main/div/div/div/div[3]/div/div/div/div/div[1]/label[2]/" +
                 "span[1]/span[1]/input")).click();
+        TimeUnit.SECONDS.sleep(5);
         webDriver.findElement(By.xpath("//*[@id=\"app\"]/div/main/div/div/div/div[3]/div/div/div/div/div[2]/button[2]")
         ).click();
-        String petAccessoriesHeader = webDriver.findElement(By.cssSelector("H6")).getText().toLowerCase();
+        String petAccessoriesHeader = webDriver.findElement(By.cssSelector("H6")).getText();
         validateWebPage(petAccessoriesHeader, Constants.PET_STORE_PERSONAL_INFORMATION_HEADER, "Pet store sign in " +
                 "web page content is not as expected");
     }
