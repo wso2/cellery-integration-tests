@@ -22,7 +22,7 @@ log_info() {
 }
 sudo mv /etc/hosts.back /etc/hosts
 if [ -d /var/tmp/cellery ]; then
-    rm -rf /var/tmp/cellery
+    sudo rm -rf /var/tmp/cellery
 fi
 log_info "Destroying kubeadmin cellery setup..."
 cellery setup cleanup existing -y
