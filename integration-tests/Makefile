@@ -24,7 +24,9 @@ run-local-complete: setup-local-complete test-complete cleanup-local
 run-gcp-basic: setup-gcp-basic test-basic cleanup-gcp
 run-gcp-complete: setup-gcp-complete test-complete cleanup-gcp
 run-kubeadm-basic: setup-kubeadm-basic test-basic cleanup-kubeadm
+run-kubeadm-basic-persistent: setup-kubeadm-basic-persistent test-basic cleanup-kubeadm
 run-kubeadm-complete: setup-kubeadm-complete test-complete cleanup-kubeadm
+run-kubeadm-complete-persistent: setup-kubeadm-complete-persistent test-complete cleanup-kubeadm
 
 run-minikube-basic: setup-minikube-basic test-basic cleanup-minikube-basic
 
@@ -84,10 +86,20 @@ setup-kubeadm-basic:
 	cd $(PROJECT_ROOT)/setups/existing-cluster/kube-admin; \
 	bash setup.sh basic $(USERNAME) $(PASSWORD)
 
+.PHONY: setup-kubeadm-basic-persistent
+setup-kubeadm-basic-persistent:
+	cd $(PROJECT_ROOT)/setups/existing-cluster/kube-admin; \
+	bash setup.sh basic $(USERNAME) $(PASSWORD) true
+
 .PHONY: setup-kubeadm-complete
 setup-kubeadm-complete:
 	cd $(PROJECT_ROOT)/setups/existing-cluster/kube-admin; \
 	bash setup.sh complete $(USERNAME) $(PASSWORD)
+
+.PHONY: setup-kubeadm-complete-persistent
+setup-kubeadm-complete-persistent:
+	cd $(PROJECT_ROOT)/setups/existing-cluster/kube-admin; \
+	bash setup.sh complete $(USERNAME) $(PASSWORD) true
 
 .PHONY: cleanup-kubeadm
 cleanup-kubeadm:

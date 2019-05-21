@@ -27,6 +27,12 @@ time=`date +%H:%M:%S`
 log_prefix="[$date $time]"
 
 setup_type=$1
+
+persistence=false
+if [ -z "$4" ]; then
+    persistence=$4
+fi
+
 username=$2
 password=$3
 
@@ -36,9 +42,19 @@ log_info() {
 
 cd $source_root
 if [ $setup_type = "basic" ]; then
+    if [ $persistence ]; then
+        log_info "Installing Cellery basic setup (persistent) on existing kubeadm k8s cluster..."
+        mkdir -p /var/tmp/cellery && chmod 777 -R /var/tmp/cellery
+	    cellery setup create existing --persistent
+    fi
 	log_info "Installing Cellery basic setup on existing kubeadm k8s cluster..."
 	cellery setup create existing
 else
+    if [ $persistence ]; then
+        log_info "Installing Cellery complete setup (persistent) on existing kubeadm k8s cluster..."
+        mkdir -p /var/tmp/cellery && chmod 777 -R /var/tmp/cellery
+	    cellery setup create existing --complete --persistent
+    fi
     log_info "Installing Cellery complete setup on existing kubeadm k8s cluster..."
 	cellery setup create existing --complete
 fi
