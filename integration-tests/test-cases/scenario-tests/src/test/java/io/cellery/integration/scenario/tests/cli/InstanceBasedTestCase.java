@@ -34,7 +34,7 @@ public class InstanceBasedTestCase extends BaseTestCase {
 
     @BeforeClass
     public void quickRunSample() throws Exception {
-        this.instanceName = run(orgName, imageName, Constants.SAMPLE_CELLS_VERSION, null, 120);
+        this.instanceName = run(orgName, imageName, Constants.SAMPLE_CELLS_VERSION, null, 300);
         Assert.assertTrue(instanceName != null && !instanceName.isEmpty(), "Instance name is empty!");
     }
 
