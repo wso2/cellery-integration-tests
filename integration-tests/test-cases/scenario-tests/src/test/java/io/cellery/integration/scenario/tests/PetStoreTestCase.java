@@ -132,12 +132,12 @@ public class PetStoreTestCase extends BaseTestCase {
         webDriver.findElement(By.xpath("//*[@id=\"app\"]/div/main/div/div/div/div[1]/div/div/div/div/div[4]/button[2]"))
                 .click();
         // Submit pet preferences
-        TimeUnit.SECONDS.sleep(5);
+        TimeUnit.SECONDS.sleep(15);
         webDriver.findElement(By.xpath("//*[@id=\"app\"]/div/main/div/div/div/div[3]/div/div/div/div/div[1]/label[1]" +
                 "/span[1]/span[1]/input")).click();
         webDriver.findElement(By.xpath("//*[@id=\"app\"]/div/main/div/div/div/div[3]/div/div/div/div/div[1]/label[2]/" +
                 "span[1]/span[1]/input")).click();
-        TimeUnit.SECONDS.sleep(5);
+        TimeUnit.SECONDS.sleep(15);
         webDriver.findElement(By.xpath("//*[@id=\"app\"]/div/main/div/div/div/div[3]/div/div/div/div/div[2]/button[2]")
         ).click();
         String petAccessoriesHeader = webDriver.findElement(By.cssSelector("H6")).getText();
