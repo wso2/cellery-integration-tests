@@ -40,7 +40,6 @@
                     <include name="runFrontEnd"/>
                     <include name="invoke"/>
                     <include name="signIn"/>
-                    <include name="submitCredentials"/>
                     <include name="terminate"/>
                 </methods>
             </class>
