@@ -21,17 +21,17 @@
 <suite name="complete">
     <test name="complete-setup-tests">
         <classes>
-            <class name="io.cellery.integration.scenario.tests.cli.ImageBasedTestCase"/>
-            <class name="io.cellery.integration.scenario.tests.cli.InstanceBasedTestCase"/>
-            <class name="io.cellery.integration.scenario.tests.HelloworldWebTestCase">
-                <methods>
-                    <include name="build"/>
-                    <include name="run"/>
-                    <include name="invoke"/>
-                    <include name="terminate"/>
-                    <include name="repeatTerminate"/>
-                </methods>
-            </class>
+            <!--<class name="io.cellery.integration.scenario.tests.cli.ImageBasedTestCase"/>-->
+            <!--<class name="io.cellery.integration.scenario.tests.cli.InstanceBasedTestCase"/>-->
+            <!--<class name="io.cellery.integration.scenario.tests.HelloworldWebTestCase">-->
+                <!--<methods>-->
+                    <!--<include name="build"/>-->
+                    <!--<include name="run"/>-->
+                    <!--<include name="invoke"/>-->
+                    <!--<include name="terminate"/>-->
+                    <!--<include name="repeatTerminate"/>-->
+                <!--</methods>-->
+            <!--</class>-->
             <class name="io.cellery.integration.scenario.tests.PetStoreTestCase">
                 <methods>
                     <include name="buildBackEnd"/>

@@ -31,6 +31,7 @@ public class Constants {
     public static final String HELLO_WORLD_WEB_CONTENT = "hello cellery";
     public static final String PET_STORE_WEB_CONTENT = "Pet Accessories";
     public static final String PET_STORE_SIGN_IN_WEB_CONTENT = "SIGN IN";
+    public static final String IDENTITY_SERVER_HEADER = "OPENID USER CLAIMS";
     public static final String PET_STORE_PERSONAL_INFORMATION_HEADER = "Pet Store";
     public static final String DEFAULT_HELLO_WORLD_URL = "http://hello-world.com";
     public static final String DEFAULT_PET_STORE_URL = "http://pet-store.com";
