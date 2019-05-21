@@ -46,17 +46,19 @@ if [ $setup_type = "basic" ]; then
         log_info "Installing Cellery basic setup (persistent) on existing kubeadm k8s cluster..."
         mkdir -p /var/tmp/cellery && chmod 777 -R /var/tmp/cellery
 	    cellery setup create existing --persistent
-    fi
-	log_info "Installing Cellery basic setup on existing kubeadm k8s cluster..."
-	cellery setup create existing
+    else
+        log_info "Installing Cellery basic setup on existing kubeadm k8s cluster..."
+        cellery setup create existing
+	fi
 else
     if [ $persistence ]; then
         log_info "Installing Cellery complete setup (persistent) on existing kubeadm k8s cluster..."
         mkdir -p /var/tmp/cellery && chmod 777 -R /var/tmp/cellery
 	    cellery setup create existing --complete --persistent
-    fi
-    log_info "Installing Cellery complete setup on existing kubeadm k8s cluster..."
-	cellery setup create existing --complete
+    else
+        log_info "Installing Cellery complete setup on existing kubeadm k8s cluster..."
+        cellery setup create existing --complete
+	fi
 fi
 kubernetes_master=$(kubectl cluster-info | grep -i "Kubernetes master" | awk '{print $6}' )
 host_ip=$(grep -oE '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}' <<< "$kubernetes_master")
