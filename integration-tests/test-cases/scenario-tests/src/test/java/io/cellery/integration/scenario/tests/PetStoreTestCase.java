@@ -113,11 +113,18 @@ public class PetStoreTestCase extends BaseTestCase {
                 "content is not as expected");
     }
 
-    public void acceptPrivacyPolicy() {
+    public void acceptPrivacyPolicy() throws InterruptedException {
         JavascriptExecutor js = (JavascriptExecutor) webDriver;
         webDriver.findElement(By.id("approveCb")).click();
-        webDriver.findElement(By.id("consent_select_all")).click();
-        js.executeScript("window.scrollTo(0, document.body.scrollHeight)");
+
+        TimeUnit.SECONDS.sleep(15);
+
+        Boolean isPresent = webDriver.findElements(By.id("consent_select_all")).size() > 0;
+        if (isPresent) {
+            WebElement element = webDriver.findElement(By.id("consent_select_all"));
+            js.executeScript("arguments[0].click()", element);
+            js.executeScript("window.scrollTo(0, document.body.scrollHeight)");
+        }
         webDriver.findElement(By.id("approve")).click();
     }
 
