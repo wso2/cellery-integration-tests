@@ -1,0 +1,138 @@
+/*
+ *  Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ *  WSO2 Inc. licenses this file to you under the Apache License,
+ *  Version 2.0 (the "License"); you may not use this file except
+ *  in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ *
+ */
+package io.cellery.integration.scenario.tests.petstore.domain;
+
+import io.cellery.integration.scenario.tests.Constants;
+import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+import java.util.concurrent.TimeUnit;
+
+/**
+ * This includes functions related to pet-store scenario.
+ */
+public class User {
+    private String firstName;
+    private String lastName;
+    private String address;
+    private String userName;
+    private String password;
+    private WebDriver webDriver;
+    private WebDriverWait wait;
+    private String petStoreSignInButtonXpath = "//*[@id=\"app\"]/div/header/div/button";
+    private String idpSignInButtonXpath = "//*[@id=\"loginForm\"]/div[6]/div/button";
+    private String personalInfoNexButtonXpath = "//*[@id=\"app\"]/div/main/div/div/div/div[1]/div/div/div/div/div[4]/" +
+            "button[2]";
+
+    public User(String firstName, String lastName, String address, String userName, String password
+            , WebDriver webDriver, WebDriverWait webDriverWait) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.address = address;
+        this.userName = userName;
+        this.password = password;
+        this.webDriver = webDriver;
+        this.wait = webDriverWait;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public String clickSignIn() {
+        webDriver.findElement(By.xpath(petStoreSignInButtonXpath)).click();
+        String singInHeader = webDriver.findElement(By.cssSelector("H2")).getText();
+        return singInHeader;
+    }
+
+    public String submitCredentials() {
+        WebElement username = webDriver.findElement(By.id("username"));
+        WebElement password = webDriver.findElement(By.id("password"));
+        username.sendKeys(this.getUserName());
+        password.sendKeys(this.getPassword());
+        webDriver.findElement(By.xpath(idpSignInButtonXpath)).click();
+        String personalInfoHeader = webDriver.findElement(By.cssSelector("H2")).getText();
+        return personalInfoHeader;
+    }
+
+    public void acceptPrivacyPolicy() throws InterruptedException {
+        JavascriptExecutor js = (JavascriptExecutor) webDriver;
+        webDriver.findElement(By.id("approveCb")).click();
+
+        TimeUnit.SECONDS.sleep(15);
+
+        Boolean isPresent = webDriver.findElements(By.id("consent_select_all")).size() > 0;
+        if (isPresent) {
+            WebElement element = webDriver.findElement(By.id("consent_select_all"));
+            js.executeScript("arguments[0].click()", element);
+            js.executeScript("window.scrollTo(0, document.body.scrollHeight)");
+        }
+        webDriver.findElement(By.id("approve")).click();
+    }
+
+    public String submitInformation() throws InterruptedException {
+        wait.until(ExpectedConditions.elementToBeClickable(By.id("first-name")));
+        WebElement firstName = webDriver.findElement(By.id("first-name"));
+        WebElement lastName = webDriver.findElement(By.id("last-name"));
+        WebElement address = webDriver.findElement(By.id("address"));
+        firstName.sendKeys(this.getFirstName());
+        lastName.sendKeys(this.getLastName());
+        address.sendKeys(this.getAddress());
+        webDriver.findElement(By.xpath(personalInfoNexButtonXpath)).click();
+        // Submit pet preferences
+        TimeUnit.SECONDS.sleep(15);
+        webDriver.findElement(By.xpath(Constants.PET_STORE_XPATH_PREFERENCE_CHECKBOX_DOG)).click();
+        webDriver.findElement(By.xpath(Constants.PET_STORE_XPATH_PREFERENCE_CHECKBOX_CAT)).click();
+        TimeUnit.SECONDS.sleep(15);
+        webDriver.findElement(By.xpath(Constants.PET_STORE_XPATH_PREFERENCE_SUBMIT_BUTTON)
+        ).click();
+        String petAccessoriesHeader = webDriver.findElement(By.cssSelector("H6")).getText();
+
+        return petAccessoriesHeader;
+    }
+
+    public String signOut() {
+        webDriver.findElement(By.xpath(Constants.PET_STORE_XPATH_SIGN_USER_BUTTON)).click();
+        webDriver.findElement(By.xpath(Constants.PET_STORE_XPATH_SIGN_OUT_BUTTON)).click();
+        String idpLogoutHeader = webDriver.findElement(By.cssSelector("H2")).getText();
+        return idpLogoutHeader;
+    }
+    public void signOutConfirm() {
+        webDriver.findElement(By.id("approve")).click();
+    }
+}

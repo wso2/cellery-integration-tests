@@ -32,14 +32,21 @@
                     <include name="repeatTerminate"/>
                 </methods>
             </class>
-            <class name="io.cellery.integration.scenario.tests.PetStoreTestCase">
+            <class name="io.cellery.integration.scenario.tests.petstore.PetStoreTestCase">
                 <methods>
                     <include name="buildBackEnd"/>
                     <include name="runBackEnd"/>
                     <include name="buildFrontEnd"/>
                     <include name="runFrontEnd"/>
                     <include name="invoke"/>
-                    <include name="signIn"/>
+                    <include name="signInAlice"/>
+                    <include name="addToCartAlice"/>
+                    <include name="checkoutCartAlice"/>
+                    <include name="checkOrdersAlice"/>
+                    <include name="signOutAlice"/>
+                    <include name="signInBob"/>
+                    <include name="checkOrdersBob"/>
+                    <include name="signOutBob"/>
                     <include name="terminate"/>
                 </methods>
             </class>

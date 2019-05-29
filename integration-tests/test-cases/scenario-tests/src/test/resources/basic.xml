@@ -32,7 +32,7 @@
                     <include name="repeatTerminate"/>
                 </methods>
             </class>
-            <class name="io.cellery.integration.scenario.tests.PetStoreTestCase">
+            <class name="io.cellery.integration.scenario.tests.petstore.PetStoreTestCase">
                 <methods>
                     <include name="buildBackEnd"/>
                     <include name="runBackEnd"/>
