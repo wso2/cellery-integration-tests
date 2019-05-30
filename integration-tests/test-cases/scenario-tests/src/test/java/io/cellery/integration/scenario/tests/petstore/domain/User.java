@@ -155,6 +155,7 @@ public class User {
         address.sendKeys(this.getAddress());
         webDriver.findElement(By.xpath(personalInfoNexButtonXpath)).click();
         // Submit pet preferences
+        // Putting an explicit sleep of 15 seconds because test is failing in jenkins server.
         TimeUnit.SECONDS.sleep(15);
         webDriver.findElement(By.xpath(preferenceCheckBoxDogXpath)).click();
         webDriver.findElement(By.xpath(preferenceCheckBoxCatXpath)).click();

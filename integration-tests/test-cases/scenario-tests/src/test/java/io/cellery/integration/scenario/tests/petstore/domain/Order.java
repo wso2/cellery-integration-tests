@@ -47,6 +47,7 @@ public class Order {
     public String getOrderValue() throws InterruptedException {
         wait.until(ExpectedConditions.elementToBeClickable(By.xpath(checkOrdersButtonXpath)));
         webDriver.findElement(By.xpath(checkOrdersButtonXpath)).click();
+        // Putting an explicit sleep of 10 seconds because test is failing in jenkins server.
         TimeUnit.SECONDS.sleep(10);
         Boolean orderExists = webDriver.findElements(By.xpath(orderValueXpath)).size() > 0;
         if (orderExists) {
