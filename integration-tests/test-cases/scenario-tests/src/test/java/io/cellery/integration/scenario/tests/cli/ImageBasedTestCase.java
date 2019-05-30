@@ -29,27 +29,27 @@ import java.nio.file.Paths;
  * This test includes the test cases related to the CLI and images.
  */
 public class ImageBasedTestCase extends BaseTestCase {
-    private static final String helloWorldImage = "hello-world-cell";
-    private static final String employeeImage = "employee-test-cell";
+    private static final String HELLO_WORLD_IMAGE = "hello-world-cell";
+    private static final String EMPLOYEE_IMAGE = "employee-test-cell";
 
     @Test
     public void buildResourceImage() throws Exception {
         // Build employee image
-        build("employee.bal", Constants.TEST_CELL_ORG_NAME, employeeImage, Constants.SAMPLE_CELLS_VERSION,
+        build("employee.bal", Constants.TEST_CELL_ORG_NAME, EMPLOYEE_IMAGE, Constants.SAMPLE_CELLS_VERSION,
                 Paths.get(CELLERY_SCENARIO_TEST_ROOT, "employee-portal",
                         "employee").toFile().getAbsolutePath());
         // Build hello-world image
-        build("hello-world.bal", Constants.TEST_CELL_ORG_NAME, helloWorldImage, Constants.SAMPLE_CELLS_VERSION,
+        build("hello-world.bal", Constants.TEST_CELL_ORG_NAME, HELLO_WORLD_IMAGE, Constants.SAMPLE_CELLS_VERSION,
                 Paths.get(CELLERY_SCENARIO_TEST_ROOT, "hello-world-web").toFile().getAbsolutePath());
     }
 
     @Test(dependsOnMethods = "buildResourceImage")
     public void describeImage() throws Exception {
-        String cellImageName = getCellImageName(Constants.TEST_CELL_ORG_NAME, helloWorldImage,
+        String cellImageName = getCellImageName(Constants.TEST_CELL_ORG_NAME, HELLO_WORLD_IMAGE,
                 Constants.SAMPLE_CELLS_VERSION);
         Process process = Runtime.getRuntime().exec("cellery describe " + cellImageName);
         String errorString = "Unable to describe cell image: " + cellImageName;
-        String expectedOut = "name: " + helloWorldImage;
+        String expectedOut = "name: " + HELLO_WORLD_IMAGE;
         readOutputResult(process, expectedOut, errorString);
     }
 
@@ -63,7 +63,7 @@ public class ImageBasedTestCase extends BaseTestCase {
 
     @Test(dependsOnMethods = "buildResourceImage")
     public void extractNonResourceImage() throws Exception {
-        String cellImageName = getCellImageName(Constants.TEST_CELL_ORG_NAME, helloWorldImage,
+        String cellImageName = getCellImageName(Constants.TEST_CELL_ORG_NAME, HELLO_WORLD_IMAGE,
                 Constants.SAMPLE_CELLS_VERSION);
         Process process = Runtime.getRuntime().exec("cellery extract-resources " + cellImageName);
         String errorString = "Unable to extract non resource cell image: " + cellImageName;
@@ -100,7 +100,7 @@ public class ImageBasedTestCase extends BaseTestCase {
 
     private void extractImage(String outputPath) throws Exception {
         boolean dirCreated = false;
-        String cellImageName = getCellImageName(Constants.TEST_CELL_ORG_NAME, employeeImage,
+        String cellImageName = getCellImageName(Constants.TEST_CELL_ORG_NAME, EMPLOYEE_IMAGE,
                 Constants.SAMPLE_CELLS_VERSION);
         String command = "cellery extract-resources " + cellImageName;
         if (outputPath != null) {
