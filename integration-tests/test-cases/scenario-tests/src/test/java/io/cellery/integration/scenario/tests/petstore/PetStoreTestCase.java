@@ -158,16 +158,16 @@ public class PetStoreTestCase extends BaseTestCase {
 
     @Test(description = "This tests the termination of pet-store backend and frontend cells")
     public void terminate() throws Exception {
-//        terminateCell(BACKEND_INSTANCE_NAME);
-//        terminateCell(FRONTEND_INSTANCE_NAME);
+        terminateCell(BACKEND_INSTANCE_NAME);
+        terminateCell(FRONTEND_INSTANCE_NAME);
     }
 
     @AfterClass
     public void cleanup() {
         webDriver.close();
         try {
-//            terminateCell(BACKEND_INSTANCE_NAME);
-//            terminateCell(FRONTEND_INSTANCE_NAME);
+            terminateCell(BACKEND_INSTANCE_NAME);
+            terminateCell(FRONTEND_INSTANCE_NAME);
         } catch (Exception ignored) {
         }
     }

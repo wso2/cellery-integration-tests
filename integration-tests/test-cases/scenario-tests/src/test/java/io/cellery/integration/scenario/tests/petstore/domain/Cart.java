@@ -35,6 +35,11 @@ public class Cart {
     private String checkoutButtonXpath = "//*[@id=\"app\"]/div/main/div/div/div[2]/button";
     private WebDriverWait wait;
 
+    /**
+     * Initializes a cart object to be used for checking pet store items.
+     * @param webDriver
+     *        A selenium web driver to interact with pet store web page.
+     */
     public Cart(WebDriver webDriver) {
         this.webDriver = webDriver;
         wait = new WebDriverWait(webDriver, 120);

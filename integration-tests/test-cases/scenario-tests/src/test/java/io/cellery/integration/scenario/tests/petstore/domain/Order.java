@@ -31,9 +31,14 @@ public class Order {
     private WebDriver webDriver;
     private String orderValueXpath = "//*[@id=\"app\"]/div/main/div/div[2]/div/div[1]/div[1]/div[1]/p[3]";
     private String checkOrdersButtonXpath = "//*[@id=\"app\"]/div/main/div/div[1]/div/div/div/button";
-    private String ordersHeaderXpath = "//*[@id=\"app\"]/div/main/div/div[1]/h1";
     private String noOrdersXpath = "//*[@id=\"app\"]/div/main/div/div[2]/p";
     private WebDriverWait wait;
+
+    /**
+     * Initializes an Order object which will contain checked out pet store items.
+     * @param webDriver
+     *        A selenium web driver to interact with pet store web page.
+     */
     public Order(WebDriver webDriver) {
         this.webDriver = webDriver;
         wait = new WebDriverWait(webDriver, 120);
