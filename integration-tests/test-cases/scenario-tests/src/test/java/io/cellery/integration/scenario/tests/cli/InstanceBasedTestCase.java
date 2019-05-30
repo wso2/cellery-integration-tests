@@ -28,13 +28,13 @@ import org.testng.annotations.Test;
  * This test case includes combinations of cellery cli commands with instance names.
  */
 public class InstanceBasedTestCase extends BaseTestCase {
-    private static final String orgName = "wso2cellery";
-    private static final String imageName = "hello-world-cell";
+    private static final String ORGANIZATION_NAME = "wso2cellery";
+    private static final String IMAGE_NAME = "hello-world-cell";
     private String instanceName;
 
     @BeforeClass
     public void quickRunSample() throws Exception {
-        this.instanceName = run(orgName, imageName, Constants.SAMPLE_CELLS_VERSION, null, 300);
+        this.instanceName = run(ORGANIZATION_NAME, IMAGE_NAME, Constants.SAMPLE_CELLS_VERSION, null, 300);
         Assert.assertTrue(instanceName != null && !instanceName.isEmpty(), "Instance name is empty!");
     }
 

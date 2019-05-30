@@ -17,7 +17,6 @@
  */
 package io.cellery.integration.scenario.tests.petstore.domain;
 
-import io.cellery.integration.scenario.tests.Constants;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
@@ -39,9 +38,17 @@ public class User {
     private WebDriver webDriver;
     private WebDriverWait wait;
     private String petStoreSignInButtonXpath = "//*[@id=\"app\"]/div/header/div/button";
+    private String petStoreSignOutButtonXpath = "//*[@id=\"user-info-appbar\"]/div[2]/ul/li[2]";
     private String idpSignInButtonXpath = "//*[@id=\"loginForm\"]/div[6]/div/button";
+    private String userButtonXpath = "//*[@id=\"app\"]/div/header/div/div/button";
     private String personalInfoNexButtonXpath = "//*[@id=\"app\"]/div/main/div/div/div/div[1]/div/div/div/div/div[4]/" +
             "button[2]";
+    public String preferenceSubmitButtonXpath = "//*[@id=\"app\"]/div/main/div/div/div/div[3]/div/div/div/div/div[2]/" +
+            "button[2]";
+    public String preferenceCheckBoxDogXpath = "//*[@id=\"app\"]/div/main/div/div/div/div[3]/div/div/div/div/div[1]/" +
+            "label[1]/span[1]/span[1]/input";
+    public String preferenceCheckBoxCatXpath = "//*[@id=\"app\"]/div/main/div/div/div/div[3]/div/div/div/div/div[1]/" +
+            "label[2]/span[1]/span[1]/input";
 
     public User(String firstName, String lastName, String address, String userName, String password
             , WebDriver webDriver, WebDriverWait webDriverWait) {
@@ -54,32 +61,60 @@ public class User {
         this.wait = webDriverWait;
     }
 
+    /**
+     * Get the user name of user.
+     * @return username
+     */
     public String getUserName() {
         return userName;
     }
 
+    /**
+     * Get the password of user.
+     * @return password
+     */
     public String getPassword() {
         return password;
     }
 
+    /**
+     * Get the first name of user.
+     * @return password
+     */
     public String getFirstName() {
         return firstName;
     }
 
+    /**
+     * Get the last name of the user.
+     * @return lastName
+     */
     public String getLastName() {
         return lastName;
     }
 
+    /**
+     * Get the address of user.
+     * @return address
+     */
     public String getAddress() {
         return address;
     }
 
+    /**
+     * Click the sign in button of pet-store web page.
+     * @return header of sign in web page
+     */
     public String clickSignIn() {
         webDriver.findElement(By.xpath(petStoreSignInButtonXpath)).click();
-        String singInHeader = webDriver.findElement(By.cssSelector("H2")).getText();
-        return singInHeader;
+        String signInHeader = webDriver.findElement(By.cssSelector("H2")).getText();
+        return signInHeader;
     }
 
+    /**
+     * Submit username and password of the user.
+     * @return header of personal information web page
+     */
     public String submitCredentials() {
         WebElement username = webDriver.findElement(By.id("username"));
         WebElement password = webDriver.findElement(By.id("password"));
@@ -90,12 +125,12 @@ public class User {
         return personalInfoHeader;
     }
 
-    public void acceptPrivacyPolicy() throws InterruptedException {
+    /**
+     * Accept the privacy policy.
+     */
+    public void acceptPrivacyPolicy() {
         JavascriptExecutor js = (JavascriptExecutor) webDriver;
         webDriver.findElement(By.id("approveCb")).click();
-
-        TimeUnit.SECONDS.sleep(15);
-
         Boolean isPresent = webDriver.findElements(By.id("consent_select_all")).size() > 0;
         if (isPresent) {
             WebElement element = webDriver.findElement(By.id("consent_select_all"));
@@ -105,6 +140,11 @@ public class User {
         webDriver.findElement(By.id("approve")).click();
     }
 
+    /**
+     * Submit the user information and preferences and proceed.
+     * @return header of pet store web page
+     * @throws InterruptedException
+     */
     public String submitInformation() throws InterruptedException {
         wait.until(ExpectedConditions.elementToBeClickable(By.id("first-name")));
         WebElement firstName = webDriver.findElement(By.id("first-name"));
@@ -116,22 +156,30 @@ public class User {
         webDriver.findElement(By.xpath(personalInfoNexButtonXpath)).click();
         // Submit pet preferences
         TimeUnit.SECONDS.sleep(15);
-        webDriver.findElement(By.xpath(Constants.PET_STORE_XPATH_PREFERENCE_CHECKBOX_DOG)).click();
-        webDriver.findElement(By.xpath(Constants.PET_STORE_XPATH_PREFERENCE_CHECKBOX_CAT)).click();
-        TimeUnit.SECONDS.sleep(15);
-        webDriver.findElement(By.xpath(Constants.PET_STORE_XPATH_PREFERENCE_SUBMIT_BUTTON)
+        webDriver.findElement(By.xpath(preferenceCheckBoxDogXpath)).click();
+        webDriver.findElement(By.xpath(preferenceCheckBoxCatXpath)).click();
+        wait.until(ExpectedConditions.elementToBeClickable(By.xpath(preferenceSubmitButtonXpath)));
+        webDriver.findElement(By.xpath(preferenceSubmitButtonXpath)
         ).click();
         String petAccessoriesHeader = webDriver.findElement(By.cssSelector("H6")).getText();
 
         return petAccessoriesHeader;
     }
 
+    /**
+     * Sign out from pet-store.
+     * @return header of idp logout screen
+     */
     public String signOut() {
-        webDriver.findElement(By.xpath(Constants.PET_STORE_XPATH_SIGN_USER_BUTTON)).click();
-        webDriver.findElement(By.xpath(Constants.PET_STORE_XPATH_SIGN_OUT_BUTTON)).click();
+        webDriver.findElement(By.xpath(userButtonXpath)).click();
+        webDriver.findElement(By.xpath(petStoreSignOutButtonXpath)).click();
         String idpLogoutHeader = webDriver.findElement(By.cssSelector("H2")).getText();
         return idpLogoutHeader;
     }
+
+    /**
+     *  Confirm sign out.
+     */
     public void signOutConfirm() {
         webDriver.findElement(By.id("approve")).click();
     }

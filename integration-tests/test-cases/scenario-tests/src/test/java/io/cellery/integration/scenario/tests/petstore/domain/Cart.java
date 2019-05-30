@@ -21,8 +21,8 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-
-import java.util.concurrent.TimeUnit;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 /**
  * This includes functions related to pet-store scenario.
@@ -33,27 +33,40 @@ public class Cart {
     private String addToCartButtonXpath = "/html/body/div[2]/div[2]/div/div[3]/button[2]";
     private String cartButtonXpath = "//*[@id=\"app\"]/div/header/div/div/div/span/button";
     private String checkoutButtonXpath = "//*[@id=\"app\"]/div/main/div/div/div[2]/button";
+    private WebDriverWait wait;
 
     public Cart(WebDriver webDriver) {
         this.webDriver = webDriver;
+        wait = new WebDriverWait(webDriver, 120);
     }
 
-    public void addToCart(PetAccessory petAccessory) throws InterruptedException {
+    /**
+     * Adds a pet store item to the cart.
+     * @param petAccessory
+     */
+    public void addToCart(PetAccessory petAccessory) {
         WebElement amountInputFiled;
-        TimeUnit.SECONDS.sleep(10);
+        wait.until(ExpectedConditions.elementToBeClickable(By.xpath(petAccessory.getXpath())));
         webDriver.findElement(By.xpath(petAccessory.getXpath())).click();
         amountInputFiled = webDriver.findElement(By.id("amount"));
         amountInputFiled.sendKeys(Keys.BACK_SPACE);
-        TimeUnit.SECONDS.sleep(10);
         amountInputFiled.sendKeys(Integer.toString(petAccessory.getAmount()));
+        wait.until(ExpectedConditions.elementToBeClickable(By.xpath(addToCartButtonXpath)));
         webDriver.findElement(By.xpath(addToCartButtonXpath)).click();
     }
 
+    /**
+     * Checks out cart.
+     */
     public void checkout() {
         webDriver.findElement(By.xpath(cartButtonXpath)).click();
         webDriver.findElement(By.xpath(checkoutButtonXpath)).click();
     }
 
+    /**
+     * Get the number of items in the cart.
+     * @return the number of items.
+     */
     public String getNumberOfItems() {
         return webDriver.findElement(By.xpath(numberOfItemsXpath)).getText();
     }

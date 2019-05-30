@@ -39,7 +39,13 @@
                     <include name="buildFrontEnd"/>
                     <include name="runFrontEnd"/>
                     <include name="invoke"/>
-                    <include name="signIn"/>
+                    <include name="signInAlice"/>
+                    <include name="addToCartAlice"/>
+                    <include name="checkoutCartAlice"/>
+                    <include name="signOutAlice"/>
+                    <include name="signInBob"/>
+                    <include name="checkOrdersBob"/>
+                    <include name="signOutBob"/>
                     <include name="terminate"/>
                 </methods>
             </class>

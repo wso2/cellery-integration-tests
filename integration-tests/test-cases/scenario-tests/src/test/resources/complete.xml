@@ -42,7 +42,6 @@
                     <include name="signInAlice"/>
                     <include name="addToCartAlice"/>
                     <include name="checkoutCartAlice"/>
-                    <include name="checkOrdersAlice"/>
                     <include name="signOutAlice"/>
                     <include name="signInBob"/>
                     <include name="checkOrdersBob"/>

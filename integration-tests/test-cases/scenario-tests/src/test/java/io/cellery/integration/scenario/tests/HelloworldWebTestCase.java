@@ -35,9 +35,9 @@ import static io.github.bonigarcia.wdm.DriverManagerType.CHROME;
  * This includes the test cases related to hello world web scenario.
  */
 public class HelloworldWebTestCase extends BaseTestCase {
-    private static final String imageName = "hello-world-web";
-    private static final String version = "1.0.0";
-    private static final String helloWorldInstance = "hello-world-inst";
+    private static final String IMAGE_NAME = "hello-world-web";
+    private static final String VERSION = "1.0.0";
+    private static final String HELLO_WORLD_INSTANCE = "hello-world-inst";
     private WebDriver webDriver;
 
     @BeforeClass
@@ -48,13 +48,13 @@ public class HelloworldWebTestCase extends BaseTestCase {
 
     @Test
     public void build() throws Exception {
-        build("hello-world.bal", Constants.TEST_CELL_ORG_NAME, imageName, version,
+        build("hello-world.bal", Constants.TEST_CELL_ORG_NAME, IMAGE_NAME, VERSION,
                 Paths.get(CELLERY_SCENARIO_TEST_ROOT, "hello-world-web").toFile().getAbsolutePath());
     }
 
     @Test
     public void run() throws Exception {
-        run(Constants.TEST_CELL_ORG_NAME, imageName, version, helloWorldInstance, 120);
+        run(Constants.TEST_CELL_ORG_NAME, IMAGE_NAME, VERSION, HELLO_WORLD_INSTANCE, 120);
     }
 
     @Test
@@ -65,12 +65,12 @@ public class HelloworldWebTestCase extends BaseTestCase {
 
     @Test
     public void terminate() throws Exception {
-        terminateCell(helloWorldInstance);
+        terminateCell(HELLO_WORLD_INSTANCE);
     }
 
     @Test(expectedExceptions = Exception.class)
     public void repeatTerminate() throws Exception {
-        terminateCell(helloWorldInstance);
+        terminateCell(HELLO_WORLD_INSTANCE);
     }
 
     private void validateWebPage() {
@@ -82,7 +82,7 @@ public class HelloworldWebTestCase extends BaseTestCase {
     public void cleanup() {
         webDriver.close();
         try {
-            terminateCell(helloWorldInstance);
+            terminateCell(HELLO_WORLD_INSTANCE);
         } catch (Exception ignored) {
         }
     }

@@ -17,31 +17,30 @@
  */
 package io.cellery.integration.scenario.tests.petstore.domain;
 
-
-import org.openqa.selenium.WebDriver;
-
 /**
  * This includes the functions related to pet-store scenario.
  */
 public class PetAccessory {
-    private String name;
-    private double price;
     private int amount;
     private String xpath;
-    private WebDriver webDriver;
 
-    public PetAccessory(String name, double price, int amount, String xpath, WebDriver webDriver) {
-        this.name = name;
-        this.price = price;
+    public PetAccessory(int amount, String xpath) {
         this.amount = amount;
         this.xpath = xpath;
-        this.webDriver = webDriver;
     }
 
+    /**
+     * Get the number of pet-store accessory items.
+     * @return amount
+     */
     public int getAmount() {
         return amount;
     }
 
+    /**
+     * Get the xpath of pet-store accessory.
+     * @return xpath
+     */
     public String getXpath() {
         return xpath;
     }
