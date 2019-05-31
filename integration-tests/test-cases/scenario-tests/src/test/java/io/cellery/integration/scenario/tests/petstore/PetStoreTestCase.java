@@ -19,8 +19,8 @@ package io.cellery.integration.scenario.tests.petstore;
 
 import io.cellery.integration.scenario.tests.BaseTestCase;
 import io.cellery.integration.scenario.tests.Constants;
+import io.cellery.integration.scenario.tests.ObservabilityDashboard;
 import io.cellery.integration.scenario.tests.models.Cell;
-import io.cellery.integration.scenario.tests.models.ObservabilityDashboard;
 import io.cellery.integration.scenario.tests.models.SequenceDiagram;
 import io.cellery.integration.scenario.tests.petstore.domain.Cart;
 import io.cellery.integration.scenario.tests.petstore.domain.Order;
@@ -35,6 +35,8 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
+
+import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -46,6 +48,7 @@ import static io.github.bonigarcia.wdm.DriverManagerType.CHROME;
  * This includes the test cases related to hello world web scenario.
  */
 public class PetStoreTestCase extends BaseTestCase {
+
     private static final String BACKEND_INSTANCE_NAME = "pet-be-inst";
     private static final String BACKEND_IMAGE_NAME = "petbe";
     private static final String FRONTEND_INSTANCE_NAME = "pet-fe-inst";
@@ -59,14 +62,6 @@ public class PetStoreTestCase extends BaseTestCase {
     private PetAccessory[] itemsOfAlice;
     private Order order;
     private ObservabilityDashboard observabilityDashboard;
-    private String idpLogoutHeader = "OPENID CONNECT LOGOUT";
-    private String petStoreSignInWebContent = "SIGN IN";
-    private String identityServerHeader = "OPENID USER CLAIMS";
-    private String personalInformationHeader = "Pet Store";
-    private String noOrdersPlaced = "No Orders Placed";
-    private String petCarrierCageXpath = "//*[@id=\"app\"]/div/main/div/div[2]/div/div[1]/div/div[4]/div[2]/button";
-    private String boneShapedToyXpath = "//*[@id=\"app\"]/div/main/div/div[2]/div/div[4]/" +
-            "div/div[4]/div[2]/button";
 
     @BeforeClass
     public void setup() {
@@ -91,22 +86,22 @@ public class PetStoreTestCase extends BaseTestCase {
         PetAccessory aliceItem2 = new PetAccessory(15, boneShapedToyXpath);
         itemsOfAlice = new PetAccessory[]{aliceItem1, aliceItem2};
 
-        observabilityDashboard = new ObservabilityDashboard(webDriver,wait);
+        observabilityDashboard = new ObservabilityDashboard(webDriver, webDriverWait);
         observabilityDashboard.setWebCellUrl("http://pet-store.com/");
         List<String> backendComponentList = new ArrayList<>(Arrays.asList("controller", "catalog", "gateway",
-                "customers","orders"));
-        Cell backendCell = new Cell(BACKEND_IMAGE_NAME,BACKEND_INSTANCE_NAME,backendComponentList);
+                "customers", "orders"));
+        Cell backendCell = new Cell(BACKEND_IMAGE_NAME, BACKEND_INSTANCE_NAME, backendComponentList);
         observabilityDashboard.getCells().add(backendCell);
 
         List<String> frontendComponentList = new ArrayList<>(Arrays.asList("gateway", "portal"));
-        Cell frontendCell = new Cell (FRONTEND_IMAGE_NAME,FRONTEND_INSTANCE_NAME,frontendComponentList);
+        Cell frontendCell = new Cell(FRONTEND_IMAGE_NAME, FRONTEND_INSTANCE_NAME, frontendComponentList);
         observabilityDashboard.getCells().add(frontendCell);
 
         SequenceDiagram diagram = new SequenceDiagram();
-        diagram.getSequenceDiagramCells().put(FRONTEND_INSTANCE_NAME,2);
-        diagram.getSequenceDiagramCells().put(BACKEND_INSTANCE_NAME,3);
+        diagram.getSequenceDiagramCells().put(FRONTEND_INSTANCE_NAME, 2);
+        diagram.getSequenceDiagramCells().put(BACKEND_INSTANCE_NAME, 3);
 
-        diagram.getSequenceDiagramCalls().put("gateway",5);
+        diagram.getSequenceDiagramCalls().put("gateway", 5);
     }
 
     @Test(description = "Tests the building of pet store backend image.")
@@ -136,7 +131,8 @@ public class PetStoreTestCase extends BaseTestCase {
     public void invoke() {
         webDriver.get(Constants.DEFAULT_PET_STORE_URL);
         String petAccessoriesHeader = webDriver.findElement(By.cssSelector("H1")).getText();
-        validateWebPage(petAccessoriesHeader, Constants.PET_STORE_WEB_CONTENT, "Pet store web page content is not " +
+        validateWebPage(petAccessoriesHeader, Constants.PET_STORE_WEB_CONTENT, "Pet store web page content " +
+                "is not " +
                 "as expected");
     }
 
@@ -183,24 +179,29 @@ public class PetStoreTestCase extends BaseTestCase {
         this.signOut(this.bob);
     }
 
-    @Test //(dependsOnMethods = "signIn")
-    public void observabilityLogin () throws InterruptedException {
-        loginObservability(webDriver);
+    @Test(description = "Validates the login flow of the dashboard")
+    public void observabilityLogin() {
+        observabilityDashboard.loginObservability();
     }
 
-    @Test (dependsOnMethods = "observabilityLogin")
-    private void overviewPage() {
+    @Test(description = "Validates the overview of the dashboard")
+    public void overviewPage() {
         observabilityDashboard.overviewPage();
     }
 
-    @Test (dependsOnMethods = "overviewPage")
-    private void cellsPage () {
+    @Test(description = "Validates Cell instances and components of the dashboard")
+    public void cellsPage() {
         observabilityDashboard.cellsPage();
     }
 
-    @Test (dependsOnMethods = "cellsPage")
-    public void tracingPage () {
+    @Test(description = "Validates tracing page of the dashboard")
+    public void tracingPage() {
         observabilityDashboard.tracingPage();
+    }
+
+    @Test(description = "Validates logout functionality of the observability portal")
+    public void observabilityLogout() {
+        observabilityDashboard.logoutObservability();
     }
 
     @Test(description = "This tests the termination of pet-store backend and frontend cells",
@@ -218,13 +219,14 @@ public class PetStoreTestCase extends BaseTestCase {
     }
 
     @AfterClass
-    public void cleanup() {
+    public void cleanup() throws InterruptedException, IOException {
         webDriver.close();
         try {
             terminateCell(BACKEND_INSTANCE_NAME);
             terminateCell(FRONTEND_INSTANCE_NAME);
         } catch (Exception ignored) {
         }
+        observabilityDashboard.cleanupCelleryDashboard();
     }
 
     /**

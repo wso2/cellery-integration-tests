@@ -19,8 +19,10 @@
 package io.cellery.integration.scenario.tests.models;
 
 import java.util.List;
+import java.util.Objects;
 
 public class Cell {
+
     private String cellName;
     private String instanceName;
     private List<String> components;
@@ -41,5 +43,33 @@ public class Cell {
 
     public List<String> getComponents() {
         return components;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Cell cell = (Cell) o;
+        return cellName.equals(cell.cellName) &&
+                instanceName.equals(cell.instanceName) &&
+                components.equals(cell.components);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(cellName, instanceName, components);
+    }
+
+    @Override
+    public String toString() {
+        return "Cell{" +
+                "cellName='" + cellName + '\'' +
+                ", instanceName='" + instanceName + '\'' +
+                ", components=" + components +
+                '}';
     }
 }
