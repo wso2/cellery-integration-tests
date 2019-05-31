@@ -17,10 +17,18 @@
  */
 package io.cellery.integration.scenario.tests;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
@@ -262,6 +270,81 @@ public class BaseTestCase {
         Process process = Runtime.getRuntime().exec(CELLERY_DELETE + " " + cellImageName);
         String errorString = "Unable to delete cell image: " + cellImageName;
         readOutputResult(process, SUCCESSFUL_DELETE_MSG, errorString);
+    }
+    protected void loginObservability(WebDriver webDriver) throws InterruptedException {
+        WebDriverWait wait = new WebDriverWait(webDriver, 10);
+        webDriver.get(Constants.DEFAULT_OBSERVABILITY_URL);
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("/html/body/header/div/div/a/img")));
+        WebElement username = webDriver.findElement(By.id("username"));
+        WebElement password = webDriver.findElement(By.id("password"));
+        username.sendKeys("admin");
+        password.sendKeys("admin");
+        webDriver.findElement(By.xpath("//*[@id=\"loginForm\"]/div[6]/div/button")).click();
+        try {
+            webDriver.findElement(By.id("approveCb")).click();
+            webDriver.findElement(By.id("consent_select_all")).click();
+            webDriver.findElement(By.id("approve")).click();
+        }catch (Exception ignored){
+
+        }
+        String personalInfoHeader = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"root\"]/div/header/div/h6"))).getText();
+        validateWebPage(personalInfoHeader, Constants.OBSERVABILITY_WEB_CONTENT, "Cellery Observability Dashboard " +
+                "content is not as expected");
+        webDriver.findElement(By.xpath("//*[@id=\"root\"]/div/main/div[2]/div/div[2]/div/div[2]/div")).click();
+        webDriver.findElement(By.xpath("//*[@id=\"menu-refresh-interval\"]/div[2]/ul/li[1]")).click();
+        Thread.sleep(1000);
+    }
+
+    protected void logoutObservability(WebDriver webDriver) {
+        WebDriverWait wait = new WebDriverWait(webDriver, 10);
+        webDriver.findElement(By.xpath("//*[@id=\"root\"]/div/header/div/div/button[3]")).click();
+        webDriver.findElement(By.xpath("//*[@id=\"user-info-appbar\"]/div[2]/ul/li[2]")).click();
+        webDriver.findElement(By.id("approve")).click();
+        String singIn = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("/html/body/div/div/div/div" +
+                "/div[1]/h2"))).getText();
+    }
+
+    protected void cleanupCelleryDashboard () throws DashboardCleanupFailedException {
+        try {
+            String dbPodName = getPodsAssociatedWithLabel("deployment","wso2apim-with-analytics-mysql");
+            String celleryDashboardCleanupSqlQuery = "delete from DependencyModelTable;" +
+                    " delete from DistributedTracingTable;" +
+                    " delete from K8sPodInfoTable;" +
+                    " delete from RequestAggregation_DAYS;" +
+                    " delete from RequestAggregation_HOURS;" +
+                    " delete from RequestAggregation_MINUTES;" +
+                    " delete from RequestAggregation_MONTHS;" +
+                    " delete from RequestAggregation_SECONDS;" +
+                    " delete from RequestAggregation_YEARS;";
+
+            Process cleanupDashboardDatabase = new ProcessBuilder().command("kubectl", "exec", "-it", "-n", "cellery" +
+                            "-system", dbPodName, "--", "mysql", "-u", "root",
+                    "--password=root", "CELLERY_OBSERVABILITY_DB", "-e", celleryDashboardCleanupSqlQuery).start();
+
+            int cleanupStatus = cleanupDashboardDatabase.waitFor();
+            if (cleanupStatus == 0) {
+                String spWorkerPod = getPodsAssociatedWithLabel("app","wso2sp-worker");
+                Process spWorkerRestart = new ProcessBuilder().command("kubectl", "delete", "pod", "-n", "cellery" +
+                        "-system", spWorkerPod).start();
+                if (spWorkerRestart.waitFor() == 1){
+                    log.warn("SP Worker is not restarted");
+                    throw new DashboardCleanupFailedException("SP Worker is not restarted");
+                }
+            }
+        } catch (IOException | InterruptedException e) {
+            log.warn(e.getMessage());
+            throw new DashboardCleanupFailedException("Process execution failed");
+        }
+    }
+
+    private  String getPodsAssociatedWithLabel(String key, String value) throws IOException {
+        Process getDashboardDbPod = new ProcessBuilder().command("kubectl", "get", "pod", "-n", "cellery-system", "-l",
+                key + "=" + value, "-o", "jsonpath='{.items[0].metadata.name}'").start();
+        BufferedReader reader =
+                new BufferedReader(new InputStreamReader(getDashboardDbPod.getInputStream()));
+        String podName = reader.readLine();
+        podName = podName.substring(1, podName.length() - 1);
+        return podName;
     }
 
     /**
