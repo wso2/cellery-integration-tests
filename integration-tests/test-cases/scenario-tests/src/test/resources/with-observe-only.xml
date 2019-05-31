@@ -21,7 +21,8 @@
 <suite name="basic-observe">
     <test name="basic-and-observe" >
         <classes>
-            <class name="io.cellery.integration.scenario.tests.HelloworldWebTestCase" />
+            <class name="io.cellery.integration.scenario.tests.HelloworldWebTestCase"/>
+            <class name="io.cellery.integration.scenario.tests.petstore.PetStoreTestCase"/>
         </classes>
     </test>
 </suite>

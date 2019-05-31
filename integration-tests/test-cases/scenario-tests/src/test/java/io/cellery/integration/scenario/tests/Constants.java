@@ -31,7 +31,6 @@ public class Constants {
     static final String HELLO_WORLD_WEB_CONTENT = "hello cellery";
     public static final String PET_STORE_WEB_CONTENT = "Pet Accessories";
     public static final String OBSERVABILITY_WEB_CONTENT = "Observability";
-    public static final String DEFAULT_HELLO_WORLD_URL = "http://hello-world.com";
     static final String DEFAULT_HELLO_WORLD_URL = "http://hello-world.com";
     public static final String DEFAULT_PET_STORE_URL = "http://pet-store.com";
     public static final String DEFAULT_OBSERVABILITY_URL = "http://cellery-dashboard/";

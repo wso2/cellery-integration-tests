@@ -19,7 +19,7 @@
   -->
 
 <suite name="complete">
-    <test name="complete-setup-tests">
+    <test name="complete-setup-tests" parallel="false">
         <classes>
             <class name="io.cellery.integration.scenario.tests.cli.ImageBasedTestCase"/>
             <class name="io.cellery.integration.scenario.tests.cli.InstanceBasedTestCase"/>
@@ -28,6 +28,10 @@
                     <include name="build"/>
                     <include name="run"/>
                     <include name="invoke"/>
+                    <include name="observabilityLogin"/>
+                    <include name="overviewPage"/>
+                    <include name="cellsPage"/>
+                    <include name="tracingPage"/>
                     <include name="terminate"/>
                     <include name="repeatTerminate"/>
                     <include name="deleteImage"/>
@@ -56,6 +60,10 @@
                     <include name="signInBob"/>
                     <include name="checkOrdersBob"/>
                     <include name="signOutBob"/>
+                    <include name="observabilityLogin"/>
+                    <include name="overviewPage"/>
+                    <include name="cellsPage"/>
+                    <include name="tracingPage"/>
                     <include name="terminate"/>
                     <include name="deleteImages"/>
                 </methods>
