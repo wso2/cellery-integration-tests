@@ -19,6 +19,9 @@ package io.cellery.integration.scenario.tests.petstore;
 
 import io.cellery.integration.scenario.tests.BaseTestCase;
 import io.cellery.integration.scenario.tests.Constants;
+import io.cellery.integration.scenario.tests.models.Cell;
+import io.cellery.integration.scenario.tests.models.ObservabilityDashboard;
+import io.cellery.integration.scenario.tests.models.SequenceDiagram;
 import io.cellery.integration.scenario.tests.petstore.domain.Cart;
 import io.cellery.integration.scenario.tests.petstore.domain.Order;
 import io.cellery.integration.scenario.tests.petstore.domain.PetAccessory;
@@ -33,6 +36,9 @@ import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import static io.github.bonigarcia.wdm.DriverManagerType.CHROME;
 
@@ -52,6 +58,15 @@ public class PetStoreTestCase extends BaseTestCase {
     private Cart cart;
     private PetAccessory[] itemsOfAlice;
     private Order order;
+    private ObservabilityDashboard observabilityDashboard;
+    private String idpLogoutHeader = "OPENID CONNECT LOGOUT";
+    private String petStoreSignInWebContent = "SIGN IN";
+    private String identityServerHeader = "OPENID USER CLAIMS";
+    private String personalInformationHeader = "Pet Store";
+    private String noOrdersPlaced = "No Orders Placed";
+    private String petCarrierCageXpath = "//*[@id=\"app\"]/div/main/div/div[2]/div/div[1]/div/div[4]/div[2]/button";
+    private String boneShapedToyXpath = "//*[@id=\"app\"]/div/main/div/div[2]/div/div[4]/" +
+            "div/div[4]/div[2]/button";
 
     @BeforeClass
     public void setup() {
@@ -75,6 +90,23 @@ public class PetStoreTestCase extends BaseTestCase {
                 "div/div[4]/div[2]/button";
         PetAccessory aliceItem2 = new PetAccessory(15, boneShapedToyXpath);
         itemsOfAlice = new PetAccessory[]{aliceItem1, aliceItem2};
+
+        observabilityDashboard = new ObservabilityDashboard(webDriver,wait);
+        observabilityDashboard.setWebCellUrl("http://pet-store.com/");
+        List<String> backendComponentList = new ArrayList<>(Arrays.asList("controller", "catalog", "gateway",
+                "customers","orders"));
+        Cell backendCell = new Cell(BACKEND_IMAGE_NAME,BACKEND_INSTANCE_NAME,backendComponentList);
+        observabilityDashboard.getCells().add(backendCell);
+
+        List<String> frontendComponentList = new ArrayList<>(Arrays.asList("gateway", "portal"));
+        Cell frontendCell = new Cell (FRONTEND_IMAGE_NAME,FRONTEND_INSTANCE_NAME,frontendComponentList);
+        observabilityDashboard.getCells().add(frontendCell);
+
+        SequenceDiagram diagram = new SequenceDiagram();
+        diagram.getSequenceDiagramCells().put(FRONTEND_INSTANCE_NAME,2);
+        diagram.getSequenceDiagramCells().put(BACKEND_INSTANCE_NAME,3);
+
+        diagram.getSequenceDiagramCalls().put("gateway",5);
     }
 
     @Test(description = "Tests the building of pet store backend image.")
@@ -149,6 +181,26 @@ public class PetStoreTestCase extends BaseTestCase {
     @Test(description = "This tests sign out for user Bob.", dependsOnMethods = "checkOrdersBob")
     public void signOutBob() throws InterruptedException {
         this.signOut(this.bob);
+    }
+
+    @Test //(dependsOnMethods = "signIn")
+    public void observabilityLogin () throws InterruptedException {
+        loginObservability(webDriver);
+    }
+
+    @Test (dependsOnMethods = "observabilityLogin")
+    private void overviewPage() {
+        observabilityDashboard.overviewPage();
+    }
+
+    @Test (dependsOnMethods = "overviewPage")
+    private void cellsPage () {
+        observabilityDashboard.cellsPage();
+    }
+
+    @Test (dependsOnMethods = "cellsPage")
+    public void tracingPage () {
+        observabilityDashboard.tracingPage();
     }
 
     @Test(description = "This tests the termination of pet-store backend and frontend cells",
