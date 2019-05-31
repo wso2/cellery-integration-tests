@@ -23,8 +23,12 @@
 hs_err_pid*
 
 # idea files
-/.idea/
 *.iml
+.idea/
 
 .DS_Store
 test-cases/.DS_Store
+
+# Generated Artifacts
+*target
+*dependency-reduced-pom.xml

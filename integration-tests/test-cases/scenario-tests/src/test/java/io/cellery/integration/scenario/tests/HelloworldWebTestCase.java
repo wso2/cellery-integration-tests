@@ -18,7 +18,6 @@
 package io.cellery.integration.scenario.tests;
 
 import io.cellery.integration.scenario.tests.models.Cell;
-import io.cellery.integration.scenario.tests.models.ObservabilityDashboard;
 import io.cellery.integration.scenario.tests.models.SequenceDiagram;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.By;
@@ -31,6 +30,7 @@ import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -42,6 +42,7 @@ import static io.github.bonigarcia.wdm.DriverManagerType.CHROME;
  * This includes the test cases related to hello world web scenario.
  */
 public class HelloworldWebTestCase extends BaseTestCase {
+
     private static final String IMAGE_NAME = "hello-world-web";
     private static final String VERSION = "1.0.0";
     private static final String HELLO_WORLD_INSTANCE = "hello-world-inst";
@@ -52,14 +53,14 @@ public class HelloworldWebTestCase extends BaseTestCase {
     public void setup() {
         WebDriverManager.getInstance(CHROME).setup();
         webDriver = new ChromeDriver(new ChromeOptions().setHeadless(true));
-        observabilityDashboard = new ObservabilityDashboard(webDriver,new WebDriverWait(webDriver,10));
+        observabilityDashboard = new ObservabilityDashboard(webDriver, new WebDriverWait(webDriver, 120));
         observabilityDashboard.setWebCellUrl("http://hello-world.com/");
         List<String> componentList = new ArrayList<>(Arrays.asList("gateway", "hello"));
-        Cell cell = new Cell(IMAGE_NAME,HELLO_WORLD_INSTANCE,componentList);
+        Cell cell = new Cell(IMAGE_NAME, HELLO_WORLD_INSTANCE, componentList);
         observabilityDashboard.getCells().add(cell);
 
         SequenceDiagram diagram = new SequenceDiagram();
-        diagram.getSequenceDiagramCells().put(HELLO_WORLD_INSTANCE,2);
+        diagram.getSequenceDiagramCells().put(HELLO_WORLD_INSTANCE, 2);
     }
 
     @Test
@@ -79,29 +80,34 @@ public class HelloworldWebTestCase extends BaseTestCase {
         validateWebPage();
     }
 
-    @Test(dependsOnMethods = "invoke")
-    public void terminate() throws Exception {
-        terminateCell(HELLO_WORLD_INSTANCE);
+    @Test (description = "Validates the login flow of the dashboard")
+    public void observabilityLogin() {
+        observabilityDashboard.loginObservability();
     }
 
-    @Test //(dependsOnMethods = "signIn")
-    public void observabilityLogin () throws InterruptedException {
-        loginObservability(webDriver);
-    }
-
-    @Test (dependsOnMethods = "observabilityLogin")
-    private void overviewPage() {
+    @Test (description = "Validates the overview of the dashboard")
+    public void overviewPage() {
         observabilityDashboard.overviewPage();
     }
 
-    @Test (dependsOnMethods = "overviewPage")
-    private void cellsPage () {
+    @Test (description = "Validates Cell instances and components of the dashboard")
+    public void cellsPage() {
         observabilityDashboard.cellsPage();
     }
 
-    @Test (dependsOnMethods = "cellsPage")
-    public void tracingPage () {
+    @Test (description = "Validates tracing page of the dashboard")
+    public void tracingPage() {
         observabilityDashboard.tracingPage();
+    }
+
+    @Test (description = "Validates logout functionality of the observability portal")
+    public void observabilityLogout() {
+        observabilityDashboard.logoutObservability();
+    }
+
+    @Test(dependsOnMethods = "invoke")
+    public void terminate() throws Exception {
+        terminateCell(HELLO_WORLD_INSTANCE);
     }
 
     @Test(expectedExceptions = Exception.class, dependsOnMethods = "terminate")
@@ -120,11 +126,12 @@ public class HelloworldWebTestCase extends BaseTestCase {
     }
 
     @AfterClass
-    public void cleanup() {
+    public void cleanup() throws InterruptedException, IOException {
         webDriver.close();
         try {
             terminateCell(HELLO_WORLD_INSTANCE);
         } catch (Exception ignored) {
         }
+        observabilityDashboard.cleanupCelleryDashboard();
     }
 }

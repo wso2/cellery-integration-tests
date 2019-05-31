@@ -22,8 +22,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class SequenceDiagram {
-    private Map<String,Integer> sequenceDiagramCells;
-    private Map<String,Integer> sequenceDiagramCalls;
+
+    private Map<String, Integer> sequenceDiagramCells;
+    private Map<String, Integer> sequenceDiagramCalls;
 
     public SequenceDiagram() {
         this.sequenceDiagramCells = new HashMap<>();
