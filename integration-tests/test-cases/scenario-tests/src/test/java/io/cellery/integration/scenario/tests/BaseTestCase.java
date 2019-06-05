@@ -84,15 +84,17 @@ public class BaseTestCase {
     }
 
     protected String run(String orgName, String imageName, String version, String instanceName,
-                                       String link, boolean startDependencies, int timeoutSec)
+                                       String[] links, boolean startDependencies, int timeoutSec)
             throws Exception {
         String cellImageName = getCellImageName(orgName, imageName, version);
         String command = CELLERY_RUN + " " + cellImageName + " -y";
         if (instanceName != null && !instanceName.isEmpty()) {
             command += " -n " + instanceName;
         }
-        if (link != null && !link.isEmpty()) {
-            command += " -l " + link;
+        if (links != null && links.length != 0) {
+            for (int i = 0; i < links.length; i++) {
+                command += " -l " + links[i];
+            }
         }
         if (startDependencies) {
             command += " -d";

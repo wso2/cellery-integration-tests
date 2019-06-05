@@ -102,7 +102,8 @@ public class PetStoreTestCase extends BaseTestCase {
 
     @Test(description = "Tests the running of pet store front end instance.")
     public void runFrontEnd() throws Exception {
-        run(Constants.CELL_ORG_NAME, FRONTEND_IMAGE_NAME, VERSION, FRONTEND_INSTANCE_NAME, LINK, false,
+        String[] links = new String[]{LINK};
+        run(Constants.CELL_ORG_NAME, FRONTEND_IMAGE_NAME, VERSION, FRONTEND_INSTANCE_NAME, links, false,
                 600);
     }
 
