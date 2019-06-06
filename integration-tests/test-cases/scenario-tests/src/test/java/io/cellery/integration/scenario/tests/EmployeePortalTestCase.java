@@ -72,6 +72,13 @@ public class EmployeePortalTestCase extends BaseTestCase {
     }
 
     @Test
+    public void deleteImages() throws Exception {
+        delete(Constants.TEST_CELL_ORG_NAME + "/" + HR_IMAGE_NAME + ":" + VERSION);
+        delete(Constants.TEST_CELL_ORG_NAME + "/" + EMPLOYEE_IMAGE_NAME + ":" + VERSION);
+        delete(Constants.TEST_CELL_ORG_NAME + "/" + STOCK_IMAGE_NAME + ":" + VERSION);
+    }
+
+    @Test
     public void terminate() throws Exception {
         terminateCell(HR_INSTANCE_NAME);
         terminateCell(EMPLOYEE_INSTANCE_NAME);

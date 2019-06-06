@@ -61,6 +61,11 @@ public class InstanceBasedTestCase extends BaseTestCase {
         }
     }
 
+    @Test(dependsOnMethods = "describeNonExistingInstance")
+    public void deleteImages() throws Exception {
+        delete(ORGANIZATION_NAME + "/" + IMAGE_NAME + ":" + Constants.SAMPLE_CELLS_VERSION);
+    }
+
     @AfterClass
     public void cleanup() throws Exception {
         terminateCell(instanceName);
