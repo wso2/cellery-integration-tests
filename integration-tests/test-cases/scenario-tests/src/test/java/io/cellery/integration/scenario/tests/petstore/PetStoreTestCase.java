@@ -163,6 +163,12 @@ public class PetStoreTestCase extends BaseTestCase {
         terminateCell(FRONTEND_INSTANCE_NAME);
     }
 
+    @Test
+    public void deleteImages() throws Exception {
+        delete(Constants.CELL_ORG_NAME + "/" + BACKEND_IMAGE_NAME + ":" + VERSION);
+        delete(Constants.CELL_ORG_NAME + "/" + FRONTEND_IMAGE_NAME + ":" + VERSION);
+    }
+
     @AfterClass
     public void cleanup() {
         webDriver.close();

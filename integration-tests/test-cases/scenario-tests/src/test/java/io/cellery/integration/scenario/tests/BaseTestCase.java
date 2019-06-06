@@ -31,12 +31,14 @@ import java.util.stream.Collectors;
  */
 public class BaseTestCase {
     private static final String SUCCESSFUL_BUILD_MSG = "Successfully built cell image";
+    private static final String SUCCESSFUL_DELETE_MSG = "";
     private static final String SUCCESSFUL_RUN_MSG = "Successfully deployed cell image";
 
     private static final String INSTANCE_NAME_HEADING = "INSTANCE NAME";
     private static final String CELLERY_AUTOMATION_TESTS_ROOT_ENV = "CELLERY_AUTOMATION_TESTS_ROOT";
 
     private static final String CELLERY_BUILD = "cellery build";
+    private static final String CELLERY_DELETE = "cellery delete";
     private static final String CELLERY_RUN = "cellery run";
     private static final String CELLERY_STATUS = "cellery status";
     private static final String CELLERY_TERM = "cellery term";
@@ -92,9 +94,11 @@ public class BaseTestCase {
             command += " -n " + instanceName;
         }
         if (links != null && links.length != 0) {
-            for (int i = 0; i < links.length; i++) {
-                command += " -l " + links[i];
+            StringBuffer buffer = new StringBuffer();
+            for (int i = 0; i < links.length; ++i) {
+                buffer.append(" -l " + links[i]);
             }
+            command += buffer.toString();
         }
         if (startDependencies) {
             command += " -d";
@@ -171,5 +175,11 @@ public class BaseTestCase {
 
     protected void validateWebPage(String expected, String actual, String error) {
         Assert.assertEquals(expected, actual, error);
+    }
+
+    protected void delete(String cellImageName) throws Exception {
+        Process process = Runtime.getRuntime().exec(CELLERY_DELETE + " " + cellImageName);
+        String errorString = "Unable to delete cell image: " + cellImageName;
+        readOutputResult(process, SUCCESSFUL_DELETE_MSG, errorString);
     }
 }

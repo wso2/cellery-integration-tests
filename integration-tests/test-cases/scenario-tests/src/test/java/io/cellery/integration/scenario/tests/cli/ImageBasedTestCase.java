@@ -119,4 +119,10 @@ public class ImageBasedTestCase extends BaseTestCase {
         String expectedOut = "Successfully extracted cell image resources: " + cellImageName;
         readOutputResult(process, expectedOut, errorString);
     }
+
+    @Test(dependsOnMethods = "extractResourceImageWithProvidedOutput")
+    public void deleteImages() throws Exception {
+        delete(Constants.TEST_CELL_ORG_NAME + "/" + EMPLOYEE_IMAGE + ":" + Constants.SAMPLE_CELLS_VERSION);
+        delete(Constants.TEST_CELL_ORG_NAME + "/" + HELLO_WORLD_IMAGE + ":" + Constants.SAMPLE_CELLS_VERSION);
+    }
 }

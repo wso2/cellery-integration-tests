@@ -73,6 +73,11 @@ public class HelloworldWebTestCase extends BaseTestCase {
         terminateCell(HELLO_WORLD_INSTANCE);
     }
 
+    @Test
+    public void deleteImage() throws Exception {
+        delete(Constants.TEST_CELL_ORG_NAME + "/" + IMAGE_NAME + ":" + VERSION);
+    }
+
     private void validateWebPage() {
         String searchHeader = webDriver.findElement(By.cssSelector("H1")).getText().toLowerCase();
         Assert.assertEquals(searchHeader, Constants.HELLO_WORLD_WEB_CONTENT, "Web page is content is not as expected");
