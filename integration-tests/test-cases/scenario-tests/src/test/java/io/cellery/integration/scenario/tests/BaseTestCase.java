@@ -85,8 +85,8 @@ public class BaseTestCase {
         return instanceName;
     }
 
-    protected String run(String orgName, String imageName, String version, String instanceName,
-                                       String[] links, boolean startDependencies, int timeoutSec)
+    protected void run(String orgName, String imageName, String version, String instanceName,
+                       String[] links, int timeoutSec)
             throws Exception {
         String cellImageName = getCellImageName(orgName, imageName, version);
         String command = CELLERY_RUN + " " + cellImageName + " -y";
@@ -94,14 +94,11 @@ public class BaseTestCase {
             command += " -n " + instanceName;
         }
         if (links != null && links.length != 0) {
-            StringBuffer buffer = new StringBuffer();
-            for (int i = 0; i < links.length; ++i) {
-                buffer.append(" -l " + links[i]);
+            StringBuilder buffer = new StringBuilder();
+            for (String link : links) {
+                buffer.append(" -l ").append(link);
             }
             command += buffer.toString();
-        }
-        if (startDependencies) {
-            command += " -d";
         }
         Process process = Runtime.getRuntime().exec(command);
         String result = readOutputResult(process, SUCCESSFUL_RUN_MSG, "Unable to run cell: "
@@ -112,11 +109,7 @@ public class BaseTestCase {
                 throw new Exception("Cell instance is not started with the instance name specified : " + instanceName +
                         " , result output is: " + result);
             }
-        } else {
-            int index = instancesResult.indexOf(getInstanceNamePrefix(imageName, version));
-            instanceName = instancesResult.substring(index).split(" ")[0];
         }
-        return instanceName;
     }
 
     protected void terminateCell(String cellInstanceName) throws Exception {
@@ -135,11 +128,11 @@ public class BaseTestCase {
         }
     }
 
-    protected String readOutputResult(Process process, String successOutput, String errorMessage) throws Exception {
-        return readOutputResult(process, successOutput, errorMessage, 600);
+    protected void readOutputResult(Process process, String successOutput, String errorMessage) throws Exception {
+        readOutputResult(process, successOutput, errorMessage, 600);
     }
 
-    protected String readOutputResult(Process process, String successOutput, String errorMessage, int timeout)
+    private String readOutputResult(Process process, String successOutput, String errorMessage, int timeout)
             throws Exception {
         try (BufferedReader stdOutput = new BufferedReader(new InputStreamReader(process.getInputStream(),
                 Charset.defaultCharset().name()));

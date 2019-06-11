@@ -29,10 +29,6 @@ import org.openqa.selenium.support.ui.WebDriverWait;
  */
 public class Cart {
     private WebDriver webDriver;
-    private String numberOfItemsXpath = "//*[@id=\"app\"]/div/header/div/div/div/span/span";
-    private String addToCartButtonXpath = "/html/body/div[2]/div[2]/div/div[3]/button[2]";
-    private String cartButtonXpath = "//*[@id=\"app\"]/div/header/div/div/div/span/button";
-    private String checkoutButtonXpath = "//*[@id=\"app\"]/div/main/div/div/div[2]/button";
     private WebDriverWait wait;
 
     /**
@@ -48,6 +44,7 @@ public class Cart {
     /**
      * Adds a pet store item to the cart.
      * @param petAccessory
+     *        A PetAccessory instance
      */
     public void addToCart(PetAccessory petAccessory) {
         WebElement amountInputFiled;
@@ -56,6 +53,7 @@ public class Cart {
         amountInputFiled = webDriver.findElement(By.id("amount"));
         amountInputFiled.sendKeys(Keys.BACK_SPACE);
         amountInputFiled.sendKeys(Integer.toString(petAccessory.getAmount()));
+        String addToCartButtonXpath = "/html/body/div[2]/div[2]/div/div[3]/button[2]";
         wait.until(ExpectedConditions.elementToBeClickable(By.xpath(addToCartButtonXpath)));
         webDriver.findElement(By.xpath(addToCartButtonXpath)).click();
     }
@@ -64,7 +62,9 @@ public class Cart {
      * Checks out cart.
      */
     public void checkout() {
+        String cartButtonXpath = "//*[@id=\"app\"]/div/header/div/div/div/span/button";
         webDriver.findElement(By.xpath(cartButtonXpath)).click();
+        String checkoutButtonXpath = "//*[@id=\"app\"]/div/main/div/div/div[2]/button";
         webDriver.findElement(By.xpath(checkoutButtonXpath)).click();
     }
 
@@ -73,6 +73,7 @@ public class Cart {
      * @return the number of items.
      */
     public String getNumberOfItems() {
+        String numberOfItemsXpath = "//*[@id=\"app\"]/div/header/div/div/div/span/span";
         return webDriver.findElement(By.xpath(numberOfItemsXpath)).getText();
     }
 }

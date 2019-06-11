@@ -40,7 +40,7 @@ public class PetAccessory {
      * Get the number of pet-store accessory items.
      * @return amount
      */
-    public int getAmount() {
+    int getAmount() {
         return amount;
     }
 
@@ -48,7 +48,7 @@ public class PetAccessory {
      * Get the xpath of pet-store accessory.
      * @return xpath
      */
-    public String getXpath() {
+    String getXpath() {
         return xpath;
     }
 }

@@ -37,18 +37,6 @@ public class User {
     private String password;
     private WebDriver webDriver;
     private WebDriverWait wait;
-    private String petStoreSignInButtonXpath = "//*[@id=\"app\"]/div/header/div/button";
-    private String petStoreSignOutButtonXpath = "//*[@id=\"user-info-appbar\"]/div[2]/ul/li[2]";
-    private String idpSignInButtonXpath = "//*[@id=\"loginForm\"]/div[6]/div/button";
-    private String userButtonXpath = "//*[@id=\"app\"]/div/header/div/div/button";
-    private String personalInfoNexButtonXpath = "//*[@id=\"app\"]/div/main/div/div/div/div[1]/div/div/div/div/div[4]/" +
-            "button[2]";
-    public String preferenceSubmitButtonXpath = "//*[@id=\"app\"]/div/main/div/div/div/div[3]/div/div/div/div/div[2]/" +
-            "button[2]";
-    public String preferenceCheckBoxDogXpath = "//*[@id=\"app\"]/div/main/div/div/div/div[3]/div/div/div/div/div[1]/" +
-            "label[1]/span[1]/span[1]/input";
-    public String preferenceCheckBoxCatXpath = "//*[@id=\"app\"]/div/main/div/div/div/div[3]/div/div/div/div/div[1]/" +
-            "label[2]/span[1]/span[1]/input";
 
     /**
      * Initializes a user object that would be used to perform actions on the pet-store web site.
@@ -82,7 +70,7 @@ public class User {
      * Get the user name of user.
      * @return username
      */
-    public String getUserName() {
+    private String getUserName() {
         return userName;
     }
 
@@ -90,7 +78,7 @@ public class User {
      * Get the password of user.
      * @return password
      */
-    public String getPassword() {
+    private String getPassword() {
         return password;
     }
 
@@ -98,7 +86,7 @@ public class User {
      * Get the first name of user.
      * @return password
      */
-    public String getFirstName() {
+    private String getFirstName() {
         return firstName;
     }
 
@@ -106,7 +94,7 @@ public class User {
      * Get the last name of the user.
      * @return lastName
      */
-    public String getLastName() {
+    private String getLastName() {
         return lastName;
     }
 
@@ -114,7 +102,7 @@ public class User {
      * Get the address of user.
      * @return address
      */
-    public String getAddress() {
+    private String getAddress() {
         return address;
     }
 
@@ -123,9 +111,9 @@ public class User {
      * @return header of sign in web page
      */
     public String clickSignIn() {
+        String petStoreSignInButtonXpath = "//*[@id=\"app\"]/div/header/div/button";
         webDriver.findElement(By.xpath(petStoreSignInButtonXpath)).click();
-        String signInHeader = webDriver.findElement(By.cssSelector("H2")).getText();
-        return signInHeader;
+        return webDriver.findElement(By.cssSelector("H2")).getText();
     }
 
     /**
@@ -137,9 +125,9 @@ public class User {
         WebElement password = webDriver.findElement(By.id("password"));
         username.sendKeys(this.getUserName());
         password.sendKeys(this.getPassword());
+        String idpSignInButtonXpath = "//*[@id=\"loginForm\"]/div[6]/div/button";
         webDriver.findElement(By.xpath(idpSignInButtonXpath)).click();
-        String personalInfoHeader = webDriver.findElement(By.cssSelector("H2")).getText();
-        return personalInfoHeader;
+        return webDriver.findElement(By.cssSelector("H2")).getText();
     }
 
     /**
@@ -148,7 +136,7 @@ public class User {
     public void acceptPrivacyPolicy() {
         JavascriptExecutor js = (JavascriptExecutor) webDriver;
         webDriver.findElement(By.id("approveCb")).click();
-        Boolean isPresent = webDriver.findElements(By.id("consent_select_all")).size() > 0;
+        boolean isPresent = webDriver.findElements(By.id("consent_select_all")).size() > 0;
         if (isPresent) {
             WebElement element = webDriver.findElement(By.id("consent_select_all"));
             js.executeScript("arguments[0].click()", element);
@@ -160,7 +148,7 @@ public class User {
     /**
      * Submit the user information and preferences and proceed.
      * @return header of pet store web page
-     * @throws InterruptedException
+     * @throws InterruptedException if fails to submit information
      */
     public String submitInformation() throws InterruptedException {
         wait.until(ExpectedConditions.elementToBeClickable(By.id("first-name")));
@@ -170,18 +158,25 @@ public class User {
         firstName.sendKeys(this.getFirstName());
         lastName.sendKeys(this.getLastName());
         address.sendKeys(this.getAddress());
+        String personalInfoNexButtonXpath = "//*[@id=\"app\"]/div/main/div/div/div/div[1]/div/div/div/div/div[4]/" +
+                "button[2]";
         webDriver.findElement(By.xpath(personalInfoNexButtonXpath)).click();
         // Submit pet preferences
         // Putting an explicit sleep of 15 seconds because test is failing in jenkins server.
         TimeUnit.SECONDS.sleep(15);
+        String preferenceCheckBoxDogXpath = "//*[@id=\"app\"]/div/main/div/div/div/div[3]/div/div/div/div/div[1]/" +
+                "label[1]/span[1]/span[1]/input";
         webDriver.findElement(By.xpath(preferenceCheckBoxDogXpath)).click();
+        String preferenceCheckBoxCatXpath = "//*[@id=\"app\"]/div/main/div/div/div/div[3]/div/div/div/div/div[1]/" +
+                "label[2]/span[1]/span[1]/input";
         webDriver.findElement(By.xpath(preferenceCheckBoxCatXpath)).click();
+        String preferenceSubmitButtonXpath = "//*[@id=\"app\"]/div/main/div/div/div/div[3]/div/div/div/div/div[2]" +
+                "/button[2]";
         wait.until(ExpectedConditions.elementToBeClickable(By.xpath(preferenceSubmitButtonXpath)));
         webDriver.findElement(By.xpath(preferenceSubmitButtonXpath)
         ).click();
-        String petAccessoriesHeader = webDriver.findElement(By.cssSelector("H6")).getText();
 
-        return petAccessoriesHeader;
+        return webDriver.findElement(By.cssSelector("H6")).getText();
     }
 
     /**
@@ -189,10 +184,11 @@ public class User {
      * @return header of idp logout screen
      */
     public String signOut() {
+        String userButtonXpath = "//*[@id=\"app\"]/div/header/div/div/button";
         webDriver.findElement(By.xpath(userButtonXpath)).click();
+        String petStoreSignOutButtonXpath = "//*[@id=\"user-info-appbar\"]/div[2]/ul/li[2]";
         webDriver.findElement(By.xpath(petStoreSignOutButtonXpath)).click();
-        String idpLogoutHeader = webDriver.findElement(By.cssSelector("H2")).getText();
-        return idpLogoutHeader;
+        return webDriver.findElement(By.cssSelector("H2")).getText();
     }
 
     /**

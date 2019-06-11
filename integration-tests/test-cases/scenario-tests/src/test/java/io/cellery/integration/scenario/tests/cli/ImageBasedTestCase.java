@@ -99,7 +99,7 @@ public class ImageBasedTestCase extends BaseTestCase {
     }
 
     private void extractImage(String outputPath) throws Exception {
-        boolean dirCreated = false;
+        boolean dirCreated;
         String cellImageName = getCellImageName(Constants.TEST_CELL_ORG_NAME, EMPLOYEE_IMAGE,
                 Constants.SAMPLE_CELLS_VERSION);
         String command = "cellery extract-resources " + cellImageName;
