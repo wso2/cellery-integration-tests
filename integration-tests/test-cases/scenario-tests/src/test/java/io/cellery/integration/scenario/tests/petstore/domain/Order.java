@@ -29,9 +29,6 @@ import java.util.concurrent.TimeUnit;
  */
 public class Order {
     private WebDriver webDriver;
-    private String orderValueXpath = "//*[@id=\"app\"]/div/main/div/div[2]/div/div[1]/div[1]/div[1]/p[3]";
-    private String checkOrdersButtonXpath = "//*[@id=\"app\"]/div/main/div/div[1]/div/div/div/button";
-    private String noOrdersXpath = "//*[@id=\"app\"]/div/main/div/div[2]/p";
     private WebDriverWait wait;
 
     /**
@@ -47,17 +44,20 @@ public class Order {
     /**
      * Get the value of order.
      * @return order value.
-     * @throws InterruptedException
+     * @throws InterruptedException if fails to get order value
      */
     public String getOrderValue() throws InterruptedException {
+        String checkOrdersButtonXpath = "//*[@id=\"app\"]/div/main/div/div[1]/div/div/div/button";
         wait.until(ExpectedConditions.elementToBeClickable(By.xpath(checkOrdersButtonXpath)));
         webDriver.findElement(By.xpath(checkOrdersButtonXpath)).click();
         // Putting an explicit sleep of 10 seconds because test is failing in jenkins server.
         TimeUnit.SECONDS.sleep(10);
-        Boolean orderExists = webDriver.findElements(By.xpath(orderValueXpath)).size() > 0;
+        String orderValueXpath = "//*[@id=\"app\"]/div/main/div/div[2]/div/div[1]/div[1]/div[1]/p[3]";
+        boolean orderExists = webDriver.findElements(By.xpath(orderValueXpath)).size() > 0;
         if (orderExists) {
             return webDriver.findElement(By.xpath(orderValueXpath)).getText();
         }
+        String noOrdersXpath = "//*[@id=\"app\"]/div/main/div/div[2]/p";
         return webDriver.findElement(By.xpath(noOrdersXpath)).getText();
     }
 }

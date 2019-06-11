@@ -28,8 +28,8 @@ public class Constants {
     public static final String CELL_ORG_NAME = "wso2cellery";
     public static final String TEST_CELL_ORG_NAME = "wso2cellerytest";
     public static final String SAMPLE_CELLS_VERSION = "latest";
-    public static final String HELLO_WORLD_WEB_CONTENT = "hello cellery";
+    static final String HELLO_WORLD_WEB_CONTENT = "hello cellery";
     public static final String PET_STORE_WEB_CONTENT = "Pet Accessories";
-    public static final String DEFAULT_HELLO_WORLD_URL = "http://hello-world.com";
+    static final String DEFAULT_HELLO_WORLD_URL = "http://hello-world.com";
     public static final String DEFAULT_PET_STORE_URL = "http://pet-store.com";
 }
