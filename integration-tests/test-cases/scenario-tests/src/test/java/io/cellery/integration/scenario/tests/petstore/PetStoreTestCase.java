@@ -47,26 +47,17 @@ public class PetStoreTestCase extends BaseTestCase {
     private static final String VERSION = "latest";
     private static final String LINK = "petStoreBackend:pet-be-inst";
     private WebDriver webDriver;
-    private WebDriverWait wait;
     private User alice;
     private User bob;
     private Cart cart;
     private PetAccessory[] itemsOfAlice;
     private Order order;
-    private String idpLogoutHeader = "OPENID CONNECT LOGOUT";
-    private String petStoreSignInWebContent = "SIGN IN";
-    private String identityServerHeader = "OPENID USER CLAIMS";
-    private String personalInformationHeader = "Pet Store";
-    private String noOrdersPlaced = "No Orders Placed";
-    private String petCarrierCageXpath = "//*[@id=\"app\"]/div/main/div/div[2]/div/div[1]/div/div[4]/div[2]/button";
-    private String boneShapedToyXpath = "//*[@id=\"app\"]/div/main/div/div[2]/div/div[4]/" +
-            "div/div[4]/div[2]/button";
 
     @BeforeClass
     public void setup() {
         WebDriverManager.getInstance(CHROME).setup();
         webDriver = new ChromeDriver(new ChromeOptions().setHeadless(true));
-        wait = new WebDriverWait(webDriver, 120);
+        WebDriverWait wait = new WebDriverWait(webDriver, 120);
 
         // Create 2 users Alice and Bob with their information
         this.alice = new User("Alice", "Sanchez", "No 60, Regent street, " +
@@ -78,7 +69,10 @@ public class PetStoreTestCase extends BaseTestCase {
         this.order = new Order(webDriver);
 
         // Create 2 pet accessories for user Alice.
+        String petCarrierCageXpath = "//*[@id=\"app\"]/div/main/div/div[2]/div/div[1]/div/div[4]/div[2]/button";
         PetAccessory aliceItem1 = new PetAccessory(12, petCarrierCageXpath);
+        String boneShapedToyXpath = "//*[@id=\"app\"]/div/main/div/div[2]/div/div[4]/" +
+                "div/div[4]/div[2]/button";
         PetAccessory aliceItem2 = new PetAccessory(15, boneShapedToyXpath);
         itemsOfAlice = new PetAccessory[]{aliceItem1, aliceItem2};
     }
@@ -103,7 +97,7 @@ public class PetStoreTestCase extends BaseTestCase {
     @Test(description = "Tests the running of pet store front end instance.")
     public void runFrontEnd() throws Exception {
         String[] links = new String[]{LINK};
-        run(Constants.CELL_ORG_NAME, FRONTEND_IMAGE_NAME, VERSION, FRONTEND_INSTANCE_NAME, links, false,
+        run(Constants.CELL_ORG_NAME, FRONTEND_IMAGE_NAME, VERSION, FRONTEND_INSTANCE_NAME, links,
                 600);
     }
 
@@ -122,8 +116,8 @@ public class PetStoreTestCase extends BaseTestCase {
 
     @Test(description = "This tests add to cart for user Alice.")
     public void addToCartAlice() {
-        for (int i = 0; i < itemsOfAlice.length; i++) {
-            this.cart.addToCart(itemsOfAlice[i]);
+        for (PetAccessory anItemsOfAlice : itemsOfAlice) {
+            this.cart.addToCart(anItemsOfAlice);
         }
         validateWebPage("2", this.cart.getNumberOfItems(), "Pet store cart content before checkout is " +
                 "not as expected");
@@ -148,6 +142,7 @@ public class PetStoreTestCase extends BaseTestCase {
 
     @Test(description = "This tests check order for user Bob.")
     public void checkOrdersBob() throws InterruptedException {
+        String noOrdersPlaced = "No Orders Placed";
         validateWebPage(noOrdersPlaced, this.order.getOrderValue(),
                 "Pet store cart content after checkout is not as expected");
     }
@@ -163,7 +158,7 @@ public class PetStoreTestCase extends BaseTestCase {
         terminateCell(FRONTEND_INSTANCE_NAME);
     }
 
-    @Test
+    @Test(description = "This tests the deletion of pet-store backend and frontend cell images")
     public void deleteImages() throws Exception {
         delete(Constants.CELL_ORG_NAME + "/" + BACKEND_IMAGE_NAME + ":" + VERSION);
         delete(Constants.CELL_ORG_NAME + "/" + FRONTEND_IMAGE_NAME + ":" + VERSION);
@@ -182,20 +177,24 @@ public class PetStoreTestCase extends BaseTestCase {
     /**
      * Signs in test user to pet-store web page.
      * @param user
-     * @throws InterruptedException
+     *        An instance of User
+     * @throws InterruptedException if fails to sign in
      */
     private void signIn(User user) throws InterruptedException {
         String signInHeader = user.clickSignIn();
+        String petStoreSignInWebContent = "SIGN IN";
         validateWebPage(signInHeader, petStoreSignInWebContent, "Pet store sign in web page " +
                 "content is not as expected");
 
         String personalInfoHeader = user.submitCredentials();
+        String identityServerHeader = "OPENID USER CLAIMS";
         validateWebPage(personalInfoHeader, identityServerHeader, "Identity server web page " +
                 "content is not as expected");
 
         user.acceptPrivacyPolicy();
 
         String petAccessoriesHeader = user.submitInformation();
+        String personalInformationHeader = "Pet Store";
         validateWebPage(petAccessoriesHeader, personalInformationHeader, "Pet store sign " +
                 "in web page content is not as expected");
     }
@@ -203,9 +202,11 @@ public class PetStoreTestCase extends BaseTestCase {
     /**
      * Signs out test user to pet-store web page.
      * @param user
+     *        An instance of user
      */
     private void signOut(User user) {
         String idpLogoutHeaderActual = user.signOut();
+        String idpLogoutHeader = "OPENID CONNECT LOGOUT";
         validateWebPage(idpLogoutHeaderActual, idpLogoutHeader, "IDP logout header " +
                 "is not as expected");
         user.signOutConfirm();
