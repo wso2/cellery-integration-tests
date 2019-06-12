@@ -143,10 +143,11 @@ public class EmployeePortalTestCase extends BaseTestCase {
 
     /**
      * Get client id and client secret needed to generate oauth token to access apim.
+     *
      * @return a concatenated string comprising client id and client secret delimited by a colon
      * @throws NoSuchAlgorithmException if sendPost method fails
-     * @throws IOException if sendPost method fails
-     * @throws KeyManagementException if sendPost method fails
+     * @throws IOException              if sendPost method fails
+     * @throws KeyManagementException   if sendPost method fails
      */
     private String getClientIdColonClientSecret() throws NoSuchAlgorithmException
             , IOException, KeyManagementException {
@@ -172,10 +173,11 @@ public class EmployeePortalTestCase extends BaseTestCase {
 
     /**
      * Get the id of hr api.
+     *
      * @return hr api id
      * @throws NoSuchAlgorithmException if sendGet method fails
-     * @throws IOException if sendGet method fails
-     * @throws KeyManagementException if sendGet method fails
+     * @throws IOException              if sendGet method fails
+     * @throws KeyManagementException   if sendGet method fails
      */
     private String getHrApiId() throws NoSuchAlgorithmException, IOException
             , KeyManagementException {
@@ -199,12 +201,12 @@ public class EmployeePortalTestCase extends BaseTestCase {
 
     /**
      * Get the oauth token required to access wso2-apim.
-     * @param clientIdColonClientSecret
-     *        A concatenated string comprising client id and client secret delimited by a colon
+     *
+     * @param clientIdColonClientSecret A concatenated string comprising client id and client secret delimited by a colon
      * @return oauth token
      * @throws NoSuchAlgorithmException if sendPost method fails
-     * @throws IOException if sendPost method fails
-     * @throws KeyManagementException if sendPost method fails
+     * @throws IOException              if sendPost method fails
+     * @throws KeyManagementException   if sendPost method fails
      */
     private String getOauthToken(String clientIdColonClientSecret) throws NoSuchAlgorithmException, IOException
             , KeyManagementException {
@@ -226,12 +228,12 @@ public class EmployeePortalTestCase extends BaseTestCase {
 
     /**
      * Get the id of default application.
-     * @param oauthToken
-     *        An oauth token to access wso2-apim
+     *
+     * @param oauthToken An oauth token to access wso2-apim
      * @return default application id
      * @throws NoSuchAlgorithmException if sendGet method fails
-     * @throws IOException if sendGet method fails
-     * @throws KeyManagementException if sendGet method fails
+     * @throws IOException              if sendGet method fails
+     * @throws KeyManagementException   if sendGet method fails
      */
     private String getDefaultApplicationId(String oauthToken) throws NoSuchAlgorithmException, IOException
             , KeyManagementException {
@@ -256,14 +258,13 @@ public class EmployeePortalTestCase extends BaseTestCase {
 
     /**
      * Get consumer key and consumer secret needed to generate access token .
-     * @param oauthToken
-     *        An oauth token to access wso2-apim
-     * @param defaultApplicationId
-     *        Default application id
+     *
+     * @param oauthToken           An oauth token to access wso2-apim
+     * @param defaultApplicationId Default application id
      * @return a concatenated string comprising consumer key and consumer secret delimited by a colon
      * @throws NoSuchAlgorithmException if sendGet method fails
-     * @throws IOException if sendGet method fails
-     * @throws KeyManagementException if sendGet method fails
+     * @throws IOException              if sendGet method fails
+     * @throws KeyManagementException   if sendGet method fails
      */
     private String getConsumerKeyColonConsumerSecret(String oauthToken, String defaultApplicationId)
             throws NoSuchAlgorithmException, IOException, KeyManagementException {
@@ -285,15 +286,13 @@ public class EmployeePortalTestCase extends BaseTestCase {
 
     /**
      * Subscribe for default application of hr api using alice user.
-     * @param hrApiId
-     *        Id of hr api
-     * @param defaultApplicationId
-     *        Id of default application
-     * @param oauthToken
-     *        An oauth token to access wso2-apim
+     *
+     * @param hrApiId              Id of hr api
+     * @param defaultApplicationId Id of default application
+     * @param oauthToken           An oauth token to access wso2-apim
      * @throws NoSuchAlgorithmException if sendPost method fails
-     * @throws IOException if sendPost method fails
-     * @throws KeyManagementException if sendPost method fails
+     * @throws IOException              if sendPost method fails
+     * @throws KeyManagementException   if sendPost method fails
      */
     private void subscribeHrApiDefaultApplication(String hrApiId, String defaultApplicationId
             , String oauthToken) throws NoSuchAlgorithmException, IOException, KeyManagementException {
@@ -312,12 +311,12 @@ public class EmployeePortalTestCase extends BaseTestCase {
 
     /**
      * Get the access token required to get the employee data.
-     * @param consumerKeyConsumerSecret
-     *        A concatenated string comprising consumer key and consumer secret delimited by a colon
+     *
+     * @param consumerKeyConsumerSecret A concatenated string comprising consumer key and consumer secret delimited by a colon
      * @return an access token
      * @throws NoSuchAlgorithmException if sendPost method fails
-     * @throws IOException if sendPost method fails
-     * @throws KeyManagementException if sendPost method fails
+     * @throws IOException              if sendPost method fails
+     * @throws KeyManagementException   if sendPost method fails
      */
     private String getGatewayToken(String consumerKeyConsumerSecret) throws NoSuchAlgorithmException, IOException
             , KeyManagementException {
@@ -340,11 +339,11 @@ public class EmployeePortalTestCase extends BaseTestCase {
 
     /**
      * Send an http request and get the employee data and validate against the expected values.
-     * @param token
-     *        An access token
+     *
+     * @param token An access token
      * @throws NoSuchAlgorithmException if sendGet method fails
-     * @throws IOException if sendGet method fails
-     * @throws KeyManagementException if sendGet method fails
+     * @throws IOException              if sendGet method fails
+     * @throws KeyManagementException   if sendGet method fails
      */
     private void validateData(String token) throws NoSuchAlgorithmException, IOException, KeyManagementException {
         String gatewayUrl = "https://wso2-apim-gateway/hr-inst/hr-api";
