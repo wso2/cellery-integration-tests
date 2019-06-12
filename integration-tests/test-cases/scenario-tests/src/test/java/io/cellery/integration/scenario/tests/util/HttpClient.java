@@ -71,8 +71,9 @@ public class HttpClient {
             }
             return content.toString();
         } finally {
-            assert con != null;
-            con.disconnect();
+            if (con != null) {
+                con.disconnect();
+            }
         }
     }
 
@@ -120,8 +121,9 @@ public class HttpClient {
             }
             return content.toString();
         } finally {
-            assert con != null;
-            con.disconnect();
+            if (con != null) {
+                con.disconnect();
+            }
         }
     }
 
