@@ -37,23 +37,21 @@ import javax.net.ssl.X509TrustManager;
  * This class is used to send http requests.
  */
 public class HttpClient {
-    private HttpsURLConnection con;
-
     /**
      * Send an http get request and get the response.
-     * @param url
-     *        Url to which the request is being sent
-     * @param headers
-     *        A hash map containing header keys and values
+     *
+     * @param url     Url to which the request is being sent
+     * @param headers A hash map containing header keys and values
      * @return response message
-     * @throws IOException exception if http connection fails
-     * @throws KeyManagementException if TLS verification skip fails
+     * @throws IOException              exception if http connection fails
+     * @throws KeyManagementException   if TLS verification skip fails
      * @throws NoSuchAlgorithmException if TLS verification skip fails
      */
-    public String sendGet(String url, Map<String, String> headers) throws IOException
+    public static String sendGet(String url, Map<String, String> headers) throws IOException
             , KeyManagementException, NoSuchAlgorithmException {
+        HttpsURLConnection con = null;
         // Skipping TLS verification since certificate is self-signed
-        this.trustAllCerts();
+        trustAllCerts();
         try {
             URL getUrl = new URL(url);
             con = (HttpsURLConnection) getUrl.openConnection();
@@ -73,27 +71,28 @@ public class HttpClient {
             }
             return content.toString();
         } finally {
+            assert con != null;
             con.disconnect();
         }
     }
 
     /**
      * Send an http post request and get the response.
-     * @param url
-     *        Url to which the request is being sent
+     *
+     * @param url     Url to which the request is being sent
      * @param payload String
-     *        Url parameters
-     * @param headers
-     *        A hash map containing header keys and values
+     *                Url parameters
+     * @param headers A hash map containing header keys and values
      * @return response message
-     * @throws IOException exception if http connection fails
-     * @throws KeyManagementException if TLS verification skip fails
+     * @throws IOException              exception if http connection fails
+     * @throws KeyManagementException   if TLS verification skip fails
      * @throws NoSuchAlgorithmException if TLS verification skip fails
      */
-    public String sendPost(String url, String payload, Map<String, String> headers)
+    public static String sendPost(String url, String payload, Map<String, String> headers)
             throws IOException, KeyManagementException, NoSuchAlgorithmException {
+        HttpsURLConnection con = null;
         // Skipping TLS verification since certificate is self-signed
-        this.trustAllCerts();
+        trustAllCerts();
         try {
             URL postUrl = new URL(url);
             con = (HttpsURLConnection) postUrl.openConnection();
@@ -121,16 +120,18 @@ public class HttpClient {
             }
             return content.toString();
         } finally {
+            assert con != null;
             con.disconnect();
         }
     }
 
     /**
      * Skip TLS validation.
+     *
      * @throws NoSuchAlgorithmException if TLS verification skip fails
-     * @throws KeyManagementException if TLS verification skip fails
+     * @throws KeyManagementException   if TLS verification skip fails
      */
-    private void trustAllCerts() throws NoSuchAlgorithmException, KeyManagementException {
+    private static void trustAllCerts() throws NoSuchAlgorithmException, KeyManagementException {
         // Create a trust manager that does not validate certificate chains
         TrustManager[] trustAllCerts = new TrustManager[]{
                 new X509TrustManager() {

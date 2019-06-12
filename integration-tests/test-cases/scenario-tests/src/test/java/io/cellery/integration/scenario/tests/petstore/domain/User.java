@@ -67,46 +67,6 @@ public class User {
     }
 
     /**
-     * Get the user name of user.
-     * @return username
-     */
-    private String getUserName() {
-        return userName;
-    }
-
-    /**
-     * Get the password of user.
-     * @return password
-     */
-    private String getPassword() {
-        return password;
-    }
-
-    /**
-     * Get the first name of user.
-     * @return password
-     */
-    private String getFirstName() {
-        return firstName;
-    }
-
-    /**
-     * Get the last name of the user.
-     * @return lastName
-     */
-    private String getLastName() {
-        return lastName;
-    }
-
-    /**
-     * Get the address of user.
-     * @return address
-     */
-    private String getAddress() {
-        return address;
-    }
-
-    /**
      * Click the sign in button of pet-store web page.
      * @return header of sign in web page
      */
@@ -123,8 +83,8 @@ public class User {
     public String submitCredentials() {
         WebElement username = webDriver.findElement(By.id("username"));
         WebElement password = webDriver.findElement(By.id("password"));
-        username.sendKeys(this.getUserName());
-        password.sendKeys(this.getPassword());
+        username.sendKeys(this.userName);
+        password.sendKeys(this.password);
         String idpSignInButtonXpath = "//*[@id=\"loginForm\"]/div[6]/div/button";
         webDriver.findElement(By.xpath(idpSignInButtonXpath)).click();
         return webDriver.findElement(By.cssSelector("H2")).getText();
@@ -155,9 +115,9 @@ public class User {
         WebElement firstName = webDriver.findElement(By.id("first-name"));
         WebElement lastName = webDriver.findElement(By.id("last-name"));
         WebElement address = webDriver.findElement(By.id("address"));
-        firstName.sendKeys(this.getFirstName());
-        lastName.sendKeys(this.getLastName());
-        address.sendKeys(this.getAddress());
+        firstName.sendKeys(this.firstName);
+        lastName.sendKeys(this.lastName);
+        address.sendKeys(this.address);
         String personalInfoNexButtonXpath = "//*[@id=\"app\"]/div/main/div/div/div/div[1]/div/div/div/div/div[4]/" +
                 "button[2]";
         webDriver.findElement(By.xpath(personalInfoNexButtonXpath)).click();
