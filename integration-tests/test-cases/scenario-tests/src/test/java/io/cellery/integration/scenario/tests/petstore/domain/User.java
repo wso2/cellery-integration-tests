@@ -36,7 +36,7 @@ public class User {
     private String userName;
     private String password;
     private WebDriver webDriver;
-    private WebDriverWait wait;
+    private WebDriverWait webDriverWait;
 
     /**
      * Initializes a user object that would be used to perform actions on the pet-store web site.
@@ -63,7 +63,7 @@ public class User {
         this.userName = userName;
         this.password = password;
         this.webDriver = webDriver;
-        this.wait = webDriverWait;
+        this.webDriverWait = webDriverWait;
     }
 
     /**
@@ -111,7 +111,7 @@ public class User {
      * @throws InterruptedException if fails to submit information
      */
     public String submitInformation() throws InterruptedException {
-        wait.until(ExpectedConditions.elementToBeClickable(By.id("first-name")));
+        webDriverWait.until(ExpectedConditions.elementToBeClickable(By.id("first-name")));
         WebElement firstName = webDriver.findElement(By.id("first-name"));
         WebElement lastName = webDriver.findElement(By.id("last-name"));
         WebElement address = webDriver.findElement(By.id("address"));
@@ -132,7 +132,7 @@ public class User {
         webDriver.findElement(By.xpath(preferenceCheckBoxCatXpath)).click();
         String preferenceSubmitButtonXpath = "//*[@id=\"app\"]/div/main/div/div/div/div[3]/div/div/div/div/div[2]" +
                 "/button[2]";
-        wait.until(ExpectedConditions.elementToBeClickable(By.xpath(preferenceSubmitButtonXpath)));
+        webDriverWait.until(ExpectedConditions.elementToBeClickable(By.xpath(preferenceSubmitButtonXpath)));
         webDriver.findElement(By.xpath(preferenceSubmitButtonXpath)
         ).click();
 

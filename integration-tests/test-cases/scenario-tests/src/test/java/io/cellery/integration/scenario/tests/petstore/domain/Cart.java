@@ -29,7 +29,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
  */
 public class Cart {
     private WebDriver webDriver;
-    private WebDriverWait wait;
+    private WebDriverWait webDriverWait;
 
     /**
      * Initializes a cart object to be used for checking pet store items.
@@ -38,7 +38,7 @@ public class Cart {
      */
     public Cart(WebDriver webDriver) {
         this.webDriver = webDriver;
-        wait = new WebDriverWait(webDriver, 120);
+        webDriverWait = new WebDriverWait(webDriver, 120);
     }
 
     /**
@@ -48,13 +48,13 @@ public class Cart {
      */
     public void addToCart(PetAccessory petAccessory) {
         WebElement amountInputFiled;
-        wait.until(ExpectedConditions.elementToBeClickable(By.xpath(petAccessory.getXpath())));
+        webDriverWait.until(ExpectedConditions.elementToBeClickable(By.xpath(petAccessory.getXpath())));
         webDriver.findElement(By.xpath(petAccessory.getXpath())).click();
         amountInputFiled = webDriver.findElement(By.id("amount"));
         amountInputFiled.sendKeys(Keys.BACK_SPACE);
         amountInputFiled.sendKeys(Integer.toString(petAccessory.getAmount()));
         String addToCartButtonXpath = "/html/body/div[2]/div[2]/div/div[3]/button[2]";
-        wait.until(ExpectedConditions.elementToBeClickable(By.xpath(addToCartButtonXpath)));
+        webDriverWait.until(ExpectedConditions.elementToBeClickable(By.xpath(addToCartButtonXpath)));
         webDriver.findElement(By.xpath(addToCartButtonXpath)).click();
     }
 

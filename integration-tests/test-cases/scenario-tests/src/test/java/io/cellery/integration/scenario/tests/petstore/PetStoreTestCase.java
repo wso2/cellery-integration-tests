@@ -57,13 +57,13 @@ public class PetStoreTestCase extends BaseTestCase {
     public void setup() {
         WebDriverManager.getInstance(CHROME).setup();
         webDriver = new ChromeDriver(new ChromeOptions().setHeadless(true));
-        WebDriverWait wait = new WebDriverWait(webDriver, 120);
+        WebDriverWait webDriverWait = new WebDriverWait(webDriver, 120);
 
         // Create 2 users Alice and Bob with their information
         this.alice = new User("Alice", "Sanchez", "No 60, Regent street, " +
-                "New York.", "alice", "alice123", webDriver, wait);
+                "New York.", "alice2", "alice123", webDriver, webDriverWait);
         this.bob = new User("Bob", "Dylan", "No 36, Mayfair street, " +
-                "Los Angeles.", "bob", "bob123", webDriver, wait);
+                "Los Angeles.", "bob2", "bob123", webDriver, webDriverWait);
 
         this.cart = new Cart(webDriver);
         this.order = new Order(webDriver);
@@ -97,7 +97,7 @@ public class PetStoreTestCase extends BaseTestCase {
     @Test(description = "Tests the running of pet store front end instance.")
     public void runFrontEnd() throws Exception {
         String[] links = new String[]{LINK};
-        run(Constants.CELL_ORG_NAME, FRONTEND_IMAGE_NAME, VERSION, FRONTEND_INSTANCE_NAME, links,
+        run(Constants.CELL_ORG_NAME, FRONTEND_IMAGE_NAME, VERSION, FRONTEND_INSTANCE_NAME, links, false,
                 600);
     }
 

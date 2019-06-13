@@ -29,7 +29,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class Order {
     private WebDriver webDriver;
-    private WebDriverWait wait;
+    private WebDriverWait webDriverWait;
 
     /**
      * Initializes an Order object which will contain checked out pet store items.
@@ -38,7 +38,7 @@ public class Order {
      */
     public Order(WebDriver webDriver) {
         this.webDriver = webDriver;
-        wait = new WebDriverWait(webDriver, 120);
+        webDriverWait = new WebDriverWait(webDriver, 120);
     }
 
     /**
@@ -48,7 +48,7 @@ public class Order {
      */
     public String getOrderValue() throws InterruptedException {
         String checkOrdersButtonXpath = "//*[@id=\"app\"]/div/main/div/div[1]/div/div/div/button";
-        wait.until(ExpectedConditions.elementToBeClickable(By.xpath(checkOrdersButtonXpath)));
+        webDriverWait.until(ExpectedConditions.elementToBeClickable(By.xpath(checkOrdersButtonXpath)));
         webDriver.findElement(By.xpath(checkOrdersButtonXpath)).click();
         // Putting an explicit sleep of 10 seconds because test is failing in jenkins server.
         TimeUnit.SECONDS.sleep(10);
