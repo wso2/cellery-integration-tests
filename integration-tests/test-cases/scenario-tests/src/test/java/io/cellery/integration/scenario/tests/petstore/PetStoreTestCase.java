@@ -61,9 +61,9 @@ public class PetStoreTestCase extends BaseTestCase {
 
         // Create 2 users Alice and Bob with their information
         this.alice = new User("Alice", "Sanchez", "No 60, Regent street, " +
-                "New York.", "alice2", "alice123", webDriver, webDriverWait);
+                "New York.", "alice", "alice123", webDriver, webDriverWait);
         this.bob = new User("Bob", "Dylan", "No 36, Mayfair street, " +
-                "Los Angeles.", "bob2", "bob123", webDriver, webDriverWait);
+                "Los Angeles.", "bob", "bob123", webDriver, webDriverWait);
 
         this.cart = new Cart(webDriver);
         this.order = new Order(webDriver);
@@ -154,8 +154,8 @@ public class PetStoreTestCase extends BaseTestCase {
 
     @Test(description = "This tests the termination of pet-store backend and frontend cells")
     public void terminate() throws Exception {
-        terminateCell(BACKEND_INSTANCE_NAME);
-        terminateCell(FRONTEND_INSTANCE_NAME);
+//        terminateCell(BACKEND_INSTANCE_NAME);
+//        terminateCell(FRONTEND_INSTANCE_NAME);
     }
 
     @Test(description = "This tests the deletion of pet-store backend and frontend cell images")
@@ -168,8 +168,8 @@ public class PetStoreTestCase extends BaseTestCase {
     public void cleanup() {
         webDriver.close();
         try {
-            terminateCell(BACKEND_INSTANCE_NAME);
-            terminateCell(FRONTEND_INSTANCE_NAME);
+//            terminateCell(BACKEND_INSTANCE_NAME);
+//            terminateCell(FRONTEND_INSTANCE_NAME);
         } catch (Exception ignored) {
         }
     }
