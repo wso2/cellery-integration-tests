@@ -86,7 +86,7 @@ public class BaseTestCase {
     }
 
     protected void run(String orgName, String imageName, String version, String instanceName,
-                       String[] links, int timeoutSec)
+                       String[] links, boolean startDependencies, int timeoutSec)
             throws Exception {
         String cellImageName = getCellImageName(orgName, imageName, version);
         String command = CELLERY_RUN + " " + cellImageName + " -y";
@@ -99,6 +99,9 @@ public class BaseTestCase {
                 buffer.append(" -l ").append(link);
             }
             command += buffer.toString();
+        }
+        if (startDependencies) {
+            command += " -d";
         }
         Process process = Runtime.getRuntime().exec(command);
         String result = readOutputResult(process, SUCCESSFUL_RUN_MSG, "Unable to run cell: "
