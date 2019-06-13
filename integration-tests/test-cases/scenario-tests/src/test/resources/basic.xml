@@ -33,19 +33,6 @@
                     <include name="deleteImage"/>
                 </methods>
             </class>
-            <class name="io.cellery.integration.scenario.tests.EmployeePortalTestCase">
-                <methods>
-                    <include name="buildStock"/>
-                    <include name="runStock"/>
-                    <include name="buildEmployee"/>
-                    <include name="runEmployee"/>
-                    <include name="buildHr"/>
-                    <include name="runHr"/>
-                    <include name="validateData"/>
-                    <include name="terminate"/>
-                    <include name="deleteImages"/>
-                </methods>
-            </class>
             <class name="io.cellery.integration.scenario.tests.petstore.PetStoreTestCase">
                 <methods>
                     <include name="buildBackEnd"/>
