@@ -1,0 +1,11 @@
+language: java
+dist: trusty
+jdk:
+    - oraclejdk8
+cache:
+  directories:
+  - .autoconf
+  - $HOME/.m2
+before_install:
+  - cd integration-tests/test-cases
+script: mvn validate
