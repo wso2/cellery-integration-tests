@@ -97,7 +97,8 @@ public class EmployeePortalTestCase extends BaseTestCase {
         String consumerKeyConsumerSecret = apimHelper.getConsumerKeyConsumerSecretForApplication(accessTokenForApimStore
                 , defaultApplicationId);
         // Get the token to access wso2-apim-gateway
-        String gatewayToken = apimHelper.getWso2ApimGatewayToken(consumerKeyConsumerSecret, ALICE_USERNAME, ALICE_PASSWORD);
+        String gatewayToken = apimHelper.getWso2ApimGatewayToken(consumerKeyConsumerSecret, ALICE_USERNAME
+                , ALICE_PASSWORD);
         // Validate data
         validateData(gatewayToken);
     }
