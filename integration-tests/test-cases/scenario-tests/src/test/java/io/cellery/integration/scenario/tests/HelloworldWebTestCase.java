@@ -54,7 +54,7 @@ public class HelloworldWebTestCase extends BaseTestCase {
 
     @Test
     public void run() throws Exception {
-        run(Constants.TEST_CELL_ORG_NAME, IMAGE_NAME, VERSION, HELLO_WORLD_INSTANCE, 120);
+        run(Constants.TEST_CELL_ORG_NAME, IMAGE_NAME, VERSION, HELLO_WORLD_INSTANCE, 600);
     }
 
     @Test
