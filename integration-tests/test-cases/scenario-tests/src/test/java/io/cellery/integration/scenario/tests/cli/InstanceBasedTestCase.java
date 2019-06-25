@@ -36,7 +36,7 @@ public class InstanceBasedTestCase extends BaseTestCase {
 
     @BeforeClass
     public void quickRunSample() throws Exception {
-        build("web.bal", ORGANIZATION_NAME, IMAGE_NAME ,Constants.SAMPLE_CELLS_VERSION,
+        build("web.bal", ORGANIZATION_NAME, IMAGE_NAME, Constants.SAMPLE_CELLS_VERSION,
                 Paths.get(CELLERY_SCENARIO_TEST_ROOT, "hello-web").toFile().getAbsolutePath());
         this.instanceName = run(ORGANIZATION_NAME, IMAGE_NAME, Constants.SAMPLE_CELLS_VERSION, null, 300);
         Assert.assertTrue(instanceName != null && !instanceName.isEmpty(), "Instance name is empty!");
