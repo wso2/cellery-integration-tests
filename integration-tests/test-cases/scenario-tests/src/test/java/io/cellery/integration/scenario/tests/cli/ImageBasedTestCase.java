@@ -29,6 +29,7 @@ import java.nio.file.Paths;
  * This test includes the test cases related to the CLI and images.
  */
 public class ImageBasedTestCase extends BaseTestCase {
+
     private static final String HELLO_WORLD_IMAGE = "hello-world-cell";
     private static final String EMPLOYEE_IMAGE = "employee-test-cell";
 
@@ -36,11 +37,11 @@ public class ImageBasedTestCase extends BaseTestCase {
     public void buildResourceImage() throws Exception {
         // Build employee image
         build("employee.bal", Constants.TEST_CELL_ORG_NAME, EMPLOYEE_IMAGE, Constants.SAMPLE_CELLS_VERSION,
-                Paths.get(CELLERY_SCENARIO_TEST_ROOT, "employee-portal",
+                Paths.get(CELLERY_SCENARIO_TEST_ROOT, "employee-portal", "cellery",
                         "employee").toFile().getAbsolutePath());
         // Build hello-world image
-        build("hello-world.bal", Constants.TEST_CELL_ORG_NAME, HELLO_WORLD_IMAGE, Constants.SAMPLE_CELLS_VERSION,
-                Paths.get(CELLERY_SCENARIO_TEST_ROOT, "hello-world-web").toFile().getAbsolutePath());
+        build("web.bal", Constants.TEST_CELL_ORG_NAME, HELLO_WORLD_IMAGE, Constants.SAMPLE_CELLS_VERSION,
+                Paths.get(CELLERY_SCENARIO_TEST_ROOT, "hello-web").toFile().getAbsolutePath());
     }
 
     @Test(dependsOnMethods = "buildResourceImage")

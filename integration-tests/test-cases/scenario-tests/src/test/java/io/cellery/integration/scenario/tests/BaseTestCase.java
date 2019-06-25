@@ -120,7 +120,7 @@ public class BaseTestCase {
         readOutputResult(process, "",
                 "Error while terminating the instance :" + cellInstanceName);
         process = Runtime.getRuntime().exec(CELLERY_STATUS + " " + cellInstanceName);
-        String expectedOutput = "cannot find cell " + cellInstanceName;
+        String expectedOutput = "cell instance " + cellInstanceName + " not found";
         try {
             String errorMessage = "Cell instance is not terminated properly:" + cellInstanceName;
             readOutputResult(process, expectedOutput, errorMessage);
@@ -166,7 +166,7 @@ public class BaseTestCase {
     }
 
     private String getInstanceNamePrefix(String image, String version) {
-        return image + "-" + version;
+        return (image + "-" + version).replace(".", "-");
     }
 
     protected void validateWebPage(String expected, String actual, String error) {
