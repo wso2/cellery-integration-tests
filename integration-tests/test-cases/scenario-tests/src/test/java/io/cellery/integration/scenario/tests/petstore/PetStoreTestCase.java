@@ -41,11 +41,11 @@ import static io.github.bonigarcia.wdm.DriverManagerType.CHROME;
  */
 public class PetStoreTestCase extends BaseTestCase {
     private static final String BACKEND_INSTANCE_NAME = "pet-be-inst";
-    private static final String BACKEND_IMAGE_NAME = "pet-be-cell";
+    private static final String BACKEND_IMAGE_NAME = "petbe";
     private static final String FRONTEND_INSTANCE_NAME = "pet-fe-inst";
-    private static final String FRONTEND_IMAGE_NAME = "pet-fe-cell";
-    private static final String VERSION = "latest";
-    private static final String LINK = "petStoreBackend:pet-be-inst";
+    private static final String FRONTEND_IMAGE_NAME = "petfe";
+    private static final String VERSION = "1.0.0";
+    private static final String LINK = "petstorebackend:pet-be-inst";
     private WebDriver webDriver;
     private User alice;
     private User bob;
@@ -80,7 +80,7 @@ public class PetStoreTestCase extends BaseTestCase {
     @Test(description = "Tests the building of pet store backend image.")
     public void buildBackEnd() throws Exception {
         build("pet-be.bal", Constants.CELL_ORG_NAME, BACKEND_IMAGE_NAME, VERSION,
-                Paths.get(CELLERY_SCENARIO_TEST_ROOT, "pet-store", "pet-be").toFile().getAbsolutePath());
+                Paths.get(CELLERY_SCENARIO_TEST_ROOT, "pet-care-store", "pet-be").toFile().getAbsolutePath());
     }
 
     @Test(description = "Tests the running of pet store back end instance.")
@@ -91,7 +91,7 @@ public class PetStoreTestCase extends BaseTestCase {
     @Test(description = "Tests the building of pet store frontend image.")
     public void buildFrontEnd() throws Exception {
         build("pet-fe.bal", Constants.CELL_ORG_NAME, FRONTEND_IMAGE_NAME, VERSION,
-                Paths.get(CELLERY_SCENARIO_TEST_ROOT, "pet-store", "pet-fe").toFile().getAbsolutePath());
+                Paths.get(CELLERY_SCENARIO_TEST_ROOT, "pet-care-store", "pet-fe").toFile().getAbsolutePath());
     }
 
     @Test(description = "Tests the running of pet store front end instance.")

@@ -48,8 +48,8 @@ public class HelloworldWebTestCase extends BaseTestCase {
 
     @Test
     public void build() throws Exception {
-        build("hello-world.bal", Constants.TEST_CELL_ORG_NAME, IMAGE_NAME, VERSION,
-                Paths.get(CELLERY_SCENARIO_TEST_ROOT, "hello-world-web").toFile().getAbsolutePath());
+        build("web.bal", Constants.TEST_CELL_ORG_NAME, IMAGE_NAME, VERSION,
+                Paths.get(CELLERY_SCENARIO_TEST_ROOT, "hello-web").toFile().getAbsolutePath());
     }
 
     @Test

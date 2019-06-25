@@ -32,16 +32,25 @@ run-minikube-basic: setup-minikube-basic test-basic cleanup-minikube-basic
 
 .EXPORT_ALL_VARIABLES:
     CELLERY_AUTOMATION_TESTS_ROOT = $(PROJECT_ROOT)
-    
+
+.PHONY: clone-samples
+clone-samples:
+	git clone https://github.com/wso2-cellery/sdk
+	mkdir test-cases/cells
+	cp -r sdk/test-cases/* test-cases/cells/
+	rm -rf sdk
+
 .PHONY: test-basic
-test-basic:
+test-basic: clone-samples
 	cd $(PROJECT_ROOT)/test-cases/scenario-tests/; \
 	mvn clean install -Dsuite=src/test/resources/basic.xml -fae
+	rm -rf test-cases/cells
 
 .PHONY: test-complete
-test-complete:
+test-complete: clone-samples
 	cd $(PROJECT_ROOT)/test-cases/scenario-tests/; \
 	mvn clean install -Dsuite=src/test/resources/complete.xml
+	rm -rf test-cases/cells
 
 # Local setup targets
 .PHONY: setup-local-basic

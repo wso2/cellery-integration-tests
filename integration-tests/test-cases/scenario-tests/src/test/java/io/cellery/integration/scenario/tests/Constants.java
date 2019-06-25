@@ -25,9 +25,9 @@ public class Constants {
     private Constants() {
     }
 
-    public static final String CELL_ORG_NAME = "wso2cellery";
-    public static final String TEST_CELL_ORG_NAME = "wso2cellerytest";
-    public static final String SAMPLE_CELLS_VERSION = "latest";
+    public static final String CELL_ORG_NAME = "myorg";
+    public static final String TEST_CELL_ORG_NAME = "myorg";
+    public static final String SAMPLE_CELLS_VERSION = "1.0.0";
     static final String HELLO_WORLD_WEB_CONTENT = "hello cellery";
     public static final String PET_STORE_WEB_CONTENT = "Pet Accessories";
     static final String DEFAULT_HELLO_WORLD_URL = "http://hello-world.com";
