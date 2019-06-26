@@ -40,11 +40,15 @@ clone-samples:
 	cp -r sdk/test-cases/* test-cases/cells/
 	rm -rf sdk
 
+.PHONY: remove-samples
+remove-samples:
+	rm -rf $(PROJECT_ROOT)/test-cases/cells
+
 .PHONY: test-basic
 test-basic: clone-samples
 	cd $(PROJECT_ROOT)/test-cases/scenario-tests/; \
 	mvn clean install -Dsuite=src/test/resources/basic.xml -fae
-	rm -rf test-cases/cells
+	rm -rf $(PROJECT_ROOT)/test-cases/cells
 
 .PHONY: test-complete
 test-complete: clone-samples
@@ -83,6 +87,52 @@ setup-gcp-complete:
 cleanup-gcp:
 	cd $(PROJECT_ROOT)/setups/gcp-setup; \
 	bash cleanup.sh
+
+# GCP existing setup targets
+.PHONY: init-gcp-persistent
+init-gcp:
+	cd $(PROJECT_ROOT)/setups/existing-cluster/gcp-gke; \
+	bash init.sh true
+
+.PHONY: setup-existing-gcp-basic-persistent
+setup-existing-gcp-basic-persistent:
+	cd $(PROJECT_ROOT)/setups/existing-cluster/gcp-gke; \
+	bash setup.sh basic $(USERNAME) $(PASSWORD) true
+
+.PHONY: setup-existing-gcp-complete-persistent
+setup-existing-gcp-basic-persistent:
+	cd $(PROJECT_ROOT)/setups/existing-cluster/gcp-gke; \
+	bash setup.sh complete $(USERNAME) $(PASSWORD) true
+
+.PHONY: cleanup-existing-gcp
+cleanup-existing-gcp:
+	cd $(PROJECT_ROOT)/setups/existing-cluster/gcp-gke; \
+	bash cleanup.sh
+
+.PHONY: destroy-gcp-persistent
+destroy-gcp-persistent:
+	cd $(PROJECT_ROOT)/setups/existing-cluster/gcp-gke; \
+	bash destroy.sh true
+
+.PHONY: init-gcp
+init-gcp:
+	cd $(PROJECT_ROOT)/setups/existing-cluster/gcp-gke; \
+	bash init.sh
+
+.PHONY: setup-existing-gcp-basic
+setup-existing-gcp-basic:
+	cd $(PROJECT_ROOT)/setups/existing-cluster/gcp-gke; \
+	bash setup.sh basic $(USERNAME) $(PASSWORD)
+
+.PHONY: setup-existing-gcp-complete
+setup-existing-gcp-complete:
+	cd $(PROJECT_ROOT)/setups/existing-cluster/gcp-gke; \
+	bash setup.sh complete $(USERNAME) $(PASSWORD)
+
+.PHONY: destroy-gcp
+destroy-gcp:
+	cd $(PROJECT_ROOT)/setups/existing-cluster/gcp-gke; \
+	bash destroy.sh
 
 # Kubeadm setup targets
 .PHONY: init-kubeadm

@@ -21,10 +21,13 @@ import org.testng.Assert;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
+import java.util.function.Consumer;
 
 /**
  * Base Test Case Integration Tests.
@@ -45,11 +48,10 @@ public class BaseTestCase {
 
     private static final String TEST_CASES_DIR = "test-cases";
     private static final String CELLS_DIR = "cells";
-    private static final String SCENARIO_TEST_DIR = "scenario-tests";
-    private static final String TARGET = "target";
-
     protected static final String CELLERY_SCENARIO_TEST_ROOT = System.getenv(CELLERY_AUTOMATION_TESTS_ROOT_ENV) +
             File.separator + TEST_CASES_DIR + File.separator + CELLS_DIR;
+    private static final String SCENARIO_TEST_DIR = "scenario-tests";
+    private static final String TARGET = "target";
     protected static final String CELLERY_ROOT_TARGET = System.getenv(CELLERY_AUTOMATION_TESTS_ROOT_ENV)
             + File.separator + TEST_CASES_DIR + File.separator + SCENARIO_TEST_DIR + File.separator + TARGET;
 
@@ -89,7 +91,7 @@ public class BaseTestCase {
                        String[] links, boolean startDependencies, int timeoutSec)
             throws Exception {
         String cellImageName = getCellImageName(orgName, imageName, version);
-        String command = CELLERY_RUN + " " + cellImageName + " -y";
+        String command = CELLERY_RUN + " " + cellImageName + " -y >/dev/null 2>&1";
         if (instanceName != null && !instanceName.isEmpty()) {
             command += " -n " + instanceName;
         }
@@ -137,27 +139,36 @@ public class BaseTestCase {
 
     private String readOutputResult(Process process, String successOutput, String errorMessage, int timeout)
             throws Exception {
-        try (BufferedReader stdOutput = new BufferedReader(new InputStreamReader(process.getInputStream(),
-                Charset.defaultCharset().name()));
-             BufferedReader stdError = new BufferedReader(new InputStreamReader(process.getErrorStream(),
-                     Charset.defaultCharset().name()))) {
-            boolean terminated = process.waitFor(timeout, TimeUnit.SECONDS);
-            int exitCode = process.exitValue();
-            if (terminated && exitCode == 0) {
-                String output = stdOutput.lines().map(String::valueOf).collect(Collectors.joining());
-                if ((!successOutput.isEmpty() && !output.contains(successOutput)) ||
-                        (successOutput.isEmpty() && !output.isEmpty())) {
-                    throw new Exception("Expected output '" + successOutput + "' is missing in the build output: "
-                            + output);
-                }
-                return output;
-            } else {
-                String output = stdError.lines().map(String::valueOf).collect(Collectors.joining());
-                if (output == null || output.isEmpty()) {
-                    output = stdOutput.lines().map(String::valueOf).collect(Collectors.joining());
-                }
-                throw new Exception(errorMessage + " ." + output);
+
+        StringBuilder stdOut = new StringBuilder();
+        StringBuilder stdErr = new StringBuilder();
+
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        StreamGobbler outputStreamGobbler = new StreamGobbler(process.getInputStream(), stdOut::append);
+        StreamGobbler errorStreamGobbler = new StreamGobbler(process.getErrorStream(), stdErr::append);
+
+        executor.execute(outputStreamGobbler);
+        executor.execute(errorStreamGobbler);
+
+        boolean terminated = process.waitFor(timeout, TimeUnit.SECONDS);
+        int exitCode = process.exitValue();
+
+        executor.shutdownNow();
+
+        if (terminated && exitCode == 0) {
+            String output = stdOut.toString();
+            if ((!successOutput.isEmpty() && !output.contains(successOutput)) ||
+                    (successOutput.isEmpty() && !output.isEmpty())) {
+                throw new Exception("Expected output '" + successOutput + "' is missing in the build output: "
+                        + output);
             }
+            return output;
+        } else {
+            String output = stdErr.toString();
+            if (output.isEmpty()) {
+                output = stdOut.toString();
+            }
+            throw new Exception(errorMessage + " ." + output);
         }
     }
 
@@ -178,4 +189,29 @@ public class BaseTestCase {
         String errorString = "Unable to delete cell image: " + cellImageName;
         readOutputResult(process, SUCCESSFUL_DELETE_MSG, errorString);
     }
+
+    /**
+     * StreamGobbler to handle process builder output.
+     *
+     * @since 1.0
+     */
+    private static class StreamGobbler implements Runnable {
+
+        private InputStream inputStream;
+        private Consumer<String> consumer;
+
+        public StreamGobbler(InputStream inputStream, Consumer<String> consumer) {
+
+            this.inputStream = inputStream;
+            this.consumer = consumer;
+        }
+
+        @Override
+        public void run() {
+
+            new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8)).lines()
+                    .forEach(consumer);
+        }
+    }
+
 }
