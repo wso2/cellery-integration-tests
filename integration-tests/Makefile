@@ -90,7 +90,7 @@ cleanup-gcp:
 
 # GCP existing setup targets
 .PHONY: init-gcp-persistent
-init-gcp:
+init-gcp-persistent:
 	cd $(PROJECT_ROOT)/setups/existing-cluster/gcp-gke; \
 	bash init.sh true
 
@@ -100,7 +100,7 @@ setup-existing-gcp-basic-persistent:
 	bash setup.sh basic $(USERNAME) $(PASSWORD) true
 
 .PHONY: setup-existing-gcp-complete-persistent
-setup-existing-gcp-basic-persistent:
+setup-existing-gcp-complete-persistent:
 	cd $(PROJECT_ROOT)/setups/existing-cluster/gcp-gke; \
 	bash setup.sh complete $(USERNAME) $(PASSWORD) true
 
