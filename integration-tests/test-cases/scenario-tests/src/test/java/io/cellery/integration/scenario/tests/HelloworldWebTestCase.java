@@ -60,7 +60,7 @@ public class HelloworldWebTestCase extends BaseTestCase {
         observabilityDashboard.getCells().add(cell);
 
         SequenceDiagram diagram = new SequenceDiagram();
-        diagram.getSequenceDiagramCells().put(HELLO_WORLD_INSTANCE, 2);
+        diagram.getComponents().put(HELLO_WORLD_INSTANCE, 2);
     }
 
     @Test

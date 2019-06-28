@@ -98,10 +98,10 @@ public class PetStoreTestCase extends BaseTestCase {
         observabilityDashboard.getCells().add(frontendCell);
 
         SequenceDiagram diagram = new SequenceDiagram();
-        diagram.getSequenceDiagramCells().put(FRONTEND_INSTANCE_NAME, 2);
-        diagram.getSequenceDiagramCells().put(BACKEND_INSTANCE_NAME, 3);
+        diagram.getComponents().put(FRONTEND_INSTANCE_NAME, 2);
+        diagram.getComponents().put(BACKEND_INSTANCE_NAME, 3);
 
-        diagram.getSequenceDiagramCalls().put("gateway", 5);
+        diagram.getCalls().put("gateway", 5);
     }
 
     @Test(description = "Tests the building of pet store backend image.")
