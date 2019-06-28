@@ -23,19 +23,19 @@ import java.util.Map;
 
 public class SequenceDiagram {
 
-    private Map<String, Integer> sequenceDiagramCells;
-    private Map<String, Integer> sequenceDiagramCalls;
+    private Map<String, Integer> components;
+    private Map<String, Integer> calls;
 
     public SequenceDiagram() {
-        this.sequenceDiagramCells = new HashMap<>();
-        this.sequenceDiagramCalls = new HashMap<>();
+        this.components = new HashMap<>();
+        this.calls = new HashMap<>();
     }
 
-    public Map<String, Integer> getSequenceDiagramCells() {
-        return sequenceDiagramCells;
+    public Map<String, Integer> getComponents() {
+        return components;
     }
 
-    public Map<String, Integer> getSequenceDiagramCalls() {
-        return sequenceDiagramCalls;
+    public Map<String, Integer> getCalls() {
+        return calls;
     }
 }
