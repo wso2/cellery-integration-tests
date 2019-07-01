@@ -97,6 +97,8 @@ public class EmployeePortalTestCase extends BaseTestCase {
                 DEFAULT_APPLICATION);
         // Subscribe for hr api default application
         apimHelper.subscribeForApplication(hrApiId, defaultApplicationId, accessTokenForApimStore);
+        // Generate production keys for default application
+        apimHelper.generateKeysForApplication(accessTokenForApimStore, defaultApplicationId);
         // Get base64 encoded consumer key consumer secret
         String consumerKeyConsumerSecret =
                 apimHelper.getConsumerKeyConsumerSecretForApplication(accessTokenForApimStore
