@@ -229,4 +229,31 @@ public class ApimHelper {
         gatewayToken = responseJson.get(ACCESS_TOKEN).getAsString().replaceAll("^\"|\"$", "");
         return gatewayToken;
     }
+
+    /**
+     * Generate production keys for an application.
+     *
+     * @param oauthToken An oauth token to access wso2-apim
+     * @param applicationId Application id
+     * @throws NoSuchAlgorithmException if sendPost method fails
+     * @throws IOException              if sendPost method fails
+     * @throws KeyManagementException   if sendPost method fails
+     */
+    public void generateKeysForApplication(String oauthToken, String applicationId) throws NoSuchAlgorithmException
+            , IOException, KeyManagementException {
+        //Add headers
+        Map<String, String> headers = new HashMap<>();
+        headers.put(HttpHeaders.AUTHORIZATION, AUTHENTICATION_TYPE_BEARER + " " + oauthToken);
+        headers.put(HttpHeaders.CONTENT_TYPE, CONTENT_TYPE_APPLICATION_JSON);
+        String payload = "{ \"validityTime\": \"3600\", " +
+                "\"keyType\": \"PRODUCTION\", " +
+                "\"accessAllowDomains\": [ \"ALL\" ], " +
+                "\"scopes\": [ \"am_application_scope\", \"default\" ], " +
+                "\"supportedGrantTypes\": [ \"urn:ietf:params:oauth:grant-type:saml2-bearer\", \"iwa:ntlm\", " +
+                "\"refresh_token\", \"client_credentials\", \"password\" ] }";
+        String response = HttpClient.sendPost(WSO2_APIM_APPLICATIONS_URL + "/generate-keys?applicationId=" +
+                applicationId, payload, headers);
+        JsonObject responseJson = new JsonParser().parse(response).getAsJsonObject();
+        Assert.assertTrue(responseJson.isJsonObject());
+    }
 }
