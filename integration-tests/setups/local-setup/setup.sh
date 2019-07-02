@@ -27,6 +27,7 @@ log_prefix="[$date $time]"
 setup_type=$1
 username=$2
 password=$3
+cellery_registry=$4
 
 log_info() {
     echo "${log_prefix}[INFO]" $1
@@ -48,4 +49,4 @@ echo "$host_ip  $host_names" | sudo tee -a /etc/hosts
 
 log_info "Successfully installed cellery local $setup_type setup."
 
-cellery login -u ${username} -p ${password}
+cellery login ${cellery_registry} -u ${username} -p ${password}

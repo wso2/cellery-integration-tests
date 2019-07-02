@@ -29,12 +29,13 @@ log_prefix="[$date $time]"
 setup_type=$1
 
 persistence=false
-if [ -z "$4" ]; then
-    persistence=$4
+if [ -z "$5" ]; then
+    persistence=$5
 fi
 
 username=$2
 password=$3
+cellery_registry=$4
 
 log_info() {
     echo "${log_prefix}[INFO]" $1
@@ -71,5 +72,5 @@ echo "$host_ip  $host_names" | sudo tee -a /etc/hosts
 
 log_info "Successfully installed cellery kubeadm $setup_type setup."
 
-cellery login -u ${username} -p ${password}
+cellery login ${cellery_registry} -u ${username} -p ${password}
 
