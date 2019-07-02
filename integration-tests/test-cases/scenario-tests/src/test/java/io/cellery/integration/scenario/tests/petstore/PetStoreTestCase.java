@@ -126,7 +126,7 @@ public class PetStoreTestCase extends BaseTestCase {
     @Test(description = "This tests checkout cart for user Alice.")
     public void checkoutCartAlice() throws InterruptedException {
         this.cart.checkout();
-        validateWebPage("$ 675", this.order.getOrderValue(), "Pet store cart content after checkout is " +
+        validateWebPage("$ 675.00", this.order.getOrderValue(), "Pet store cart content after checkout is " +
                 "not as expected");
     }
 
