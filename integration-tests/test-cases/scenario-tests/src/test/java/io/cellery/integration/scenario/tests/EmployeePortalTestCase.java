@@ -50,7 +50,7 @@ public class EmployeePortalTestCase extends BaseTestCase {
     private static final String ALICE_PASSWORD = "alice123";
     private static final String LINK_HR_TO_STOCK = "stockCellDep:stock-inst";
     private static final String LINK_HR_TO_EMPLOYEE = "employeeCellDep:employee-inst";
-    private static final String HR_URL = "https://wso2-apim-gateway/hr-inst/hr-api";
+    private static final String HR_URL = "https://wso2-apim-gateway/hr-inst/hr";
     private static final String HR_INST_API = "hr_inst_global_1_0_0_hr_api";
     private static final String DEFAULT_APPLICATION = "DefaultApplication";
     private static final String AUTHENTICATION_TYPE_BEARER = "Bearer";
