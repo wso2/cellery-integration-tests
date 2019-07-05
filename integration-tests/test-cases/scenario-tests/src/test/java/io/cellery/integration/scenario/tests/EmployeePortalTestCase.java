@@ -52,16 +52,16 @@ public class EmployeePortalTestCase extends BaseTestCase {
     private static final String LINK_HR_TO_EMPLOYEE = "employeeCellDep:employee-inst";
     private static final String HR_URL = "https://wso2-apim-gateway/hr-inst/hr-api";
     private static final String HR_INST_API = "hr_inst_global_1_0_0_hr_api";
-    private static final String DEFAULT_APPLICATION = "DefaultApplication";
     private static final String AUTHENTICATION_TYPE_BEARER = "Bearer";
 
-    private HttpClient httpClient;
-    private ApimHelper apimHelper;
+    protected String employeeBalFile;
+    protected String applicationName;
+    private ApimHelper apimHelper = new ApimHelper();
 
     @BeforeClass
     public void setup() {
-        this.httpClient = new HttpClient();
-        this.apimHelper = new ApimHelper();
+        this.employeeBalFile = "employee.bal";
+        this.applicationName = "EmployeePortal";
     }
 
     @Test(description = "Tests the building of all related cell images.")
@@ -69,7 +69,7 @@ public class EmployeePortalTestCase extends BaseTestCase {
         build("stocks.bal", Constants.TEST_CELL_ORG_NAME, STOCK_IMAGE_NAME, VERSION,
                 Paths.get(CELLERY_SCENARIO_TEST_ROOT, "employee-portal", "cellery", "stock")
                         .toFile().getAbsolutePath());
-        build("employee.bal", Constants.TEST_CELL_ORG_NAME, EMPLOYEE_IMAGE_NAME, VERSION,
+        build(employeeBalFile, Constants.TEST_CELL_ORG_NAME, EMPLOYEE_IMAGE_NAME, VERSION,
                 Paths.get(CELLERY_SCENARIO_TEST_ROOT, "employee-portal", "cellery", "employee")
                         .toFile().getAbsolutePath());
         build("hr.bal", Constants.TEST_CELL_ORG_NAME, HR_IMAGE_NAME, VERSION,
@@ -90,24 +90,27 @@ public class EmployeePortalTestCase extends BaseTestCase {
     public void validateData() throws Exception {
         // Get the access token to access apim store for user alice
         String accessTokenForApimStore = apimHelper.getAccessTokenForApiStore(ALICE_USERNAME, ALICE_PASSWORD);
-        // Get the id of hr api needed to subscribe
+        // Get the id of hr api
         String hrApiId = apimHelper.getApiId(HR_INST_API);
-        // Get the id of DefaultApplication needed to subscribe
-        String defaultApplicationId = apimHelper.getApplicationId(accessTokenForApimStore,
-                DEFAULT_APPLICATION);
+        // Create an application to subscribe
+        String applicationDescription = "testing";
+        String applicationCallBackUrl = "http://employee.server.com/callback";
+        String applicationId = apimHelper.createApplication(this.applicationName, applicationDescription
+                , applicationCallBackUrl, accessTokenForApimStore);
         // Subscribe for hr api default application
-        apimHelper.subscribeForApplication(hrApiId, defaultApplicationId, accessTokenForApimStore);
+        apimHelper.subscribeForApplication(hrApiId, applicationId, accessTokenForApimStore);
         // Generate production keys for default application
-        apimHelper.generateKeysForApplication(accessTokenForApimStore, defaultApplicationId);
+        apimHelper.generateKeysForApplication(accessTokenForApimStore, applicationId);
         // Get base64 encoded consumer key consumer secret
-        String consumerKeyConsumerSecret =
-                apimHelper.getConsumerKeyConsumerSecretForApplication(accessTokenForApimStore
-                        , defaultApplicationId);
+        String consumerKeyConsumerSecret = apimHelper.getConsumerKeyConsumerSecretForApplication(
+                accessTokenForApimStore, applicationId);
         // Get the token to access wso2-apim-gateway
         String gatewayToken = apimHelper.getWso2ApimGatewayToken(consumerKeyConsumerSecret, ALICE_USERNAME
                 , ALICE_PASSWORD);
         // Validate data
         validateData(gatewayToken);
+        // Delete application
+        apimHelper.deleteApplication(applicationId, accessTokenForApimStore);
     }
 
     @Test(description = "This tests the termination of hr, employee and stock cell instances")
@@ -147,7 +150,7 @@ public class EmployeePortalTestCase extends BaseTestCase {
         //Add headers
         Map<String, String> headers = new HashMap<>();
         headers.put(HttpHeaders.AUTHORIZATION, AUTHENTICATION_TYPE_BEARER + " " + token);
-        String response = httpClient.sendGet(HR_URL, headers);
+        String response = HttpClient.sendGet(HR_URL, headers);
         JsonObject responseJson = new JsonParser().parse(response).getAsJsonObject();
         Assert.assertTrue(responseJson.isJsonObject());
         String employeeId =

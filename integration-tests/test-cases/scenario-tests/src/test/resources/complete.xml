@@ -60,6 +60,19 @@
                     <include name="deleteImages"/>
                 </methods>
             </class>
+            <class name="io.cellery.integration.scenario.tests.autoscaling.ScaleToZeroTestCase">
+                <methods>
+                    <include name="enableScaleToZero"/>
+                    <include name="build"/>
+                    <include name="run"/>
+                    <include name="checkPodTermination"/>
+                    <include name="validateData"/>
+                    <include name="checkPodStart"/>
+                    <include name="disableScaleToZero"/>
+                    <include name="terminate"/>
+                    <include name="deleteImages"/>
+                </methods>
+            </class>
         </classes>
     </test>
 </suite>

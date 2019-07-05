@@ -41,7 +41,6 @@ public class ApimHelper {
     private static final String WSO2_APIM_TOKEN_URL = "https://wso2-apim-gateway/token";
     private static final String CLIENT_ID = "clientId";
     private static final String CLIENT_SECRET = "clientSecret";
-    private static final String APPLICATION_ID = "applicationId";
     private static final String ACCESS_TOKEN = "access_token";
     private static final String CONTENT_TYPE_APPLICATION_JSON = "application/json";
     private static final String AUTHENTICATION_TYPE_BEARER = "Bearer";
@@ -125,32 +124,54 @@ public class ApimHelper {
     }
 
     /**
-     * Get the id of an application.
+     * Create an application.
      *
-     * @param accessToken An access token to access wso2-apim
-     * @return application id
+     * @param applicationName        Application name
+     * @param applicationDescription Application description
+     * @param callBackUrl            Callback url
+     * @param oauthToken             An oauth token to access wso2-apim
+     * @return Application id
      * @throws NoSuchAlgorithmException if sendGet method fails
      * @throws IOException              if sendGet method fails
      * @throws KeyManagementException   if sendGet method fails
      */
-    public String getApplicationId(String accessToken, String applicationName) throws NoSuchAlgorithmException
-            , IOException, KeyManagementException {
-        String applicationId = "";
+    public String createApplication(String applicationName, String applicationDescription, String callBackUrl
+            , String oauthToken) throws NoSuchAlgorithmException, IOException, KeyManagementException {
+        String applicationId;
+        String payload = "{\n" +
+                "    \"throttlingTier\": \"Unlimited\",\n" +
+                "    \"description\": \"" + applicationDescription + "\",\n" +
+                "    \"name\": \"" + applicationName + "\",\n" +
+                "    \"callbackUrl\": \"" + callBackUrl + "\"\n" +
+                "}";
         //Add headers
         Map<String, String> headers = new HashMap<>();
-        headers.put(HttpHeaders.AUTHORIZATION, AUTHENTICATION_TYPE_BEARER + " " + accessToken);
-        String applications = HttpClient.sendGet(WSO2_APIM_APPLICATIONS_URL, headers);
-        JsonObject responseJson = new JsonParser().parse(applications).getAsJsonObject();
+        headers.put(HttpHeaders.AUTHORIZATION, AUTHENTICATION_TYPE_BEARER + " " + oauthToken);
+        headers.put(HttpHeaders.CONTENT_TYPE, CONTENT_TYPE_APPLICATION_JSON);
+        String response = HttpClient.sendPost(WSO2_APIM_APPLICATIONS_URL, payload, headers);
+        JsonObject responseJson = new JsonParser().parse(response).getAsJsonObject();
         Assert.assertTrue(responseJson.isJsonObject());
-        JsonArray apiList = responseJson.get("list").getAsJsonArray();
-        for (int i = 0; i < apiList.size(); i++) {
-            JsonObject jsonItem = apiList.get(i).getAsJsonObject();
-            // Get the id of application
-            if (jsonItem.get("name").toString().equals("\"" + applicationName + "\"")) {
-                applicationId = jsonItem.get(APPLICATION_ID).toString().replaceAll("^\"|\"$", "");
-            }
-        }
+        // Get the subscription id from the response
+        applicationId = responseJson.get("applicationId").getAsString().replaceAll("^\"|\"$", "");
         return applicationId;
+    }
+
+    /**
+     * Delete an application.
+     *
+     * @param applicationId Application id
+     * @param oauthToken    An oauth token to access wso2-apim
+     * @throws NoSuchAlgorithmException if sendGet method fails
+     * @throws IOException              if sendGet method fails
+     * @throws KeyManagementException   if sendGet method fails
+     */
+    public void deleteApplication(String applicationId, String oauthToken) throws NoSuchAlgorithmException
+            , IOException, KeyManagementException {
+        //Add headers
+        Map<String, String> headers = new HashMap<>();
+        headers.put(HttpHeaders.AUTHORIZATION, AUTHENTICATION_TYPE_BEARER + " " + oauthToken);
+        headers.put(HttpHeaders.CONTENT_TYPE, CONTENT_TYPE_APPLICATION_JSON);
+        HttpClient.sendDelete(WSO2_APIM_APPLICATIONS_URL + "/" + applicationId, headers);
     }
 
     /**
@@ -174,13 +195,15 @@ public class ApimHelper {
         Map<String, String> headers = new HashMap<>();
         headers.put(HttpHeaders.AUTHORIZATION, AUTHENTICATION_TYPE_BEARER + " " + oauthToken);
         headers.put(HttpHeaders.CONTENT_TYPE, CONTENT_TYPE_APPLICATION_JSON);
-        HttpClient.sendPost(WSO2_APIM_SUBSCRIPTION_URL, payload, headers);
+        String response = HttpClient.sendPost(WSO2_APIM_SUBSCRIPTION_URL, payload, headers);
+        JsonObject responseJson = new JsonParser().parse(response).getAsJsonObject();
+        Assert.assertTrue(responseJson.isJsonObject());
     }
 
     /**
      * Get base64 encoded consumer key consumer secret needed to generate access token .
      *
-     * @param oauthToken           An oauth token to access wso2-apim
+     * @param oauthToken    An oauth token to access wso2-apim
      * @param applicationId Application id
      * @return base64 encoded concatenated string comprising consumer key consumer secret
      * @throws NoSuchAlgorithmException if sendGet method fails
@@ -233,7 +256,7 @@ public class ApimHelper {
     /**
      * Generate production keys for an application.
      *
-     * @param oauthToken An oauth token to access wso2-apim
+     * @param oauthToken    An oauth token to access wso2-apim
      * @param applicationId Application id
      * @throws NoSuchAlgorithmException if sendPost method fails
      * @throws IOException              if sendPost method fails
