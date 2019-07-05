@@ -89,7 +89,7 @@ public class HttpClient {
      * @throws KeyManagementException   if TLS verification skip fails
      * @throws NoSuchAlgorithmException if TLS verification skip fails
      */
-    public static String sendPost(String url, String payload, Map<String, String> headers)
+    static String sendPost(String url, String payload, Map<String, String> headers)
             throws IOException, KeyManagementException, NoSuchAlgorithmException {
         HttpsURLConnection con = null;
         // Skipping TLS verification since certificate is self-signed
@@ -120,6 +120,32 @@ public class HttpClient {
                 }
             }
             return content.toString();
+        } finally {
+            if (con != null) {
+                con.disconnect();
+            }
+        }
+    }
+
+    /**
+     * @param url     Url to which the request is being sent
+     * @param headers A hash map containing header keys and values
+     * @throws IOException              exception if http connection fails
+     * @throws KeyManagementException   if TLS verification skip fails
+     * @throws NoSuchAlgorithmException if TLS verification skip fails
+     */
+    static void sendDelete(String url, Map<String, String> headers)
+            throws IOException, KeyManagementException, NoSuchAlgorithmException {
+        HttpsURLConnection con = null;
+        // Skipping TLS verification since certificate is self-signed
+        trustAllCerts();
+        try {
+            URL postUrl = new URL(url);
+            con = (HttpsURLConnection) postUrl.openConnection();
+            con.setRequestMethod("DELETE");
+            for (Map.Entry<String, String> entry : headers.entrySet()) {
+                con.setRequestProperty(entry.getKey(), entry.getValue());
+            }
         } finally {
             if (con != null) {
                 con.disconnect();
