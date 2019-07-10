@@ -31,14 +31,18 @@ public class ScaleToZeroTestCase extends EmployeePortalTestCase {
 
     private static final String KUBECTL_GET_DEPLOYEMENT_EMPLOYEE_SERVICE = "kubectl get deployment employee-inst" +
             "--employee-service-rev-deployment";
-    private static final String EMPLOYEE_POD_RUNNING_OUTPUT = "employee-inst--employee-service-rev-deployment   1/1";
-    private static final String EMPLOYEE_POD_TERMINATED_OUTPUT = "employee-inst--employee-service-rev-deployment   0/0";
     private static final String CELLERY_MODIFY_SCALE_TO_ZERO = "cellery setup modify --scale-to-zero=";
+    private String employeePodRunningOutput = "employee-inst--employee-service-rev-deployment   1/1";
+    private String employeePodTerminatedOutput = "employee-inst--employee-service-rev-deployment   0/0";
 
     @BeforeClass
     public void setup() {
         this.employeeBalFile = "employee-zero.bal";
-        this.applicationName = "EmployeePortalZero";
+        this.applicationName = "EmployeePortalZero1";
+        if (Boolean.parseBoolean(System.getenv("IS_GCP"))) {
+            employeePodRunningOutput = "employee-inst--employee-service-rev-deployment   1";
+            employeePodTerminatedOutput = "employee-inst--employee-service-rev-deployment   0";
+        }
     }
 
     @Test(description = "Tests the runtime modification of enabling scale-to-zero")
@@ -56,14 +60,14 @@ public class ScaleToZeroTestCase extends EmployeePortalTestCase {
         TimeUnit.SECONDS.sleep(180);
         Process process = Runtime.getRuntime().exec(KUBECTL_GET_DEPLOYEMENT_EMPLOYEE_SERVICE);
         String errorString = "employee-service pod is not terminated";
-        readOutputResult(process, EMPLOYEE_POD_TERMINATED_OUTPUT, errorString);
+        readOutputResult(process, employeePodTerminatedOutput, errorString);
     }
 
     @Test(description = "Tests the starting of a pod after receiving a request")
     public void checkPodStart() throws Exception {
         Process process = Runtime.getRuntime().exec(KUBECTL_GET_DEPLOYEMENT_EMPLOYEE_SERVICE);
         String errorString = "employee-service pod is not running";
-        readOutputResult(process, EMPLOYEE_POD_RUNNING_OUTPUT, errorString);
+        readOutputResult(process, employeePodRunningOutput, errorString);
     }
 
     @Test(description = "Tests the runtime modification of disabling scale-to-zero")
