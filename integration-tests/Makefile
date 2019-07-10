@@ -19,6 +19,7 @@ PROJECT_ROOT := $(realpath $(dir $(abspath $(lastword $(MAKEFILE_LIST)))))
 USERNAME ?= celleryio
 PASSWORD ?= celleryio
 CELLERY_REGISTRY ?= registry-1.docker.io
+GCP_CLUSTER ?= false
 
 run-local-basic: setup-local-basic test-basic cleanup-local
 run-local-complete: setup-local-complete test-complete cleanup-local
@@ -48,12 +49,14 @@ remove-samples:
 .PHONY: test-basic
 test-basic: clone-samples
 	cd $(PROJECT_ROOT)/test-cases/scenario-tests/; \
+	export IS_GCP=$(GCP_CLUSTER);\
 	mvn clean install -Dsuite=src/test/resources/basic.xml -fae
 	rm -rf $(PROJECT_ROOT)/test-cases/cells
 
 .PHONY: test-complete
 test-complete: clone-samples
 	cd $(PROJECT_ROOT)/test-cases/scenario-tests/; \
+	export IS_GCP=$(GCP_CLUSTER);\
 	mvn clean install -Dsuite=src/test/resources/complete.xml
 	rm -rf test-cases/cells
 
