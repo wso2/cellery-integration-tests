@@ -81,8 +81,7 @@ public class HttpClient {
      * Send an http post request and get the response.
      *
      * @param url     Url to which the request is being sent
-     * @param payload String
-     *                Url parameters
+     * @param payload String Url parameters
      * @param headers A hash map containing header keys and values
      * @return response message
      * @throws IOException              exception if http connection fails

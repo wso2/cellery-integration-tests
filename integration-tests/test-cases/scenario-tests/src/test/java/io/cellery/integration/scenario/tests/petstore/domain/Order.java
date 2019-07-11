@@ -33,8 +33,7 @@ public class Order {
 
     /**
      * Initializes an Order object which will contain checked out pet store items.
-     * @param webDriver
-     *        A selenium web driver to interact with pet store web page.
+     * @param webDriver A selenium web driver to interact with pet store web page.
      */
     public Order(WebDriver webDriver) {
         this.webDriver = webDriver;

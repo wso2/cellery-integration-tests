@@ -26,10 +26,8 @@ public class PetAccessory {
 
     /**
      *
-     * @param amount
-     *        The number of items of pet accessory.
-     * @param xpath
-     *        The xpath of cart button for pet accessory item in the web page.
+     * @param amount The number of items of pet accessory.
+     * @param xpath The xpath of cart button for pet accessory item in the web page.
      */
     public PetAccessory(int amount, String xpath) {
         this.amount = amount;
