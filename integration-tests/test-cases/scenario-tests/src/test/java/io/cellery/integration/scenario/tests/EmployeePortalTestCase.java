@@ -82,8 +82,7 @@ public class EmployeePortalTestCase extends BaseTestCase {
         // Run stock cell
         run(Constants.TEST_CELL_ORG_NAME, STOCK_IMAGE_NAME, VERSION, STOCK_INSTANCE_NAME, 600);
         // Run hr cell by defining link to stock cell and starting the dependent employee cell
-        run(Constants.TEST_CELL_ORG_NAME, HR_IMAGE_NAME, VERSION, HR_INSTANCE_NAME, links, true,
-                600);
+        run(Constants.TEST_CELL_ORG_NAME, HR_IMAGE_NAME, VERSION, HR_INSTANCE_NAME, links, true);
     }
 
     @Test(description = "Sends http requests and asserts response with expected employee data")

@@ -88,7 +88,7 @@ public class BaseTestCase {
     }
 
     protected void run(String orgName, String imageName, String version, String instanceName,
-                       String[] links, boolean startDependencies, int timeoutSec)
+                       String[] links, boolean startDependencies)
             throws Exception {
         String cellImageName = getCellImageName(orgName, imageName, version);
         String command = CELLERY_RUN + " " + cellImageName + " -y >/dev/null 2>&1";
@@ -107,7 +107,7 @@ public class BaseTestCase {
         }
         Process process = Runtime.getRuntime().exec(command);
         String result = readOutputResult(process, SUCCESSFUL_RUN_MSG, "Unable to run cell: "
-                + cellImageName + " , with instance name: " + instanceName, timeoutSec);
+                + cellImageName + " , with instance name: " + instanceName, 1800);
         String instancesResult = result.substring(result.indexOf(INSTANCE_NAME_HEADING));
         if (instanceName != null && !instanceName.isEmpty()) {
             if (!instancesResult.contains(instanceName + " ")) {
@@ -200,7 +200,7 @@ public class BaseTestCase {
         private InputStream inputStream;
         private Consumer<String> consumer;
 
-        public StreamGobbler(InputStream inputStream, Consumer<String> consumer) {
+        StreamGobbler(InputStream inputStream, Consumer<String> consumer) {
 
             this.inputStream = inputStream;
             this.consumer = consumer;
