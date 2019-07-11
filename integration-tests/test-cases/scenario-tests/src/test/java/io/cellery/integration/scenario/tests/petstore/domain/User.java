@@ -48,8 +48,8 @@ public class User {
      * @param webDriver A selenium web driver to interact with pet store web page.
      * @param webDriverWait A web driver wait which is used to check the availability of pet store web page attributes
      */
-    public User(String firstName, String lastName, String address, String userName, String password
-            , WebDriver webDriver, WebDriverWait webDriverWait) {
+    public User(String firstName, String lastName, String address, String userName, String password,
+                WebDriver webDriver, WebDriverWait webDriverWait) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.address = address;

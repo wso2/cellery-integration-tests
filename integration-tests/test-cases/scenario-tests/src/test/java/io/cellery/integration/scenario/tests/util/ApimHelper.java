@@ -61,8 +61,8 @@ public class ApimHelper {
      * @throws IOException              if sendPost method fails
      * @throws KeyManagementException   if sendPost method fails
      */
-    public String getAccessTokenForApiStore(String username, String password) throws NoSuchAlgorithmException
-            , IOException, KeyManagementException {
+    public String getAccessTokenForApiStore(String username, String password)
+            throws NoSuchAlgorithmException, IOException, KeyManagementException {
         String accessTokenForApiStore;
         String registrationUrlParameters = "{\"callbackUrl\": \"www.google.lk\", " +
                 "\"clientName\": \"rest_api_store\", " +
@@ -75,8 +75,8 @@ public class ApimHelper {
         Map<String, String> registrationUrlHeaders = new HashMap<>();
         registrationUrlHeaders.put(HttpHeaders.AUTHORIZATION, AUTHENTICATION_TYPE_BASIC + " " + base64UsernamePassword);
         registrationUrlHeaders.put(HttpHeaders.CONTENT_TYPE, CONTENT_TYPE_APPLICATION_JSON);
-        String registrationResponse = HttpClient.sendPost(WSO2_APIM_REGISTRATION_URL, registrationUrlParameters
-                , registrationUrlHeaders);
+        String registrationResponse = HttpClient.sendPost(WSO2_APIM_REGISTRATION_URL, registrationUrlParameters,
+                registrationUrlHeaders);
         JsonObject registrationResponseJson = new JsonParser().parse(registrationResponse).getAsJsonObject();
         Assert.assertTrue(registrationResponseJson.isJsonObject());
         // Get client id and client secret from the response
@@ -105,8 +105,7 @@ public class ApimHelper {
      * @throws IOException              if sendGet method fails
      * @throws KeyManagementException   if sendGet method fails
      */
-    public String getApiId(String apiName) throws NoSuchAlgorithmException, IOException
-            , KeyManagementException {
+    public String getApiId(String apiName) throws NoSuchAlgorithmException, IOException, KeyManagementException {
         String apiId = "";
         //Add headers
         Map<String, String> headers = new HashMap<>();
@@ -135,8 +134,9 @@ public class ApimHelper {
      * @throws IOException              if sendGet method fails
      * @throws KeyManagementException   if sendGet method fails
      */
-    public String createApplication(String applicationName, String applicationDescription, String callBackUrl
-            , String oauthToken) throws NoSuchAlgorithmException, IOException, KeyManagementException {
+    public String createApplication(String applicationName, String applicationDescription, String callBackUrl,
+                                    String oauthToken)
+            throws NoSuchAlgorithmException, IOException, KeyManagementException {
         String applicationId;
         String payload = "{\n" +
                 "    \"throttlingTier\": \"Unlimited\",\n" +
@@ -165,8 +165,8 @@ public class ApimHelper {
      * @throws IOException              if sendGet method fails
      * @throws KeyManagementException   if sendGet method fails
      */
-    public void deleteApplication(String applicationId, String oauthToken) throws NoSuchAlgorithmException
-            , IOException, KeyManagementException {
+    public void deleteApplication(String applicationId, String oauthToken)
+            throws NoSuchAlgorithmException, IOException, KeyManagementException {
         //Add headers
         Map<String, String> headers = new HashMap<>();
         headers.put(HttpHeaders.AUTHORIZATION, AUTHENTICATION_TYPE_BEARER + " " + oauthToken);
@@ -184,8 +184,8 @@ public class ApimHelper {
      * @throws IOException              if sendPost method fails
      * @throws KeyManagementException   if sendPost method fails
      */
-    public void subscribeForApplication(String apiId, String applicationId, String oauthToken) throws
-            NoSuchAlgorithmException, IOException, KeyManagementException {
+    public void subscribeForApplication(String apiId, String applicationId, String oauthToken)
+            throws NoSuchAlgorithmException, IOException, KeyManagementException {
         String payload = "{\n" +
                 "  \"tier\": \"Unlimited\",\n" +
                 "  \"apiIdentifier\": \"" + apiId + "\",\n" +
@@ -237,8 +237,8 @@ public class ApimHelper {
      * @throws IOException              if sendPost method fails
      * @throws KeyManagementException   if sendPost method fails
      */
-    public String getWso2ApimGatewayToken(String consumerKeyConsumerSecret, String username, String password) throws
-            NoSuchAlgorithmException, IOException, KeyManagementException {
+    public String getWso2ApimGatewayToken(String consumerKeyConsumerSecret, String username, String password)
+            throws NoSuchAlgorithmException, IOException, KeyManagementException {
         String gatewayToken;
         String payload = "grant_type=password&username=" + username + "&password=" + password;
         //Add headers
@@ -262,8 +262,8 @@ public class ApimHelper {
      * @throws IOException              if sendPost method fails
      * @throws KeyManagementException   if sendPost method fails
      */
-    public void generateKeysForApplication(String oauthToken, String applicationId) throws NoSuchAlgorithmException
-            , IOException, KeyManagementException {
+    public void generateKeysForApplication(String oauthToken, String applicationId)
+            throws NoSuchAlgorithmException, IOException, KeyManagementException {
         //Add headers
         Map<String, String> headers = new HashMap<>();
         headers.put(HttpHeaders.AUTHORIZATION, AUTHENTICATION_TYPE_BEARER + " " + oauthToken);
