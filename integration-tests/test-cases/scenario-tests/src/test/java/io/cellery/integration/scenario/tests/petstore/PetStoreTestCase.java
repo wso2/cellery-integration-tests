@@ -175,8 +175,8 @@ public class PetStoreTestCase extends BaseTestCase {
 
     /**
      * Signs in test user to pet-store web page.
-     * @param user
-     *        An instance of User
+     *
+     * @param user An instance of User
      * @throws InterruptedException if fails to sign in
      */
     private void signIn(User user) throws InterruptedException {
@@ -200,8 +200,8 @@ public class PetStoreTestCase extends BaseTestCase {
 
     /**
      * Signs out test user to pet-store web page.
-     * @param user
-     *        An instance of user
+     *
+     * @param user An instance of user
      * @throws InterruptedException if fails to sign out
      */
     private void signOut(User user) throws InterruptedException {

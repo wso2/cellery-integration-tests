@@ -40,20 +40,13 @@ public class User {
 
     /**
      * Initializes a user object that would be used to perform actions on the pet-store web site.
-     * @param firstName
-     *        First name of the user
-     * @param lastName
-     *        Last name if the user
-     * @param address
-     *        Address of the user
-     * @param userName
-     *        User name of the user
-     * @param password
-     *        Password of the user
-     * @param webDriver
-     *        A selenium web driver to interact with pet store web page.
-     * @param webDriverWait
-     *        A web driver wait which would be used to check the availability of pet store web page attributes
+     * @param firstName First name of the user
+     * @param lastName Last name if the user
+     * @param address Address of the user
+     * @param userName User name of the user
+     * @param password Password of the user
+     * @param webDriver A selenium web driver to interact with pet store web page.
+     * @param webDriverWait A web driver wait which is used to check the availability of pet store web page attributes
      */
     public User(String firstName, String lastName, String address, String userName, String password
             , WebDriver webDriver, WebDriverWait webDriverWait) {
