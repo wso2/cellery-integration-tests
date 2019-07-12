@@ -142,13 +142,16 @@ public class User {
     /**
      * Sign out from pet-store.
      * @return header of idp logout screen
+     * @throws InterruptedException if fails to sign out
      */
-    public String signOut() {
+    public String signOut() throws InterruptedException {
         String userButtonXpath = "//*[@id=\"app\"]/div/header/div/div/button";
         webDriver.findElement(By.xpath(userButtonXpath)).click();
         String petStoreSignOutButtonXpath = "//*[@id=\"user-info-appbar\"]/div[2]/ul/li[2]";
         webDriver.findElement(By.xpath(petStoreSignOutButtonXpath)).click();
-        return webDriver.findElement(By.cssSelector("H2")).getText();
+        // Putting an explicit sleep of 15 seconds because test is failing in jenkins server.
+        TimeUnit.SECONDS.sleep(15);
+        return webDriver.findElement(By.xpath("/html/body/div/div/div/div/div[1]/h2")).getText();
     }
 
     /**

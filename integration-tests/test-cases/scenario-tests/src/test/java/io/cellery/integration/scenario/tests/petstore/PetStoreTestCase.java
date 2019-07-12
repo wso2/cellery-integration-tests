@@ -33,7 +33,6 @@ import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import java.nio.file.Paths;
-import java.util.concurrent.TimeUnit;
 
 import static io.github.bonigarcia.wdm.DriverManagerType.CHROME;
 
@@ -203,10 +202,9 @@ public class PetStoreTestCase extends BaseTestCase {
      * Signs out test user to pet-store web page.
      * @param user
      *        An instance of user
+     * @throws InterruptedException if fails to sign out
      */
     private void signOut(User user) throws InterruptedException {
-        // Putting an explicit sleep of 15 seconds because test is failing in jenkins server.
-        TimeUnit.SECONDS.sleep(15);
         String idpLogoutHeaderActual = user.signOut();
         String idpLogoutHeader = "OPENID CONNECT LOGOUT";
         validateWebPage(idpLogoutHeaderActual, idpLogoutHeader, "IDP logout header " +
