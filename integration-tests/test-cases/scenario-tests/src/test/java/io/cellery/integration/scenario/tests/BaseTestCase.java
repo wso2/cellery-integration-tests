@@ -64,6 +64,17 @@ public class BaseTestCase {
         readOutputResult(process, SUCCESSFUL_BUILD_MSG, errorString);
     }
 
+    /**
+     * Run a cell instance without dependencies.
+     *
+     * @param orgName organization name
+     * @param imageName cell image name
+     * @param version cell image version
+     * @param instanceName cell instance name
+     * @param timeoutSec waiting time for cell instance to be deployed
+     * @return output message
+     * @throws Exception if cellery run command fails
+     */
     protected String run(String orgName, String imageName, String version, String instanceName, int timeoutSec)
             throws Exception {
         String cellImageName = getCellImageName(orgName, imageName, version);
@@ -87,6 +98,17 @@ public class BaseTestCase {
         return instanceName;
     }
 
+    /**
+     * Run a cell instance with dependencies.
+     *
+     * @param orgName organization name
+     * @param imageName cell image name
+     * @param version cell image version
+     * @param instanceName cell instance name
+     * @param links links to the dependent cell instances
+     * @param startDependencies start dependencies true or false
+     * @throws Exception if cellery run command fails
+     */
     protected void run(String orgName, String imageName, String version, String instanceName,
                        String[] links, boolean startDependencies)
             throws Exception {
@@ -117,6 +139,12 @@ public class BaseTestCase {
         }
     }
 
+    /**
+     * Terminate a running cell instance.
+     *
+     * @param cellInstanceName cell instance name
+     * @throws Exception if cellery terminate command fails
+     */
     protected void terminateCell(String cellInstanceName) throws Exception {
         Process process = Runtime.getRuntime().exec(CELLERY_TERM + " " + cellInstanceName);
         readOutputResult(process, "",
@@ -133,10 +161,28 @@ public class BaseTestCase {
         }
     }
 
+    /**
+     * Read the output of a process with a fixed timeout.
+     *
+     * @param process process to be executed
+     * @param successOutput expected output if the process executed successfully
+     * @param errorMessage error message to display if the process did not execute successfully
+     * @throws Exception if process execution fails
+     */
     protected void readOutputResult(Process process, String successOutput, String errorMessage) throws Exception {
         readOutputResult(process, successOutput, errorMessage, 600);
     }
 
+    /**
+     * Read the output of a process with a variable timeout.
+     *
+     * @param process process to be executed
+     * @param successOutput expected output if the process executed successfully
+     * @param errorMessage error message to display if the process did not execute successfully
+     * @param timeout waiting time for the process
+     * @return process output
+     * @throws Exception if process execution fails
+     */
     private String readOutputResult(Process process, String successOutput, String errorMessage, int timeout)
             throws Exception {
 
@@ -172,18 +218,46 @@ public class BaseTestCase {
         }
     }
 
+    /**
+     * Get the fully qualified cell image name.
+     *
+     * @param orgName organization name
+     * @param imageName cell image name
+     * @param version cell image version
+     * @return cell image name
+     */
     protected String getCellImageName(String orgName, String imageName, String version) {
-        return orgName + "/" + imageName + ":" + version;
+        return orgName + Constants.FORWARD_SLASH + imageName + Constants.COLON + version;
     }
 
+    /**
+     * Get the prefix of cell instance.
+     *
+     * @param image cell image name
+     * @param version cell image version
+     * @return cell instance prefix
+     */
     private String getInstanceNamePrefix(String image, String version) {
         return (image + "-" + version).replace(".", "-");
     }
 
+    /**
+     * Validate elements of a web page.
+     *
+     * @param expected expected output
+     * @param actual actual output
+     * @param error error message if actual output is different from expected
+     */
     protected void validateWebPage(String expected, String actual, String error) {
         Assert.assertEquals(expected, actual, error);
     }
 
+    /**
+     * Delete a cell image.
+     *
+     * @param cellImageName cell image name
+     * @throws Exception if cellery delete command fails
+     */
     protected void delete(String cellImageName) throws Exception {
         Process process = Runtime.getRuntime().exec(CELLERY_DELETE + " " + cellImageName);
         String errorString = "Unable to delete cell image: " + cellImageName;

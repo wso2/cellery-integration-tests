@@ -47,35 +47,35 @@ public class HelloworldWebTestCase extends BaseTestCase {
     }
 
     @Test
-    public void build() throws Exception {
+    public void buildHelloWorld() throws Exception {
         build("web.bal", Constants.TEST_CELL_ORG_NAME, IMAGE_NAME, VERSION,
                 Paths.get(CELLERY_SCENARIO_TEST_ROOT, "hello-web").toFile().getAbsolutePath());
     }
 
-    @Test
-    public void run() throws Exception {
+    @Test(dependsOnMethods = "buildHelloWorld")
+    public void runHelloWorld() throws Exception {
         run(Constants.TEST_CELL_ORG_NAME, IMAGE_NAME, VERSION, HELLO_WORLD_INSTANCE, 600);
     }
 
-    @Test
+    @Test(dependsOnMethods = "runHelloWorld")
     public void invoke() {
         webDriver.get(Constants.DEFAULT_HELLO_WORLD_URL);
         validateWebPage();
     }
 
-    @Test
+    @Test(dependsOnMethods = "invoke")
     public void terminate() throws Exception {
         terminateCell(HELLO_WORLD_INSTANCE);
     }
 
-    @Test(expectedExceptions = Exception.class)
+    @Test(expectedExceptions = Exception.class, dependsOnMethods = "terminate")
     public void repeatTerminate() throws Exception {
         terminateCell(HELLO_WORLD_INSTANCE);
     }
 
-    @Test
+    @Test(dependsOnMethods = "terminate")
     public void deleteImage() throws Exception {
-        delete(Constants.TEST_CELL_ORG_NAME + "/" + IMAGE_NAME + ":" + VERSION);
+        delete(Constants.TEST_CELL_ORG_NAME + Constants.FORWARD_SLASH + IMAGE_NAME + Constants.COLON + VERSION);
     }
 
     private void validateWebPage() {

@@ -32,4 +32,6 @@ public class Constants {
     public static final String PET_STORE_WEB_CONTENT = "Pet Accessories";
     static final String DEFAULT_HELLO_WORLD_URL = "http://hello-world.com";
     public static final String DEFAULT_PET_STORE_URL = "http://pet-store.com";
+    public static final String FORWARD_SLASH = "/";
+    public static final String COLON = ":";
 }

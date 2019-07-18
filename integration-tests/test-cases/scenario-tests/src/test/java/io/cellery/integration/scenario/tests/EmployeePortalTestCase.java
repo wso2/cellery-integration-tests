@@ -17,161 +17,57 @@
  */
 package io.cellery.integration.scenario.tests;
 
-import com.google.common.net.HttpHeaders;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import io.cellery.integration.scenario.tests.util.ApimHelper;
-import io.cellery.integration.scenario.tests.util.HttpClient;
-import org.testng.Assert;
+import io.cellery.integration.scenario.tests.employeeportal.EmployeePortal;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
-
-import java.io.IOException;
-import java.nio.file.Paths;
-import java.security.KeyManagementException;
-import java.security.NoSuchAlgorithmException;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * This includes the test cases related to employee portal.
  */
 public class EmployeePortalTestCase extends BaseTestCase {
 
-    private static final String STOCK_INSTANCE_NAME = "stock-inst";
-    private static final String STOCK_IMAGE_NAME = "stock";
-    private static final String EMPLOYEE_INSTANCE_NAME = "employee-inst";
-    private static final String EMPLOYEE_IMAGE_NAME = "employee";
-    private static final String HR_INSTANCE_NAME = "hr-inst";
-    private static final String HR_IMAGE_NAME = "hr";
-    private static final String VERSION = "1.0.0";
-    private static final String ALICE_USERNAME = "alice";
-    private static final String ALICE_PASSWORD = "alice123";
-    private static final String LINK_HR_TO_STOCK = "stockCellDep:stock-inst";
-    private static final String LINK_HR_TO_EMPLOYEE = "employeeCellDep:employee-inst";
-    private static final String HR_URL = "https://wso2-apim-gateway/hr-inst/hr";
-    private static final String HR_INST_API = "hr_inst_global_1_0_0_hr";
-    private static final String AUTHENTICATION_TYPE_BEARER = "Bearer";
-
-    protected String employeeBalFile;
-    protected String applicationName;
-    private ApimHelper apimHelper = new ApimHelper();
+    private EmployeePortal employeePortal = new EmployeePortal();
 
     @BeforeClass
     public void setup() {
-        this.employeeBalFile = "employee.bal";
-        this.applicationName = "EmployeePortal";
+        employeePortal.setEmployeeBalFile("employee.bal");
+        employeePortal.setApplicationName("EmployeePortal");
     }
 
     @Test(description = "Tests the building of all related cell images.")
-    public void build() throws Exception {
-        build("stocks.bal", Constants.TEST_CELL_ORG_NAME, STOCK_IMAGE_NAME, VERSION,
-                Paths.get(CELLERY_SCENARIO_TEST_ROOT, "employee-portal", "cellery", "stock")
-                        .toFile().getAbsolutePath());
-        build(employeeBalFile, Constants.TEST_CELL_ORG_NAME, EMPLOYEE_IMAGE_NAME, VERSION,
-                Paths.get(CELLERY_SCENARIO_TEST_ROOT, "employee-portal", "cellery", "employee")
-                        .toFile().getAbsolutePath());
-        build("hr.bal", Constants.TEST_CELL_ORG_NAME, HR_IMAGE_NAME, VERSION,
-                Paths.get(CELLERY_SCENARIO_TEST_ROOT, "employee-portal", "cellery", "hr").toFile().getAbsolutePath());
+    public void buildEmpPortal() throws Exception {
+        employeePortal.build();
     }
 
-    @Test(description = "Tests the running of all the related cell instances.")
-    public void run() throws Exception {
-        String[] links = new String[]{LINK_HR_TO_STOCK, LINK_HR_TO_EMPLOYEE};
-        // Run stock cell
-        run(Constants.TEST_CELL_ORG_NAME, STOCK_IMAGE_NAME, VERSION, STOCK_INSTANCE_NAME, 600);
-        // Run hr cell by defining link to stock cell and starting the dependent employee cell
-        run(Constants.TEST_CELL_ORG_NAME, HR_IMAGE_NAME, VERSION, HR_INSTANCE_NAME, links, true);
+    @Test(description = "Tests the running of all the related cell instances.", dependsOnMethods = "buildEmpPortal")
+    public void runEmpPortal() throws Exception {
+        employeePortal.run();
     }
 
-    @Test(description = "Sends http requests and asserts response with expected employee data")
+    @Test(description = "Sends http requests and asserts response with expected employee data",
+            dependsOnMethods = "runEmpPortal")
     public void validateData() throws Exception {
-        // Get the access token to access apim store for user alice
-        String accessTokenForApimStore = apimHelper.getAccessTokenForApiStore(ALICE_USERNAME, ALICE_PASSWORD);
-        // Get the id of hr api
-        String hrApiId = apimHelper.getApiId(HR_INST_API);
-        // Create an application to subscribe
-        String applicationDescription = "testing";
-        String applicationCallBackUrl = "http://employee.server.com/callback";
-        String applicationId = apimHelper.createApplication(this.applicationName, applicationDescription
-                , applicationCallBackUrl, accessTokenForApimStore);
-        // Subscribe for hr api default application
-        apimHelper.subscribeForApplication(hrApiId, applicationId, accessTokenForApimStore);
-        // Generate production keys for default application
-        apimHelper.generateKeysForApplication(accessTokenForApimStore, applicationId);
-        // Get base64 encoded consumer key consumer secret
-        String consumerKeyConsumerSecret = apimHelper.getConsumerKeyConsumerSecretForApplication(
-                accessTokenForApimStore, applicationId);
-        // Get the token to access wso2-apim-gateway
-        String gatewayToken = apimHelper.getWso2ApimGatewayToken(consumerKeyConsumerSecret, ALICE_USERNAME
-                , ALICE_PASSWORD);
-        // Validate data
-        validateData(gatewayToken);
-        // Delete application
-        apimHelper.deleteApplication(applicationId, accessTokenForApimStore);
+        employeePortal.sendRequest();
     }
 
-    @Test(description = "This tests the termination of hr, employee and stock cell instances")
+    @Test(description = "This tests the termination of hr, employee and stock cell instances",
+            dependsOnMethods = "validateData")
     public void terminate() throws Exception {
-        terminateCell(HR_INSTANCE_NAME);
-        terminateCell(EMPLOYEE_INSTANCE_NAME);
-        terminateCell(STOCK_INSTANCE_NAME);
+        employeePortal.terminate();
     }
 
-    @Test(description = "This tests the deletion hr, employee and stock cell images")
+    @Test(description = "This tests the deletion hr, employee and stock cell images", dependsOnMethods = "terminate")
     public void deleteImages() throws Exception {
-        delete(Constants.TEST_CELL_ORG_NAME + "/" + STOCK_IMAGE_NAME + ":" + VERSION);
-        delete(Constants.TEST_CELL_ORG_NAME + "/" + EMPLOYEE_IMAGE_NAME + ":" + VERSION);
-        delete(Constants.TEST_CELL_ORG_NAME + "/" + HR_IMAGE_NAME + ":" + VERSION);
+        employeePortal.deleteImages();
     }
 
     @AfterClass
     public void cleanup() {
         try {
-            terminateCell(HR_INSTANCE_NAME);
-            terminateCell(EMPLOYEE_INSTANCE_NAME);
-            terminateCell(STOCK_INSTANCE_NAME);
+            employeePortal.terminate();
+            employeePortal.deleteImages();
         } catch (Exception ignored) {
         }
-    }
-
-    /**
-     * Send an http request and get the employee data and validate against the expected values.
-     *
-     * @param token An access token
-     * @throws NoSuchAlgorithmException if sendGet method fails
-     * @throws IOException              if sendGet method fails
-     * @throws KeyManagementException   if sendGet method fails
-     */
-    private void validateData(String token) throws NoSuchAlgorithmException, IOException,
-            KeyManagementException {
-        //Add headers
-        Map<String, String> headers = new HashMap<>();
-        headers.put(HttpHeaders.AUTHORIZATION, AUTHENTICATION_TYPE_BEARER + " " + token);
-        String response = HttpClient.sendGet(HR_URL, headers);
-        JsonObject responseJson = new JsonParser().parse(response).getAsJsonObject();
-        Assert.assertTrue(responseJson.isJsonObject());
-        String employeeId =
-                responseJson.get("employee").getAsJsonObject().get("details").getAsJsonObject().get("id")
-                        .toString().replaceAll("^\"|\"$", "");
-        String employeeDesignation =
-                responseJson.get("employee").getAsJsonObject().get("details").getAsJsonObject()
-                        .get("designation").toString().replaceAll("^\"|\"$", "");
-        String employeeSalary =
-                responseJson.get("employee").getAsJsonObject().get("details").getAsJsonObject()
-                        .get("salary").toString().replaceAll("^\"|\"$", "");
-        int stockOptionsTotal = responseJson.get("employee").getAsJsonObject().get("stocks").getAsJsonObject()
-                .get("options").getAsJsonObject().get("total").getAsInt();
-        int stockOptionsVested =
-                responseJson.get("employee").getAsJsonObject().get("stocks").getAsJsonObject()
-                        .get("options").getAsJsonObject().get("vestedAmount").getAsInt();
-        // Validate data returned
-        Assert.assertEquals(employeeId, "0410", "Employee id is not as expected");
-        Assert.assertEquals(employeeDesignation, "Senior Software Engineer", "Employee designation is not " +
-                "as expected");
-        Assert.assertEquals(employeeSalary, "$1500", "Employee salary is not as expected");
-        Assert.assertEquals(stockOptionsTotal, 120, "Stock options total is not as expected");
-        Assert.assertEquals(stockOptionsVested, 105, "Stock options vested is not as expected");
     }
 }

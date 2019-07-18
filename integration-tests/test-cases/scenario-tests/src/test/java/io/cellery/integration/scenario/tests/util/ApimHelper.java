@@ -21,6 +21,7 @@ import com.google.common.net.HttpHeaders;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import io.cellery.integration.scenario.tests.Constants;
 import org.testng.Assert;
 
 import java.io.IOException;
@@ -69,8 +70,8 @@ public class ApimHelper {
                 "\"owner\": \"" + username + "\", " +
                 "\"grantType\": \"password refresh_token\", " +
                 "\"saasApp\": true}";
-        String base64UsernamePassword = Base64.getEncoder().encodeToString((username + ":" + password).getBytes(
-                StandardCharsets.UTF_8));
+        String base64UsernamePassword = Base64.getEncoder().encodeToString((username + Constants.COLON + password).
+                getBytes(StandardCharsets.UTF_8));
         // Get the client id and client secret for the user
         Map<String, String> registrationUrlHeaders = new HashMap<>();
         registrationUrlHeaders.put(HttpHeaders.AUTHORIZATION, AUTHENTICATION_TYPE_BASIC + " " + base64UsernamePassword);
@@ -86,7 +87,7 @@ public class ApimHelper {
         // Add headers to the http request
         Map<String, String> tokenUrlHeaders = new HashMap<>();
         tokenUrlHeaders.put(HttpHeaders.AUTHORIZATION, AUTHENTICATION_TYPE_BASIC + " " + Base64.getEncoder()
-                .encodeToString((clientId + ":" + clientSecret).getBytes(StandardCharsets.UTF_8)));
+                .encodeToString((clientId + Constants.COLON + clientSecret).getBytes(StandardCharsets.UTF_8)));
         String tokenUrlPayload = "grant_type=password&username=" + username + "&password=" + password + "&scope=apim:" +
                 "subscribe";
         String tokenResponse = HttpClient.sendPost(WSO2_APIM_TOKEN_URL, tokenUrlPayload, tokenUrlHeaders);
@@ -171,7 +172,7 @@ public class ApimHelper {
         Map<String, String> headers = new HashMap<>();
         headers.put(HttpHeaders.AUTHORIZATION, AUTHENTICATION_TYPE_BEARER + " " + oauthToken);
         headers.put(HttpHeaders.CONTENT_TYPE, CONTENT_TYPE_APPLICATION_JSON);
-        HttpClient.sendDelete(WSO2_APIM_APPLICATIONS_URL + "/" + applicationId, headers);
+        HttpClient.sendDelete(WSO2_APIM_APPLICATIONS_URL + Constants.FORWARD_SLASH + applicationId, headers);
     }
 
     /**
@@ -215,7 +216,8 @@ public class ApimHelper {
         //Add headers
         Map<String, String> headers = new HashMap<>();
         headers.put(HttpHeaders.AUTHORIZATION, AUTHENTICATION_TYPE_BEARER + " " + oauthToken);
-        String applications = HttpClient.sendGet(WSO2_APIM_APPLICATIONS_URL + "/" + applicationId, headers);
+        String applications = HttpClient.sendGet(WSO2_APIM_APPLICATIONS_URL + Constants.FORWARD_SLASH + applicationId,
+                headers);
         JsonObject responseJson = new JsonParser().parse(applications).getAsJsonObject();
         Assert.assertTrue(responseJson.isJsonObject());
         JsonArray keyList = responseJson.get("keys").getAsJsonArray();
@@ -224,7 +226,7 @@ public class ApimHelper {
                 .replaceAll("^\"|\"$", "");
         String consumerSecret = keyList.get(0).getAsJsonObject().get(CONSUMER_SECRET).toString()
                 .replaceAll("^\"|\"$", "");
-        return Base64.getEncoder().encodeToString((consumerKey + ":" + consumerSecret).getBytes(
+        return Base64.getEncoder().encodeToString((consumerKey + Constants.COLON + consumerSecret).getBytes(
                 StandardCharsets.UTF_8));
     }
 

@@ -123,7 +123,9 @@ public class ImageBasedTestCase extends BaseTestCase {
 
     @Test(dependsOnMethods = "extractResourceImageWithProvidedOutput")
     public void deleteImages() throws Exception {
-        delete(Constants.TEST_CELL_ORG_NAME + "/" + EMPLOYEE_IMAGE + ":" + Constants.SAMPLE_CELLS_VERSION);
-        delete(Constants.TEST_CELL_ORG_NAME + "/" + HELLO_WORLD_IMAGE + ":" + Constants.SAMPLE_CELLS_VERSION);
+        delete(Constants.TEST_CELL_ORG_NAME + Constants.FORWARD_SLASH + EMPLOYEE_IMAGE + Constants.COLON +
+                Constants.SAMPLE_CELLS_VERSION);
+        delete(Constants.TEST_CELL_ORG_NAME + Constants.FORWARD_SLASH + HELLO_WORLD_IMAGE + Constants.COLON +
+                Constants.SAMPLE_CELLS_VERSION);
     }
 }
