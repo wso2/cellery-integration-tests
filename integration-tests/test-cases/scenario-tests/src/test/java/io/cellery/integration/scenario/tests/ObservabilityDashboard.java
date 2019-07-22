@@ -78,7 +78,8 @@ public class ObservabilityDashboard {
         for (int i = 0; i < cells.size(); i++) {
             String componentXPath = "//*[@id=\"MUIDataTableBodyRow-" + i + "\"]/td[4]/a";
             String componentInstanceName =
-                    webDriverWait.until(ExpectedConditions.visibilityOfElementLocated((By.xpath(componentXPath)))).getText();
+                    webDriverWait.until(ExpectedConditions.visibilityOfElementLocated((By.xpath(componentXPath))))
+                            .getText();
             Assert.assertEquals(componentInstanceName, cells.get(i).getInstanceName());
         }
         String refreshButtonXPath = "//*[@id=\"root\"]/div/main/div[2]/div/div[2]/div/div[2]/div";
@@ -92,14 +93,16 @@ public class ObservabilityDashboard {
         clickOnObservabilityButton(cellPageButtonXPath);
         String cellPageHeaderXPath = "//*[@id=\"root\"]/div/main/div[2]/div/h5";
         String cellsHeader =
-                webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(cellPageHeaderXPath))).getText();
+                webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(cellPageHeaderXPath)))
+                        .getText();
         Assert.assertEquals(cellsHeader, "Cells");
         List<Cell> cellCopy = new ArrayList<>(cells);
         int cellAmount = cellCopy.size();
         for (int i = 0; i < cellAmount; i++) {
             String instanceNameXPath = "//*[@id=\"MUIDataTableBodyRow-" + i + "\"]/td[4]/a";
             String instanceName =
-                    webDriverWait.until(ExpectedConditions.visibilityOfElementLocated((By.xpath(instanceNameXPath)))).getText();
+                    webDriverWait.until(ExpectedConditions.visibilityOfElementLocated((By.xpath(instanceNameXPath))))
+                            .getText();
             Cell cell = getCellForInstance(cellCopy, instanceName);
             Assert.assertNotNull(cell); //Instance name is not found in test scenario
             Assert.assertEquals(instanceName, cell.getInstanceName());
@@ -141,7 +144,8 @@ public class ObservabilityDashboard {
         for (int i = 0; i < numberOfComponents; i++) {
             String componenetXPath = "//*[@id=\"MUIDataTableBodyRow-" + i + "\"]/td[4]/a";
             String componentName =
-                    webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(componenetXPath))).getText();
+                    webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(componenetXPath)))
+                            .getText();
             Assert.assertTrue(checkComponenetExist(expectedComponents, componentName));
             testComponent(componenetXPath, instanceName, componentName);
         }
@@ -153,11 +157,13 @@ public class ObservabilityDashboard {
         clickOnObservabilityButton(componentXpath);
         String headerComponenetXPath = "//*[@id=\"root\"]/div/main/div[2]/div/h5";
         String headerComponentName =
-                webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(headerComponenetXPath))).getText();
+                webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(headerComponenetXPath)))
+                        .getText();
         Assert.assertEquals(headerComponentName, componentName);
         String instanceNameXPath = "//*[@id=\"root\"]/div/main/div[3]/table/tbody/tr[2]/td[2]/a";
         String cellInstName =
-                webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(instanceNameXPath))).getText();
+                webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(instanceNameXPath)))
+                        .getText();
         Assert.assertEquals(cellInstName, cellInstanceName);
 
         String k8sPodButtonXPath = "//*[@id=\"root\"]/div/main/div[3]/div[1" +
@@ -165,7 +171,8 @@ public class ObservabilityDashboard {
         clickOnObservabilityButton(k8sPodButtonXPath);
         String podNameFieldXPath = "//*[@id=\"MUIDataTableBodyRow-0\"]/td[2]";
         String podName =
-                webDriverWait.until(ExpectedConditions.visibilityOfElementLocated((By.xpath(podNameFieldXPath)))).getText();
+                webDriverWait.until(ExpectedConditions.visibilityOfElementLocated((By.xpath(podNameFieldXPath))))
+                        .getText();
         Assert.assertTrue(podName.startsWith(cellInstanceName + "--" + componentName));
 
         if (!componentName.equals("gateway")) { //Since Web Cell gateway componenet is not showing data
