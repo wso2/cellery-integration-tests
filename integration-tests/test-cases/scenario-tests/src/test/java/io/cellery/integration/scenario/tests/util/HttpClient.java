@@ -47,8 +47,8 @@ public class HttpClient {
      * @throws KeyManagementException   if TLS verification skip fails
      * @throws NoSuchAlgorithmException if TLS verification skip fails
      */
-    public static String sendGet(String url, Map<String, String> headers) throws IOException
-            , KeyManagementException, NoSuchAlgorithmException {
+    public static String sendGet(String url, Map<String, String> headers) throws IOException,
+            KeyManagementException, NoSuchAlgorithmException {
         HttpsURLConnection con = null;
         // Skipping TLS verification since certificate is self-signed
         trustAllCerts();
@@ -60,8 +60,8 @@ public class HttpClient {
             for (Map.Entry<String, String> entry : headers.entrySet()) {
                 con.setRequestProperty(entry.getKey(), entry.getValue());
             }
-            try (BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()
-                    , StandardCharsets.UTF_8))) {
+            try (BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream(),
+                    StandardCharsets.UTF_8))) {
                 String line;
                 content = new StringBuilder();
                 while ((line = in.readLine()) != null) {
@@ -81,15 +81,14 @@ public class HttpClient {
      * Send an http post request and get the response.
      *
      * @param url     Url to which the request is being sent
-     * @param payload String
-     *                Url parameters
+     * @param payload String Url parameters
      * @param headers A hash map containing header keys and values
      * @return response message
      * @throws IOException              exception if http connection fails
      * @throws KeyManagementException   if TLS verification skip fails
      * @throws NoSuchAlgorithmException if TLS verification skip fails
      */
-    public static String sendPost(String url, String payload, Map<String, String> headers)
+    static String sendPost(String url, String payload, Map<String, String> headers)
             throws IOException, KeyManagementException, NoSuchAlgorithmException {
         HttpsURLConnection con = null;
         // Skipping TLS verification since certificate is self-signed
@@ -110,8 +109,8 @@ public class HttpClient {
                 }
             }
             StringBuilder content;
-            try (BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()
-                    , StandardCharsets.UTF_8))) {
+            try (BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream(),
+                    StandardCharsets.UTF_8))) {
                 String line;
                 content = new StringBuilder();
                 while ((line = in.readLine()) != null) {
@@ -120,6 +119,32 @@ public class HttpClient {
                 }
             }
             return content.toString();
+        } finally {
+            if (con != null) {
+                con.disconnect();
+            }
+        }
+    }
+
+    /**
+     * @param url     Url to which the request is being sent
+     * @param headers A hash map containing header keys and values
+     * @throws IOException              exception if http connection fails
+     * @throws KeyManagementException   if TLS verification skip fails
+     * @throws NoSuchAlgorithmException if TLS verification skip fails
+     */
+    static void sendDelete(String url, Map<String, String> headers)
+            throws IOException, KeyManagementException, NoSuchAlgorithmException {
+        HttpsURLConnection con = null;
+        // Skipping TLS verification since certificate is self-signed
+        trustAllCerts();
+        try {
+            URL postUrl = new URL(url);
+            con = (HttpsURLConnection) postUrl.openConnection();
+            con.setRequestMethod("DELETE");
+            for (Map.Entry<String, String> entry : headers.entrySet()) {
+                con.setRequestProperty(entry.getKey(), entry.getValue());
+            }
         } finally {
             if (con != null) {
                 con.disconnect();

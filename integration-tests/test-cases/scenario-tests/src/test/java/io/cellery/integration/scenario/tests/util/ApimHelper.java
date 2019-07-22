@@ -21,6 +21,7 @@ import com.google.common.net.HttpHeaders;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import io.cellery.integration.scenario.tests.Constants;
 import org.testng.Assert;
 
 import java.io.IOException;
@@ -41,7 +42,6 @@ public class ApimHelper {
     private static final String WSO2_APIM_TOKEN_URL = "https://wso2-apim-gateway/token";
     private static final String CLIENT_ID = "clientId";
     private static final String CLIENT_SECRET = "clientSecret";
-    private static final String APPLICATION_ID = "applicationId";
     private static final String ACCESS_TOKEN = "access_token";
     private static final String CONTENT_TYPE_APPLICATION_JSON = "application/json";
     private static final String AUTHENTICATION_TYPE_BEARER = "Bearer";
@@ -62,22 +62,22 @@ public class ApimHelper {
      * @throws IOException              if sendPost method fails
      * @throws KeyManagementException   if sendPost method fails
      */
-    public String getAccessTokenForApiStore(String username, String password) throws NoSuchAlgorithmException
-            , IOException, KeyManagementException {
+    public String getAccessTokenForApiStore(String username, String password)
+            throws NoSuchAlgorithmException, IOException, KeyManagementException {
         String accessTokenForApiStore;
         String registrationUrlParameters = "{\"callbackUrl\": \"www.google.lk\", " +
                 "\"clientName\": \"rest_api_store\", " +
                 "\"owner\": \"" + username + "\", " +
                 "\"grantType\": \"password refresh_token\", " +
                 "\"saasApp\": true}";
-        String base64UsernamePassword = Base64.getEncoder().encodeToString((username + ":" + password).getBytes(
-                StandardCharsets.UTF_8));
+        String base64UsernamePassword = Base64.getEncoder().encodeToString((username + Constants.COLON + password).
+                getBytes(StandardCharsets.UTF_8));
         // Get the client id and client secret for the user
         Map<String, String> registrationUrlHeaders = new HashMap<>();
         registrationUrlHeaders.put(HttpHeaders.AUTHORIZATION, AUTHENTICATION_TYPE_BASIC + " " + base64UsernamePassword);
         registrationUrlHeaders.put(HttpHeaders.CONTENT_TYPE, CONTENT_TYPE_APPLICATION_JSON);
-        String registrationResponse = HttpClient.sendPost(WSO2_APIM_REGISTRATION_URL, registrationUrlParameters
-                , registrationUrlHeaders);
+        String registrationResponse = HttpClient.sendPost(WSO2_APIM_REGISTRATION_URL, registrationUrlParameters,
+                registrationUrlHeaders);
         JsonObject registrationResponseJson = new JsonParser().parse(registrationResponse).getAsJsonObject();
         Assert.assertTrue(registrationResponseJson.isJsonObject());
         // Get client id and client secret from the response
@@ -87,7 +87,7 @@ public class ApimHelper {
         // Add headers to the http request
         Map<String, String> tokenUrlHeaders = new HashMap<>();
         tokenUrlHeaders.put(HttpHeaders.AUTHORIZATION, AUTHENTICATION_TYPE_BASIC + " " + Base64.getEncoder()
-                .encodeToString((clientId + ":" + clientSecret).getBytes(StandardCharsets.UTF_8)));
+                .encodeToString((clientId + Constants.COLON + clientSecret).getBytes(StandardCharsets.UTF_8)));
         String tokenUrlPayload = "grant_type=password&username=" + username + "&password=" + password + "&scope=apim:" +
                 "subscribe";
         String tokenResponse = HttpClient.sendPost(WSO2_APIM_TOKEN_URL, tokenUrlPayload, tokenUrlHeaders);
@@ -106,8 +106,7 @@ public class ApimHelper {
      * @throws IOException              if sendGet method fails
      * @throws KeyManagementException   if sendGet method fails
      */
-    public String getApiId(String apiName) throws NoSuchAlgorithmException, IOException
-            , KeyManagementException {
+    public String getApiId(String apiName) throws NoSuchAlgorithmException, IOException, KeyManagementException {
         String apiId = "";
         //Add headers
         Map<String, String> headers = new HashMap<>();
@@ -125,32 +124,55 @@ public class ApimHelper {
     }
 
     /**
-     * Get the id of an application.
+     * Create an application.
      *
-     * @param accessToken An access token to access wso2-apim
-     * @return application id
+     * @param applicationName        Application name
+     * @param applicationDescription Application description
+     * @param callBackUrl            Callback url
+     * @param oauthToken             An oauth token to access wso2-apim
+     * @return Application id
      * @throws NoSuchAlgorithmException if sendGet method fails
      * @throws IOException              if sendGet method fails
      * @throws KeyManagementException   if sendGet method fails
      */
-    public String getApplicationId(String accessToken, String applicationName) throws NoSuchAlgorithmException
-            , IOException, KeyManagementException {
-        String applicationId = "";
+    public String createApplication(String applicationName, String applicationDescription, String callBackUrl,
+                                    String oauthToken)
+            throws NoSuchAlgorithmException, IOException, KeyManagementException {
+        String applicationId;
+        String payload = "{\n" +
+                "    \"throttlingTier\": \"Unlimited\",\n" +
+                "    \"description\": \"" + applicationDescription + "\",\n" +
+                "    \"name\": \"" + applicationName + "\",\n" +
+                "    \"callbackUrl\": \"" + callBackUrl + "\"\n" +
+                "}";
         //Add headers
         Map<String, String> headers = new HashMap<>();
-        headers.put(HttpHeaders.AUTHORIZATION, AUTHENTICATION_TYPE_BEARER + " " + accessToken);
-        String applications = HttpClient.sendGet(WSO2_APIM_APPLICATIONS_URL, headers);
-        JsonObject responseJson = new JsonParser().parse(applications).getAsJsonObject();
+        headers.put(HttpHeaders.AUTHORIZATION, AUTHENTICATION_TYPE_BEARER + " " + oauthToken);
+        headers.put(HttpHeaders.CONTENT_TYPE, CONTENT_TYPE_APPLICATION_JSON);
+        String response = HttpClient.sendPost(WSO2_APIM_APPLICATIONS_URL, payload, headers);
+        JsonObject responseJson = new JsonParser().parse(response).getAsJsonObject();
         Assert.assertTrue(responseJson.isJsonObject());
-        JsonArray apiList = responseJson.get("list").getAsJsonArray();
-        for (int i = 0; i < apiList.size(); i++) {
-            JsonObject jsonItem = apiList.get(i).getAsJsonObject();
-            // Get the id of application
-            if (jsonItem.get("name").toString().equals("\"" + applicationName + "\"")) {
-                applicationId = jsonItem.get(APPLICATION_ID).toString().replaceAll("^\"|\"$", "");
-            }
-        }
+        // Get the subscription id from the response
+        applicationId = responseJson.get("applicationId").getAsString().replaceAll("^\"|\"$", "");
         return applicationId;
+    }
+
+    /**
+     * Delete an application.
+     *
+     * @param applicationId Application id
+     * @param oauthToken    An oauth token to access wso2-apim
+     * @throws NoSuchAlgorithmException if sendGet method fails
+     * @throws IOException              if sendGet method fails
+     * @throws KeyManagementException   if sendGet method fails
+     */
+    public void deleteApplication(String applicationId, String oauthToken)
+            throws NoSuchAlgorithmException, IOException, KeyManagementException {
+        //Add headers
+        Map<String, String> headers = new HashMap<>();
+        headers.put(HttpHeaders.AUTHORIZATION, AUTHENTICATION_TYPE_BEARER + " " + oauthToken);
+        headers.put(HttpHeaders.CONTENT_TYPE, CONTENT_TYPE_APPLICATION_JSON);
+        HttpClient.sendDelete(WSO2_APIM_APPLICATIONS_URL + Constants.FORWARD_SLASH + applicationId, headers);
     }
 
     /**
@@ -163,8 +185,8 @@ public class ApimHelper {
      * @throws IOException              if sendPost method fails
      * @throws KeyManagementException   if sendPost method fails
      */
-    public void subscribeForApplication(String apiId, String applicationId, String oauthToken) throws
-            NoSuchAlgorithmException, IOException, KeyManagementException {
+    public void subscribeForApplication(String apiId, String applicationId, String oauthToken)
+            throws NoSuchAlgorithmException, IOException, KeyManagementException {
         String payload = "{\n" +
                 "  \"tier\": \"Unlimited\",\n" +
                 "  \"apiIdentifier\": \"" + apiId + "\",\n" +
@@ -174,13 +196,15 @@ public class ApimHelper {
         Map<String, String> headers = new HashMap<>();
         headers.put(HttpHeaders.AUTHORIZATION, AUTHENTICATION_TYPE_BEARER + " " + oauthToken);
         headers.put(HttpHeaders.CONTENT_TYPE, CONTENT_TYPE_APPLICATION_JSON);
-        HttpClient.sendPost(WSO2_APIM_SUBSCRIPTION_URL, payload, headers);
+        String response = HttpClient.sendPost(WSO2_APIM_SUBSCRIPTION_URL, payload, headers);
+        JsonObject responseJson = new JsonParser().parse(response).getAsJsonObject();
+        Assert.assertTrue(responseJson.isJsonObject());
     }
 
     /**
      * Get base64 encoded consumer key consumer secret needed to generate access token .
      *
-     * @param oauthToken           An oauth token to access wso2-apim
+     * @param oauthToken    An oauth token to access wso2-apim
      * @param applicationId Application id
      * @return base64 encoded concatenated string comprising consumer key consumer secret
      * @throws NoSuchAlgorithmException if sendGet method fails
@@ -192,7 +216,8 @@ public class ApimHelper {
         //Add headers
         Map<String, String> headers = new HashMap<>();
         headers.put(HttpHeaders.AUTHORIZATION, AUTHENTICATION_TYPE_BEARER + " " + oauthToken);
-        String applications = HttpClient.sendGet(WSO2_APIM_APPLICATIONS_URL + "/" + applicationId, headers);
+        String applications = HttpClient.sendGet(WSO2_APIM_APPLICATIONS_URL + Constants.FORWARD_SLASH + applicationId,
+                headers);
         JsonObject responseJson = new JsonParser().parse(applications).getAsJsonObject();
         Assert.assertTrue(responseJson.isJsonObject());
         JsonArray keyList = responseJson.get("keys").getAsJsonArray();
@@ -201,7 +226,7 @@ public class ApimHelper {
                 .replaceAll("^\"|\"$", "");
         String consumerSecret = keyList.get(0).getAsJsonObject().get(CONSUMER_SECRET).toString()
                 .replaceAll("^\"|\"$", "");
-        return Base64.getEncoder().encodeToString((consumerKey + ":" + consumerSecret).getBytes(
+        return Base64.getEncoder().encodeToString((consumerKey + Constants.COLON + consumerSecret).getBytes(
                 StandardCharsets.UTF_8));
     }
 
@@ -214,8 +239,8 @@ public class ApimHelper {
      * @throws IOException              if sendPost method fails
      * @throws KeyManagementException   if sendPost method fails
      */
-    public String getWso2ApimGatewayToken(String consumerKeyConsumerSecret, String username, String password) throws
-            NoSuchAlgorithmException, IOException, KeyManagementException {
+    public String getWso2ApimGatewayToken(String consumerKeyConsumerSecret, String username, String password)
+            throws NoSuchAlgorithmException, IOException, KeyManagementException {
         String gatewayToken;
         String payload = "grant_type=password&username=" + username + "&password=" + password;
         //Add headers
@@ -228,5 +253,32 @@ public class ApimHelper {
         // Get the token from the response
         gatewayToken = responseJson.get(ACCESS_TOKEN).getAsString().replaceAll("^\"|\"$", "");
         return gatewayToken;
+    }
+
+    /**
+     * Generate production keys for an application.
+     *
+     * @param oauthToken    An oauth token to access wso2-apim
+     * @param applicationId Application id
+     * @throws NoSuchAlgorithmException if sendPost method fails
+     * @throws IOException              if sendPost method fails
+     * @throws KeyManagementException   if sendPost method fails
+     */
+    public void generateKeysForApplication(String oauthToken, String applicationId)
+            throws NoSuchAlgorithmException, IOException, KeyManagementException {
+        //Add headers
+        Map<String, String> headers = new HashMap<>();
+        headers.put(HttpHeaders.AUTHORIZATION, AUTHENTICATION_TYPE_BEARER + " " + oauthToken);
+        headers.put(HttpHeaders.CONTENT_TYPE, CONTENT_TYPE_APPLICATION_JSON);
+        String payload = "{ \"validityTime\": \"3600\", " +
+                "\"keyType\": \"PRODUCTION\", " +
+                "\"accessAllowDomains\": [ \"ALL\" ], " +
+                "\"scopes\": [ \"am_application_scope\", \"default\" ], " +
+                "\"supportedGrantTypes\": [ \"urn:ietf:params:oauth:grant-type:saml2-bearer\", \"iwa:ntlm\", " +
+                "\"refresh_token\", \"client_credentials\", \"password\" ] }";
+        String response = HttpClient.sendPost(WSO2_APIM_APPLICATIONS_URL + "/generate-keys?applicationId=" +
+                applicationId, payload, headers);
+        JsonObject responseJson = new JsonParser().parse(response).getAsJsonObject();
+        Assert.assertTrue(responseJson.isJsonObject());
     }
 }

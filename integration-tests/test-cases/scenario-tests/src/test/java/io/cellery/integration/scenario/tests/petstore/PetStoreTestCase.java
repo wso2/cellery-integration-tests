@@ -110,25 +110,24 @@ public class PetStoreTestCase extends BaseTestCase {
                 Paths.get(CELLERY_SCENARIO_TEST_ROOT, "pet-care-store", "pet-be").toFile().getAbsolutePath());
     }
 
-    @Test(description = "Tests the running of pet store back end instance.")
+    @Test(description = "Tests the running of pet store back end instance.", dependsOnMethods = "buildBackEnd")
     public void runBackEnd() throws Exception {
         run(Constants.CELL_ORG_NAME, BACKEND_IMAGE_NAME, VERSION, BACKEND_INSTANCE_NAME, 600);
     }
 
-    @Test(description = "Tests the building of pet store frontend image.")
+    @Test(description = "Tests the building of pet store frontend image.", dependsOnMethods = "runBackEnd")
     public void buildFrontEnd() throws Exception {
         build("pet-fe.bal", Constants.CELL_ORG_NAME, FRONTEND_IMAGE_NAME, VERSION,
                 Paths.get(CELLERY_SCENARIO_TEST_ROOT, "pet-care-store", "pet-fe").toFile().getAbsolutePath());
     }
 
-    @Test(description = "Tests the running of pet store front end instance.")
+    @Test(description = "Tests the running of pet store front end instance.", dependsOnMethods = "buildFrontEnd")
     public void runFrontEnd() throws Exception {
         String[] links = new String[]{LINK};
-        run(Constants.CELL_ORG_NAME, FRONTEND_IMAGE_NAME, VERSION, FRONTEND_INSTANCE_NAME, links, false,
-                600);
+        run(Constants.CELL_ORG_NAME, FRONTEND_IMAGE_NAME, VERSION, FRONTEND_INSTANCE_NAME, links, false);
     }
 
-    @Test(description = "Tests invoking of pet store web page.")
+    @Test(description = "Tests invoking of pet store web page.", dependsOnMethods = "runFrontEnd")
     public void invoke() {
         webDriver.get(Constants.DEFAULT_PET_STORE_URL);
         String petAccessoriesHeader = webDriver.findElement(By.cssSelector("H1")).getText();
@@ -137,12 +136,12 @@ public class PetStoreTestCase extends BaseTestCase {
                 "as expected");
     }
 
-    @Test(description = "This tests sign in for user Alice.")
+    @Test(description = "This tests sign in for user Alice.", dependsOnMethods = "invoke")
     public void signInAlice() throws InterruptedException {
         this.signIn(this.alice);
     }
 
-    @Test(description = "This tests add to cart for user Alice.")
+    @Test(description = "This tests add to cart for user Alice.", dependsOnMethods = "signInAlice")
     public void addToCartAlice() {
         for (PetAccessory anItemsOfAlice : itemsOfAlice) {
             this.cart.addToCart(anItemsOfAlice);
@@ -151,32 +150,32 @@ public class PetStoreTestCase extends BaseTestCase {
                 "not as expected");
     }
 
-    @Test(description = "This tests checkout cart for user Alice.")
+    @Test(description = "This tests checkout cart for user Alice.", dependsOnMethods = "addToCartAlice")
     public void checkoutCartAlice() throws InterruptedException {
         this.cart.checkout();
-        validateWebPage("$ 675", this.order.getOrderValue(), "Pet store cart content after checkout is " +
+        validateWebPage("$ 675.00", this.order.getOrderValue(), "Pet store cart content after checkout is " +
                 "not as expected");
     }
 
-    @Test(description = "This tests sign out for user Alice.")
-    public void signOutAlice() {
+    @Test(description = "This tests sign out for user Alice.", dependsOnMethods = "checkoutCartAlice")
+    public void signOutAlice() throws InterruptedException {
         this.signOut(this.alice);
     }
 
-    @Test(description = "This tests sign in for user Bob.")
+    @Test(description = "This tests sign in for user Bob.", dependsOnMethods = "signOutAlice")
     public void signInBob() throws InterruptedException {
         this.signIn(this.bob);
     }
 
-    @Test(description = "This tests check order for user Bob.")
+    @Test(description = "This tests check order for user Bob.", dependsOnMethods = "signInBob")
     public void checkOrdersBob() throws InterruptedException {
         String noOrdersPlaced = "No Orders Placed";
         validateWebPage(noOrdersPlaced, this.order.getOrderValue(),
                 "Pet store cart content after checkout is not as expected");
     }
 
-    @Test(description = "This tests sign out for user Bob.")
-    public void signOutBob() {
+    @Test(description = "This tests sign out for user Bob.", dependsOnMethods = "checkOrdersBob")
+    public void signOutBob() throws InterruptedException {
         this.signOut(this.bob);
     }
 
@@ -205,13 +204,15 @@ public class PetStoreTestCase extends BaseTestCase {
         observabilityDashboard.logoutObservability();
     }
 
-    @Test(description = "This tests the termination of pet-store backend and frontend cells")
+    @Test(description = "This tests the termination of pet-store backend and frontend cells",
+            dependsOnMethods = "signOutBob")
     public void terminate() throws Exception {
         terminateCell(BACKEND_INSTANCE_NAME);
         terminateCell(FRONTEND_INSTANCE_NAME);
     }
 
-    @Test(description = "This tests the deletion of pet-store backend and frontend cell images")
+    @Test(description = "This tests the deletion of pet-store backend and frontend cell images",
+            dependsOnMethods = "terminate")
     public void deleteImages() throws Exception {
         delete(Constants.CELL_ORG_NAME + "/" + BACKEND_IMAGE_NAME + ":" + VERSION);
         delete(Constants.CELL_ORG_NAME + "/" + FRONTEND_IMAGE_NAME + ":" + VERSION);
@@ -231,8 +232,7 @@ public class PetStoreTestCase extends BaseTestCase {
     /**
      * Signs in test user to pet-store web page.
      *
-     * @param user
-     *        An instance of User
+     * @param user An instance of User
      * @throws InterruptedException if fails to sign in
      */
     private void signIn(User user) throws InterruptedException {
@@ -257,10 +257,10 @@ public class PetStoreTestCase extends BaseTestCase {
     /**
      * Signs out test user to pet-store web page.
      *
-     * @param user
-     *        An instance of user
+     * @param user An instance of user
+     * @throws InterruptedException if fails to sign out
      */
-    private void signOut(User user) {
+    private void signOut(User user) throws InterruptedException {
         String idpLogoutHeaderActual = user.signOut();
         String idpLogoutHeader = "OPENID CONNECT LOGOUT";
         validateWebPage(idpLogoutHeaderActual, idpLogoutHeader, "IDP logout header " +

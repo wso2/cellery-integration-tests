@@ -33,8 +33,7 @@ public class Cart {
 
     /**
      * Initializes a cart object to be used for checking pet store items.
-     * @param webDriver
-     *        A selenium web driver to interact with pet store web page.
+     * @param webDriver A selenium web driver to interact with pet store web page.
      */
     public Cart(WebDriver webDriver) {
         this.webDriver = webDriver;
@@ -43,8 +42,7 @@ public class Cart {
 
     /**
      * Adds a pet store item to the cart.
-     * @param petAccessory
-     *        A PetAccessory instance
+     * @param petAccessory A PetAccessory instance
      */
     public void addToCart(PetAccessory petAccessory) {
         WebElement amountInputFiled;

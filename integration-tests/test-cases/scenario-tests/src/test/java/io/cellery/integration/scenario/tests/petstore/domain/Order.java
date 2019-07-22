@@ -33,8 +33,7 @@ public class Order {
 
     /**
      * Initializes an Order object which will contain checked out pet store items.
-     * @param webDriver
-     *        A selenium web driver to interact with pet store web page.
+     * @param webDriver A selenium web driver to interact with pet store web page.
      */
     public Order(WebDriver webDriver) {
         this.webDriver = webDriver;
@@ -52,7 +51,7 @@ public class Order {
         webDriver.findElement(By.xpath(checkOrdersButtonXpath)).click();
         // Putting an explicit sleep of 10 seconds because test is failing in jenkins server.
         TimeUnit.SECONDS.sleep(10);
-        String orderValueXpath = "//*[@id=\"app\"]/div/main/div/div/table/tbody/tr[3]/td[2]";
+        String orderValueXpath = "//*[@id=\"app\"]/div/main/div/div[2]/div/div/div[1]/div[1]/p[3]";
         boolean orderExists = webDriver.findElements(By.xpath(orderValueXpath)).size() > 0;
         if (orderExists) {
             return webDriver.findElement(By.xpath(orderValueXpath)).getText();

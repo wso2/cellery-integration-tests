@@ -19,38 +19,12 @@
   -->
 
 <suite name="basic">
-    <test name="basic-setup-tests">
+    <test name="basic-setup-tests" parallel="false">
         <classes>
             <class name="io.cellery.integration.scenario.tests.cli.ImageBasedTestCase"/>
             <class name="io.cellery.integration.scenario.tests.cli.InstanceBasedTestCase"/>
-            <class name="io.cellery.integration.scenario.tests.HelloworldWebTestCase">
-                <methods>
-                    <include name="build"/>
-                    <include name="run"/>
-                    <include name="invoke"/>
-                    <include name="terminate"/>
-                    <include name="repeatTerminate"/>
-                    <include name="deleteImage"/>
-                </methods>
-            </class>
-            <class name="io.cellery.integration.scenario.tests.petstore.PetStoreTestCase">
-                <methods>
-                    <include name="buildBackEnd"/>
-                    <include name="runBackEnd"/>
-                    <include name="buildFrontEnd"/>
-                    <include name="runFrontEnd"/>
-                    <include name="invoke"/>
-                    <include name="signInAlice"/>
-                    <include name="addToCartAlice"/>
-                    <include name="checkoutCartAlice"/>
-                    <include name="signOutAlice"/>
-                    <include name="signInBob"/>
-                    <include name="checkOrdersBob"/>
-                    <include name="signOutBob"/>
-                    <include name="terminate"/>
-                    <include name="deleteImages"/>
-                </methods>
-            </class>
+            <class name="io.cellery.integration.scenario.tests.HelloworldWebTestCase"/>
+            <class name="io.cellery.integration.scenario.tests.petstore.PetStoreTestCase"/>
         </classes>
     </test>
 </suite>

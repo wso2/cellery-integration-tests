@@ -18,6 +18,8 @@ PROJECT_ROOT := $(realpath $(dir $(abspath $(lastword $(MAKEFILE_LIST)))))
 
 USERNAME ?= celleryio
 PASSWORD ?= celleryio
+CELLERY_REGISTRY ?= registry-1.docker.io
+GCP_CLUSTER ?= false
 
 run-local-basic: setup-local-basic test-basic cleanup-local
 run-local-complete: setup-local-complete test-complete cleanup-local
@@ -47,12 +49,14 @@ remove-samples:
 .PHONY: test-basic
 test-basic: clone-samples
 	cd $(PROJECT_ROOT)/test-cases/scenario-tests/; \
+	export IS_GCP=$(GCP_CLUSTER);\
 	mvn clean install -Dsuite=src/test/resources/basic.xml -fae
 	rm -rf $(PROJECT_ROOT)/test-cases/cells
 
 .PHONY: test-complete
 test-complete: clone-samples
 	cd $(PROJECT_ROOT)/test-cases/scenario-tests/; \
+	export IS_GCP=$(GCP_CLUSTER);\
 	mvn clean install -Dsuite=src/test/resources/complete.xml
 	rm -rf test-cases/cells
 
@@ -60,12 +64,12 @@ test-complete: clone-samples
 .PHONY: setup-local-basic
 setup-local-basic:
 	cd $(PROJECT_ROOT)/setups/local-setup; \
-	bash setup.sh basic $(USERNAME) $(PASSWORD)
+	bash setup.sh basic $(USERNAME) $(PASSWORD) $(CELLERY_REGISTRY)
 
 .PHONY: setup-local-complete
 setup-local-complete:
 	cd $(PROJECT_ROOT)/setups/local-setup; \
-	bash setup.sh complete $(USERNAME) $(PASSWORD)
+	bash setup.sh complete $(USERNAME) $(PASSWORD) $(CELLERY_REGISTRY)
 
 .PHONY: cleanup-local
 cleanup-local:
@@ -90,7 +94,7 @@ cleanup-gcp:
 
 # GCP existing setup targets
 .PHONY: init-gcp-persistent
-init-gcp:
+init-gcp-persistent:
 	cd $(PROJECT_ROOT)/setups/existing-cluster/gcp-gke; \
 	bash init.sh true
 
@@ -100,7 +104,7 @@ setup-existing-gcp-basic-persistent:
 	bash setup.sh basic $(USERNAME) $(PASSWORD) true
 
 .PHONY: setup-existing-gcp-complete-persistent
-setup-existing-gcp-basic-persistent:
+setup-existing-gcp-complete-persistent:
 	cd $(PROJECT_ROOT)/setups/existing-cluster/gcp-gke; \
 	bash setup.sh complete $(USERNAME) $(PASSWORD) true
 
@@ -143,22 +147,22 @@ init-kubeadm:
 .PHONY: setup-kubeadm-basic
 setup-kubeadm-basic:
 	cd $(PROJECT_ROOT)/setups/existing-cluster/kube-admin; \
-	bash setup.sh basic $(USERNAME) $(PASSWORD)
+	bash setup.sh basic $(USERNAME) $(PASSWORD) $(CELLERY_REGISTRY)
 
 .PHONY: setup-kubeadm-basic-persistent
 setup-kubeadm-basic-persistent:
 	cd $(PROJECT_ROOT)/setups/existing-cluster/kube-admin; \
-	bash setup.sh basic $(USERNAME) $(PASSWORD) true
+	bash setup.sh basic $(USERNAME) $(PASSWORD) $(CELLERY_REGISTRY) true
 
 .PHONY: setup-kubeadm-complete
 setup-kubeadm-complete:
 	cd $(PROJECT_ROOT)/setups/existing-cluster/kube-admin; \
-	bash setup.sh complete $(USERNAME) $(PASSWORD)
+	bash setup.sh complete $(USERNAME) $(PASSWORD) $(CELLERY_REGISTRY)
 
 .PHONY: setup-kubeadm-complete-persistent
 setup-kubeadm-complete-persistent:
 	cd $(PROJECT_ROOT)/setups/existing-cluster/kube-admin; \
-	bash setup.sh complete $(USERNAME) $(PASSWORD) true
+	bash setup.sh complete $(USERNAME) $(PASSWORD) $(CELLERY_REGISTRY) true
 
 .PHONY: cleanup-kubeadm
 cleanup-kubeadm:

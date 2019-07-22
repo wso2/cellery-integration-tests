@@ -35,4 +35,6 @@ public class Constants {
     public static final String DEFAULT_PET_STORE_URL = "http://pet-store.com";
     public static final String DEFAULT_OBSERVABILITY_URL = "http://cellery-dashboard/";
 
+    public static final String FORWARD_SLASH = "/";
+    public static final String COLON = ":";
 }

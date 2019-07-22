@@ -40,23 +40,16 @@ public class User {
 
     /**
      * Initializes a user object that would be used to perform actions on the pet-store web site.
-     * @param firstName
-     *        First name of the user
-     * @param lastName
-     *        Last name if the user
-     * @param address
-     *        Address of the user
-     * @param userName
-     *        User name of the user
-     * @param password
-     *        Password of the user
-     * @param webDriver
-     *        A selenium web driver to interact with pet store web page.
-     * @param webDriverWait
-     *        A web driver wait which would be used to check the availability of pet store web page attributes
+     * @param firstName First name of the user
+     * @param lastName Last name if the user
+     * @param address Address of the user
+     * @param userName User name of the user
+     * @param password Password of the user
+     * @param webDriver A selenium web driver to interact with pet store web page.
+     * @param webDriverWait A web driver wait which is used to check the availability of pet store web page attributes
      */
-    public User(String firstName, String lastName, String address, String userName, String password
-            , WebDriver webDriver, WebDriverWait webDriverWait) {
+    public User(String firstName, String lastName, String address, String userName, String password,
+                WebDriver webDriver, WebDriverWait webDriverWait) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.address = address;
@@ -142,13 +135,16 @@ public class User {
     /**
      * Sign out from pet-store.
      * @return header of idp logout screen
+     * @throws InterruptedException if fails to sign out
      */
-    public String signOut() {
+    public String signOut() throws InterruptedException {
         String userButtonXpath = "//*[@id=\"app\"]/div/header/div/div/button";
         webDriver.findElement(By.xpath(userButtonXpath)).click();
         String petStoreSignOutButtonXpath = "//*[@id=\"user-info-appbar\"]/div[2]/ul/li[2]";
         webDriver.findElement(By.xpath(petStoreSignOutButtonXpath)).click();
-        return webDriver.findElement(By.cssSelector("H2")).getText();
+        // Putting an explicit sleep of 15 seconds because test is failing in jenkins server.
+        TimeUnit.SECONDS.sleep(15);
+        return webDriver.findElement(By.xpath("/html/body/div/div/div/div/div[1]/h2")).getText();
     }
 
     /**
