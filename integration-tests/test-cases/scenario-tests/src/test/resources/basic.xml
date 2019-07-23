@@ -23,8 +23,24 @@
         <classes>
             <class name="io.cellery.integration.scenario.tests.cli.ImageBasedTestCase"/>
             <class name="io.cellery.integration.scenario.tests.cli.InstanceBasedTestCase"/>
-            <class name="io.cellery.integration.scenario.tests.HelloworldWebTestCase"/>
-            <class name="io.cellery.integration.scenario.tests.petstore.PetStoreTestCase"/>
+            <class name="io.cellery.integration.scenario.tests.HelloworldWebTestCase">
+                <methods>
+                    <exclude name="observabilityLogin"/>
+                    <exclude name="overviewPage"/>
+                    <exclude name="cellsPage"/>
+                    <exclude name="tracingPage"/>
+                    <exclude name="observabilityLogout"/>
+                </methods>
+            </class>
+            <class name="io.cellery.integration.scenario.tests.petstore.PetStoreTestCase">
+                <methods>
+                    <exclude name="observabilityLogin"/>
+                    <exclude name="overviewPage"/>
+                    <exclude name="cellsPage"/>
+                    <exclude name="tracingPage"/>
+                    <exclude name="observabilityLogout"/>
+                </methods>
+            </class>
         </classes>
     </test>
 </suite>
