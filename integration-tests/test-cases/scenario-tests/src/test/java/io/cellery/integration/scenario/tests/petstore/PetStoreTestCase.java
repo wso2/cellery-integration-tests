@@ -66,7 +66,7 @@ public class PetStoreTestCase extends BaseTestCase {
     @BeforeClass
     public void setup() {
         WebDriverManager.getInstance(CHROME).setup();
-        webDriver = new ChromeDriver(new ChromeOptions().setHeadless(true));
+        webDriver = new ChromeDriver(new ChromeOptions().setHeadless(false));
         WebDriverWait webDriverWait = new WebDriverWait(webDriver, 120);
 
         // Create 2 users Alice and Bob with their information
@@ -179,33 +179,33 @@ public class PetStoreTestCase extends BaseTestCase {
         this.signOut(this.bob);
     }
 
-    @Test(description = "Validates the login flow of the dashboard")
+    @Test(description = "Validates the login flow of the dashboard", dependsOnMethods = "signOutBob")
     public void observabilityLogin() {
         observabilityDashboard.loginObservability();
     }
 
-    @Test(description = "Validates the overview of the dashboard")
+    @Test(description = "Validates the overview of the dashboard", dependsOnMethods = "observabilityLogin")
     public void overviewPage() {
         observabilityDashboard.overviewPage();
     }
 
-    @Test(description = "Validates Cell instances and components of the dashboard")
+    @Test(description = "Validates Cell instances and components of the dashboard", dependsOnMethods = "overviewPage")
     public void cellsPage() {
         observabilityDashboard.cellsPage();
     }
 
-    @Test(description = "Validates tracing page of the dashboard")
+    @Test(description = "Validates tracing page of the dashboard", dependsOnMethods = "cellsPage")
     public void tracingPage() {
         observabilityDashboard.tracingPage();
     }
 
-    @Test(description = "Validates logout functionality of the observability portal")
+    @Test(description = "Validates logout functionality of the observability portal", dependsOnMethods = "tracingPage")
     public void observabilityLogout() {
         observabilityDashboard.logoutObservability();
     }
 
     @Test(description = "This tests the termination of pet-store backend and frontend cells",
-            dependsOnMethods = "signOutBob")
+            dependsOnMethods = "tracingPage")
     public void terminate() throws Exception {
         terminateCell(BACKEND_INSTANCE_NAME);
         terminateCell(FRONTEND_INSTANCE_NAME);

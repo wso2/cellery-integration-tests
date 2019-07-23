@@ -248,7 +248,7 @@ public class ObservabilityDashboard {
         WebElement tracePage = webDriver.findElements(traceData).get(0);
         tracePage.click();
         WebElement refreshedPage = webDriver.findElements(traceData).get(0);
-        String componentFieldXPath = "//*[@class=\"vis-item-content\"]/div/div" +
+        String componentFieldXPath = "//div[contains(@class, 'vis-item-content')]/div/div" +
                 "/div/table/tbody/tr[1]/td/div";
         WebElement component = refreshedPage.findElement(By.xpath(componentFieldXPath));
         Assert.assertEquals(component.getText(), "proxy");
@@ -300,13 +300,18 @@ public class ObservabilityDashboard {
         password.sendKeys("admin");
         webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"loginForm\"]/div[6" +
                 "]/div/button"))).click();
-        try {
-            webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("approveCb"))).click();
-            webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("consent_select_all"))).click();
-            webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("approve"))).click();
-        } catch (Exception ignored) {
 
+
+        JavascriptExecutor js = (JavascriptExecutor) webDriver;
+        webDriver.findElement(By.id("approveCb")).click();
+        boolean isPresent = webDriver.findElements(By.id("consent_select_all")).size() > 0;
+        if (isPresent) {
+            WebElement element = webDriver.findElement(By.id("consent_select_all"));
+            js.executeScript("arguments[0].click()", element);
+            js.executeScript("window.scrollTo(0, document.body.scrollHeight)");
         }
+        webDriver.findElement(By.id("approve")).click();
+
         String personalInfoHeader = webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(
                 "//*[@id=\"root" +
                 "\"]/div/header/div/h6"))).getText();
