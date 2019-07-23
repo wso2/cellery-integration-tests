@@ -80,32 +80,32 @@ public class HelloworldWebTestCase extends BaseTestCase {
         validateWebPage();
     }
 
-    @Test (description = "Validates the login flow of the dashboard")
+    @Test (description = "Validates the login flow of the dashboard", dependsOnMethods = "invoke")
     public void observabilityLogin() {
         observabilityDashboard.loginObservability();
     }
 
-    @Test (description = "Validates the overview of the dashboard")
+    @Test (description = "Validates the overview of the dashboard", dependsOnMethods = "observabilityLogin")
     public void overviewPage() {
         observabilityDashboard.overviewPage();
     }
 
-    @Test (description = "Validates Cell instances and components of the dashboard")
+    @Test (description = "Validates Cell instances and components of the dashboard", dependsOnMethods = "overviewPage")
     public void cellsPage() {
         observabilityDashboard.cellsPage();
     }
 
-    @Test (description = "Validates tracing page of the dashboard")
+    @Test (description = "Validates tracing page of the dashboard", dependsOnMethods = "cellsPage")
     public void tracingPage() {
         observabilityDashboard.tracingPage();
     }
 
-    @Test (description = "Validates logout functionality of the observability portal")
+    @Test (description = "Validates logout functionality of the observability portal", dependsOnMethods = "tracingPage")
     public void observabilityLogout() {
         observabilityDashboard.logoutObservability();
     }
 
-    @Test(dependsOnMethods = "invoke")
+    @Test(dependsOnMethods = "observabilityLogout")
     public void terminate() throws Exception {
         terminateCell(HELLO_WORLD_INSTANCE);
     }
