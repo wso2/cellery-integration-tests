@@ -19,9 +19,6 @@ package io.cellery.integration.scenario.tests.petstore;
 
 import io.cellery.integration.scenario.tests.BaseTestCase;
 import io.cellery.integration.scenario.tests.Constants;
-import io.cellery.integration.scenario.tests.ObservabilityDashboard;
-import io.cellery.integration.scenario.tests.models.Cell;
-import io.cellery.integration.scenario.tests.models.SequenceDiagram;
 import io.cellery.integration.scenario.tests.petstore.domain.Cart;
 import io.cellery.integration.scenario.tests.petstore.domain.Order;
 import io.cellery.integration.scenario.tests.petstore.domain.PetAccessory;
@@ -36,18 +33,14 @@ import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import java.io.IOException;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 import static io.github.bonigarcia.wdm.DriverManagerType.CHROME;
 
 /**
  * This includes the test cases related to hello world web scenario.
  */
-public class PetStoreTestCase extends BaseTestCase {
+public class PetStoreBaseTestCase extends BaseTestCase {
 
     private static final String BACKEND_INSTANCE_NAME = "pet-be-inst";
     private static final String BACKEND_IMAGE_NAME = "petbe";
@@ -55,19 +48,19 @@ public class PetStoreTestCase extends BaseTestCase {
     private static final String FRONTEND_IMAGE_NAME = "petfe";
     private static final String VERSION = "1.0.0";
     private static final String LINK = "petstorebackend:pet-be-inst";
-    private WebDriver webDriver;
+    protected WebDriver webDriver;
+    protected WebDriverWait webDriverWait;
     private User alice;
     private User bob;
     private Cart cart;
     private PetAccessory[] itemsOfAlice;
     private Order order;
-    private ObservabilityDashboard observabilityDashboard;
 
     @BeforeClass
     public void setup() {
         WebDriverManager.getInstance(CHROME).setup();
         webDriver = new ChromeDriver(new ChromeOptions().setHeadless(false));
-        WebDriverWait webDriverWait = new WebDriverWait(webDriver, 120);
+        webDriverWait = new WebDriverWait(webDriver, 120);
 
         // Create 2 users Alice and Bob with their information
         this.alice = new User("Alice", "Sanchez", "No 60, Regent street, " +
@@ -85,23 +78,6 @@ public class PetStoreTestCase extends BaseTestCase {
                 "div/div[4]/div[2]/button";
         PetAccessory aliceItem2 = new PetAccessory(15, boneShapedToyXpath);
         itemsOfAlice = new PetAccessory[]{aliceItem1, aliceItem2};
-
-        observabilityDashboard = new ObservabilityDashboard(webDriver, webDriverWait);
-        observabilityDashboard.setWebCellUrl("http://pet-store.com/");
-        List<String> backendComponentList = new ArrayList<>(Arrays.asList("controller", "catalog", "gateway",
-                "customers", "orders"));
-        Cell backendCell = new Cell(BACKEND_IMAGE_NAME, BACKEND_INSTANCE_NAME, backendComponentList);
-        observabilityDashboard.getCells().add(backendCell);
-
-        List<String> frontendComponentList = new ArrayList<>(Arrays.asList("gateway", "portal"));
-        Cell frontendCell = new Cell(FRONTEND_IMAGE_NAME, FRONTEND_INSTANCE_NAME, frontendComponentList);
-        observabilityDashboard.getCells().add(frontendCell);
-
-        SequenceDiagram diagram = new SequenceDiagram();
-        diagram.getComponents().put(FRONTEND_INSTANCE_NAME, 2);
-        diagram.getComponents().put(BACKEND_INSTANCE_NAME, 3);
-
-        diagram.getCalls().put("gateway", 5);
     }
 
     @Test(description = "Tests the building of pet store backend image.")
@@ -179,54 +155,29 @@ public class PetStoreTestCase extends BaseTestCase {
         this.signOut(this.bob);
     }
 
-    @Test(description = "Validates the login flow of the dashboard", dependsOnMethods = "signOutBob")
-    public void observabilityLogin() {
-        observabilityDashboard.loginObservability();
-    }
-
-    @Test(description = "Validates the overview of the dashboard", dependsOnMethods = "observabilityLogin")
-    public void overviewPage() {
-        observabilityDashboard.overviewPage();
-    }
-
-    @Test(description = "Validates Cell instances and components of the dashboard", dependsOnMethods = "overviewPage")
-    public void cellsPage() {
-        observabilityDashboard.cellsPage();
-    }
-
-    @Test(description = "Validates tracing page of the dashboard", dependsOnMethods = "cellsPage")
-    public void tracingPage() {
-        observabilityDashboard.tracingPage();
-    }
-
-    @Test(description = "Validates logout functionality of the observability portal", dependsOnMethods = "tracingPage")
-    public void observabilityLogout() {
-        observabilityDashboard.logoutObservability();
-    }
-
     @Test(description = "This tests the termination of pet-store backend and frontend cells",
-            dependsOnMethods = "tracingPage")
+            dependsOnMethods = "signOutBob")
     public void terminate() throws Exception {
         terminateCell(BACKEND_INSTANCE_NAME);
         terminateCell(FRONTEND_INSTANCE_NAME);
     }
 
     @Test(description = "This tests the deletion of pet-store backend and frontend cell images",
-            dependsOnMethods = "terminate")
+            dependsOnMethods = "runFrontEnd")
     public void deleteImages() throws Exception {
         delete(Constants.CELL_ORG_NAME + "/" + BACKEND_IMAGE_NAME + ":" + VERSION);
         delete(Constants.CELL_ORG_NAME + "/" + FRONTEND_IMAGE_NAME + ":" + VERSION);
     }
 
     @AfterClass
-    public void cleanup() throws InterruptedException, IOException {
+    public void cleanup() {
         webDriver.close();
         try {
             terminateCell(BACKEND_INSTANCE_NAME);
             terminateCell(FRONTEND_INSTANCE_NAME);
         } catch (Exception ignored) {
+
         }
-        observabilityDashboard.cleanupCelleryDashboard();
     }
 
     /**
