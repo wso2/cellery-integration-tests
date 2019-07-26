@@ -40,7 +40,7 @@ public class HelloworldWebExtendedTestCase extends HelloworldWebBaseTestCase {
     private ObservabilityDashboard observabilityDashboard;
 
     @BeforeClass
-    public void setup() {
+    public void setupExtended() {
         observabilityDashboard = new ObservabilityDashboard(webDriver, webDriverWait);
         observabilityDashboard.setWebCellUrl("http://hello-world.com/");
         List<String> componentList = new ArrayList<>(Arrays.asList("gateway", "hello"));
@@ -83,8 +83,7 @@ public class HelloworldWebExtendedTestCase extends HelloworldWebBaseTestCase {
     }
 
     @AfterClass
-    public void cleanup() {
-        super.cleanup();
+    public void cleanupExtended() {
         try {
             observabilityDashboard.cleanupCelleryDashboard();
         } catch (Exception ignored) {

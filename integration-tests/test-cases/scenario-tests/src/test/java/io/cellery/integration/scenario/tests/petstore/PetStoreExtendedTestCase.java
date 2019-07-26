@@ -42,8 +42,7 @@ public class PetStoreExtendedTestCase extends PetStoreBaseTestCase {
     private ObservabilityDashboard observabilityDashboard;
 
     @BeforeClass
-    public void setup() {
-        super.setup();
+    public void setupExtended() {
         observabilityDashboard = new ObservabilityDashboard(webDriver, webDriverWait);
         observabilityDashboard.setWebCellUrl("http://pet-store.com/");
         List<String> backendComponentList = new ArrayList<>(Arrays.asList("controller", "catalog", "gateway",
@@ -96,8 +95,7 @@ public class PetStoreExtendedTestCase extends PetStoreBaseTestCase {
     }
 
     @AfterClass
-    public void cleanup() {
-        super.cleanup();
+    public void cleanupExtended() {
         try {
             observabilityDashboard.cleanupCelleryDashboard();
         } catch (Exception ignored) {
