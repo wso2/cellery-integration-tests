@@ -49,7 +49,7 @@ public class HelloworldWebBaseTestCase extends BaseTestCase {
     @BeforeClass
     public void setup() {
         WebDriverManager.getInstance(CHROME).setup();
-        webDriver = new ChromeDriver(new ChromeOptions().setHeadless(false));
+        webDriver = new ChromeDriver(new ChromeOptions().setHeadless(true));
         webDriverWait = new WebDriverWait(webDriver, 120);
     }
 
