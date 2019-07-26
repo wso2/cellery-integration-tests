@@ -35,7 +35,8 @@ import java.nio.file.Paths;
 import static io.github.bonigarcia.wdm.DriverManagerType.CHROME;
 
 /**
- * This includes the test cases related to hello world web scenario.
+ * This class includes the test cases related to basic functionality of hello world web scenario.
+ * This test class should be used for testing all setups (basic, complete, modified).
  */
 public class HelloworldWebBaseTestCase extends BaseTestCase {
 

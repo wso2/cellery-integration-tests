@@ -30,7 +30,8 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * This includes the test cases related to hello world web scenario.
+ * This includes the test cases related to optional features of the petstore sample such as observability and API
+ * Manager. This test class should be used to test the complete setup and the basic setup with modifications.
  */
 public class PetStoreExtendedTestCase extends PetStoreBaseTestCase {
 
