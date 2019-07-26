@@ -23,9 +23,9 @@
         <classes>
             <class name="io.cellery.integration.scenario.tests.cli.ImageBasedTestCase"/>
             <class name="io.cellery.integration.scenario.tests.cli.InstanceBasedTestCase"/>
-            <class name="io.cellery.integration.scenario.tests.helloworld.HelloworldWebExtendedTestCase"/>
+            <class name="io.cellery.integration.scenario.tests.helloworld.HelloworldWebBaseTestCase"/>
             <class name="io.cellery.integration.scenario.tests.EmployeePortalTestCase"/>
-            <class name="io.cellery.integration.scenario.tests.petstore.PetStoreExtendedTestCase"/>
+            <class name="io.cellery.integration.scenario.tests.petstore.PetStoreBaseTestCase"/>
             <class name="io.cellery.integration.scenario.tests.autoscaling.ScaleToZeroTestCase"/>
         </classes>
     </test>
