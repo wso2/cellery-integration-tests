@@ -60,7 +60,7 @@ public class PetStoreBaseTestCase extends BaseTestCase {
     @BeforeClass
     public void setup() {
         WebDriverManager.getInstance(CHROME).setup();
-        webDriver = new ChromeDriver(new ChromeOptions().setHeadless(false));
+        webDriver = new ChromeDriver(new ChromeOptions().setHeadless(true));
         webDriverWait = new WebDriverWait(webDriver, 120);
 
         // Create 2 users Alice and Bob with their information
