@@ -36,10 +36,10 @@ log_info() {
 cd $source_root
 if [ $setup_type = "basic" ]; then
 	log_info "Installing Cellery local basic setup..."
-	cellery setup create local -y
+	cellery setup create local -f
 else
     log_info "Installing Cellery local complete setup..."
-	cellery setup create local --complete -y
+	cellery setup create local --complete -f
 fi
 
 host_ip="192.168.56.10"
