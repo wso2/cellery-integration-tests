@@ -22,6 +22,6 @@ log_info() {
 
 sudo mv /etc/hosts.back /etc/hosts
 log_info "Destroying local setup..."
-cellery setup cleanup local
+cellery setup cleanup local -d
 
 log_info "Cleanup complete."
