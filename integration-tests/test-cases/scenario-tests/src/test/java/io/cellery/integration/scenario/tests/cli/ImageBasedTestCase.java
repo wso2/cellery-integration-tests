@@ -50,7 +50,7 @@ public class ImageBasedTestCase extends BaseTestCase {
                 Constants.SAMPLE_CELLS_VERSION);
         Process process = Runtime.getRuntime().exec("cellery describe " + cellImageName);
         String errorString = "Unable to describe cell image: " + cellImageName;
-        String expectedOut = "name: " + HELLO_WORLD_IMAGE;
+        String expectedOut = "name: " + "\"" + HELLO_WORLD_IMAGE + "\"";
         readOutputResult(process, expectedOut, errorString);
     }
 
