@@ -27,6 +27,7 @@ import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.X509Certificate;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
@@ -38,6 +39,32 @@ import javax.net.ssl.X509TrustManager;
  */
 public class HttpClient {
     /**
+     * Send an http get request with retries and get the response.
+     *
+     * @param url              Url to which the request is being sent
+     * @param headers          A hash map containing header keys and values
+     * @param timeout          Waiting time before resending the request
+     * @param maxRetryAttempts Maximum number of retry attempts
+     * @return response message
+     * @throws IOException              exception if http connection fails
+     * @throws KeyManagementException   if TLS verification skip fails
+     * @throws NoSuchAlgorithmException if TLS verification skip fails
+     */
+    public static String sendGet(String url, Map<String, String> headers, int timeout, int maxRetryAttempts)
+            throws NoSuchAlgorithmException, IOException, KeyManagementException, InterruptedException {
+        String output = "";
+        for (int i = 0; i < maxRetryAttempts; i++) {
+            output = sendGet(url, headers);
+            if (!(output.contains("Server returned HTTP response code: 500"))) {
+                // If server returned 500 wait for a timeout and resend the request
+                break;
+            }
+            TimeUnit.SECONDS.sleep(timeout);
+        }
+        return output;
+    }
+
+    /**
      * Send an http get request and get the response.
      *
      * @param url     Url to which the request is being sent
@@ -47,7 +74,7 @@ public class HttpClient {
      * @throws KeyManagementException   if TLS verification skip fails
      * @throws NoSuchAlgorithmException if TLS verification skip fails
      */
-    public static String sendGet(String url, Map<String, String> headers) throws IOException,
+    private static String sendGet(String url, Map<String, String> headers) throws IOException,
             KeyManagementException, NoSuchAlgorithmException {
         HttpsURLConnection con = null;
         // Skipping TLS verification since certificate is self-signed
@@ -78,6 +105,33 @@ public class HttpClient {
     }
 
     /**
+     * Send an http post request with retries and get the response.
+     *
+     * @param url              Url to which the request is being sent
+     * @param payload          String Url parameters
+     * @param headers          A hash map containing header keys and values
+     * @param timeout          Waiting time before resending the request
+     * @param maxRetryAttempts Maximum number of retry attempts
+     * @return response message
+     * @throws IOException              exception if http connection fails
+     * @throws KeyManagementException   if TLS verification skip fails
+     * @throws NoSuchAlgorithmException if TLS verification skip fails
+     */
+    static String sendPost(String url, String payload, Map<String, String> headers, int timeout, int maxRetryAttempts)
+            throws NoSuchAlgorithmException, IOException, KeyManagementException, InterruptedException {
+        String output = "";
+        for (int i = 0; i < maxRetryAttempts; i++) {
+            output = sendPost(url, payload, headers);
+            if (!(output.contains("Server returned HTTP response code: 500"))) {
+                // If server returned 500 wait for a timeout and resend the request
+                break;
+            }
+            TimeUnit.SECONDS.sleep(timeout);
+        }
+        return output;
+    }
+
+    /**
      * Send an http post request and get the response.
      *
      * @param url     Url to which the request is being sent
@@ -88,7 +142,7 @@ public class HttpClient {
      * @throws KeyManagementException   if TLS verification skip fails
      * @throws NoSuchAlgorithmException if TLS verification skip fails
      */
-    static String sendPost(String url, String payload, Map<String, String> headers)
+    private static String sendPost(String url, String payload, Map<String, String> headers)
             throws IOException, KeyManagementException, NoSuchAlgorithmException {
         HttpsURLConnection con = null;
         // Skipping TLS verification since certificate is self-signed
