@@ -101,7 +101,8 @@ public class EmployeePortal extends BaseTestCase {
      * @throws IOException              if apimHelper method fails
      * @throws KeyManagementException   if apimHelper method fails
      */
-    public void sendRequest() throws NoSuchAlgorithmException, IOException, KeyManagementException {
+    public void sendRequest() throws NoSuchAlgorithmException, IOException, KeyManagementException,
+            InterruptedException {
         // Get the access token to access apim store for user alice
         String accessTokenForApimStore = apimHelper.getAccessTokenForApiStore(ALICE_USERNAME, ALICE_PASSWORD);
         // Get the id of hr api
@@ -136,11 +137,11 @@ public class EmployeePortal extends BaseTestCase {
      * @throws KeyManagementException   if sendGet method fails
      */
     private void validateData(String token) throws NoSuchAlgorithmException, IOException,
-            KeyManagementException {
+            KeyManagementException, InterruptedException {
         //Add headers
         Map<String, String> headers = new HashMap<>();
         headers.put(HttpHeaders.AUTHORIZATION, AUTHENTICATION_TYPE_BEARER + " " + token);
-        String response = HttpClient.sendGet(HR_URL, headers);
+        String response = HttpClient.sendGet(HR_URL, headers, 180, 3);
         JsonObject responseJson = new JsonParser().parse(response).getAsJsonObject();
         Assert.assertTrue(responseJson.isJsonObject());
         String employeeId =
