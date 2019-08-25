@@ -106,7 +106,8 @@ public class ApimHelper {
      * @throws IOException              if sendGet method fails
      * @throws KeyManagementException   if sendGet method fails
      */
-    public String getApiId(String apiName) throws NoSuchAlgorithmException, IOException, KeyManagementException, InterruptedException {
+    public String getApiId(String apiName) throws NoSuchAlgorithmException, IOException, KeyManagementException,
+            InterruptedException {
         String apiId = "";
         //Add headers
         Map<String, String> headers = new HashMap<>();
