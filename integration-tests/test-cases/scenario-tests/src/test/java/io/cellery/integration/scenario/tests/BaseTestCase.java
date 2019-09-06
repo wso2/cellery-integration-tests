@@ -34,7 +34,7 @@ import java.util.function.Consumer;
  */
 public class BaseTestCase {
 
-    private static final String SUCCESSFUL_BUILD_MSG = "Successfully built cell image";
+    private static final String SUCCESSFUL_BUILD_MSG = "Successfully built image";
     private static final String SUCCESSFUL_DELETE_MSG = "";
     private static final String SUCCESSFUL_RUN_MSG = "Successfully deployed cell image";
 
