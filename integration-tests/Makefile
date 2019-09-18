@@ -38,6 +38,7 @@ run-minikube-basic: setup-minikube-basic test-basic cleanup-minikube-basic
 .PHONY: clone-samples
 clone-samples:
 	git clone https://github.com/wso2-cellery/sdk
+	cd sdk && git checkout cli-refactoring
 	mkdir test-cases/cells
 	cp -r sdk/test-cases/* test-cases/cells/
 	rm -rf sdk
