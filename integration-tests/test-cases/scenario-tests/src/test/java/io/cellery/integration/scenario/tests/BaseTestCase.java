@@ -79,7 +79,7 @@ public class BaseTestCase {
     protected String run(String orgName, String imageName, String version, String instanceName, int timeoutSec)
             throws Exception {
         String cellImageName = getCellImageName(orgName, imageName, version);
-        String command = CELLERY_RUN + " " + cellImageName + " -y";
+        String command = CELLERY_RUN + " " + cellImageName;
         if (instanceName != null && !instanceName.isEmpty()) {
             command += " -n " + instanceName;
         }
@@ -114,7 +114,7 @@ public class BaseTestCase {
                        String[] links, boolean startDependencies)
             throws Exception {
         String cellImageName = getCellImageName(orgName, imageName, version);
-        String command = CELLERY_RUN + " " + cellImageName + " -y >/dev/null 2>&1";
+        String command = CELLERY_RUN + " " + cellImageName + " >/dev/null 2>&1";
         if (instanceName != null && !instanceName.isEmpty()) {
             command += " -n " + instanceName;
         }
