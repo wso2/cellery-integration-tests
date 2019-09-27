@@ -40,7 +40,7 @@ clone-samples:
 	git clone https://github.com/wso2-cellery/sdk
 	mkdir test-cases/cells
 	cp -r sdk/test-cases/* test-cases/cells/
-	rm -rf sdk
+#	rm -rf sdk
 
 .PHONY: remove-samples
 remove-samples:
