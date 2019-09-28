@@ -46,7 +46,7 @@ public class InstanceBasedTestCase extends BaseTestCase {
     public void describeInstance() throws Exception {
         Process process = Runtime.getRuntime().exec("cellery describe " + instanceName);
         String errorString = "Unable to describe cell instance: " + instanceName;
-        String expectedOut = "/apis/mesh.cellery.io/v1alpha1/namespaces/default/cells/" + instanceName;
+        String expectedOut = "/apis/mesh.cellery.io/v1alpha2/namespaces/default/cells/" + instanceName;
         readOutputResult(process, expectedOut, errorString);
     }
 
