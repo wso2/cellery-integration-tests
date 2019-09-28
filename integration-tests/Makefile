@@ -41,7 +41,7 @@ clone-samples:
 	cd sdk && git rev-parse --verify HEAD
 	mkdir test-cases/cells
 	cp -r sdk/test-cases/* test-cases/cells/
-#	rm -rf sdk
+	rm -rf sdk
 
 .PHONY: remove-samples
 remove-samples:
