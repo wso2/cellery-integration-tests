@@ -32,6 +32,7 @@ import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * This includes build, run and termination of employee portal cells.
@@ -49,8 +50,8 @@ public class EmployeePortal extends BaseTestCase {
     private static final String ALICE_PASSWORD = "alice123";
     private static final String LINK_HR_TO_STOCK = "stockCellDep:stock-inst";
     private static final String LINK_HR_TO_EMPLOYEE = "employeeCellDep:employee-inst";
-    private static final String HR_URL = "https://wso2-apim-gateway/hr-inst/hr";
-    private static final String HR_INST_API = "hr_inst_global_1_0_0_hr";
+    private static final String HR_URL = "https://wso2-apim-gateway/myorg/hr/1.0.1";
+    private static final String HR_INST_API = "hr_inst_global_1_0_1_hr";
     private static final String AUTHENTICATION_TYPE_BEARER = "Bearer";
 
     private String employeeBalFile;
@@ -122,6 +123,8 @@ public class EmployeePortal extends BaseTestCase {
         // Get the token to access wso2-apim-gateway
         String gatewayToken = apimHelper.getWso2ApimGatewayToken(consumerKeyConsumerSecret, ALICE_USERNAME
                 , ALICE_PASSWORD);
+        // Todo: check if the cell instance is ready.
+        TimeUnit.SECONDS.sleep(60);
         // Validate data
         validateData(gatewayToken);
         // Delete application
