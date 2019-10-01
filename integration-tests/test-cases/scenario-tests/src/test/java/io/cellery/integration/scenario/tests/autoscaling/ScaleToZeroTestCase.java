@@ -31,10 +31,10 @@ import java.util.concurrent.TimeUnit;
 public class ScaleToZeroTestCase extends BaseTestCase {
 
     private static final String KUBECTL_GET_DEPLOYEMENT_EMPLOYEE_SERVICE = "kubectl get deployment employee-inst" +
-            "--employee-service-rev-deployment";
+            "--employee-service-deployment";
     private static final String CELLERY_MODIFY_SCALE_TO_ZERO = "cellery setup modify --scale-to-zero=";
-    private String employeePodRunningOutput = "employee-inst--employee-service-rev-deployment   1/1";
-    private String employeePodTerminatedOutput = "employee-inst--employee-service-rev-deployment   0/0";
+    private String employeePodRunningOutput = "employee-inst--employee-service-deployment   1/1";
+    private String employeePodTerminatedOutput = "employee-inst--employee-service-deployment   0/0";
 
     private EmployeePortal employeePortal = new EmployeePortal();
 
@@ -43,8 +43,8 @@ public class ScaleToZeroTestCase extends BaseTestCase {
         employeePortal.setEmployeeBalFile("employee-zero.bal");
         employeePortal.setApplicationName("EmployeePortalZero");
         if (Boolean.parseBoolean(System.getenv("IS_GCP"))) {
-            employeePodRunningOutput = "employee-inst--employee-service-rev-deployment   1";
-            employeePodTerminatedOutput = "employee-inst--employee-service-rev-deployment   0";
+            employeePodRunningOutput = "employee-inst--employee-service-deployment   1";
+            employeePodTerminatedOutput = "employee-inst--employee-service-deployment   0";
         }
     }
 
