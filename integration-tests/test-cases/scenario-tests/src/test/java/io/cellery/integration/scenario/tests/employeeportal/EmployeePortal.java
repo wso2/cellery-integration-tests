@@ -104,6 +104,8 @@ public class EmployeePortal extends BaseTestCase {
      */
     public void sendRequest() throws NoSuchAlgorithmException, IOException, KeyManagementException,
             InterruptedException {
+        // Todo: Update cell wait logic to check if job is published
+        TimeUnit.SECONDS.sleep(60);
         // Get the access token to access apim store for user alice
         String accessTokenForApimStore = apimHelper.getAccessTokenForApiStore(ALICE_USERNAME, ALICE_PASSWORD);
         // Get the id of hr api
