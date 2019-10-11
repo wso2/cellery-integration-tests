@@ -151,7 +151,7 @@ public class BaseTestCase {
         readOutputResult(process, "",
                 "Error while terminating the instance :" + cellInstanceName);
         process = Runtime.getRuntime().exec(CELLERY_STATUS + " " + cellInstanceName);
-        String expectedOutput = "cell instance " + cellInstanceName + " not found";
+        String expectedOutput = "No instance found with name " + cellInstanceName;
         try {
             String errorMessage = "Cell instance is not terminated properly:" + cellInstanceName;
             readOutputResult(process, expectedOutput, errorMessage);
