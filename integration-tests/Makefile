@@ -51,8 +51,6 @@ remove-samples:
 test-basic: clone-samples
 	cd $(PROJECT_ROOT)/test-cases/scenario-tests/; \
 	export IS_GCP=$(GCP_CLUSTER);\
-	export CELLERY_CLUSTER_WAIT_TIME=180;\
-	export CELLERY_SYSTEM_WAIT_TIME=180;\
 	mvn clean install -Dsuite=src/test/resources/basic.xml -fae
 	rm -rf $(PROJECT_ROOT)/test-cases/cells
 
@@ -60,23 +58,21 @@ test-basic: clone-samples
 test-complete: clone-samples
 	cd $(PROJECT_ROOT)/test-cases/scenario-tests/; \
 	export IS_GCP=$(GCP_CLUSTER);\
-	export CELLERY_CLUSTER_WAIT_TIME=180;\
-	export CELLERY_SYSTEM_WAIT_TIME=180;\
 	mvn clean install -Dsuite=src/test/resources/complete.xml
 	rm -rf test-cases/cells
 
 # Local setup targets
 .PHONY: setup-local-basic
 setup-local-basic:
-	export CELLERY_CLUSTER_WAIT_TIME=180;\
-	export CELLERY_SYSTEM_WAIT_TIME=180;\
+	export CELLERY_CLUSTER_WAIT_TIME=1800;\
+	export CELLERY_SYSTEM_WAIT_TIME=1800;\
 	cd $(PROJECT_ROOT)/setups/local-setup; \
 	bash setup.sh basic $(USERNAME) $(PASSWORD) $(CELLERY_REGISTRY)
 
 .PHONY: setup-local-complete
 setup-local-complete:
-	export CELLERY_CLUSTER_WAIT_TIME=180;\
-	export CELLERY_SYSTEM_WAIT_TIME=180;\
+	export CELLERY_CLUSTER_WAIT_TIME=1800;\
+	export CELLERY_SYSTEM_WAIT_TIME=1800;\
 	cd $(PROJECT_ROOT)/setups/local-setup; \
 	bash setup.sh complete $(USERNAME) $(PASSWORD) $(CELLERY_REGISTRY)
 
