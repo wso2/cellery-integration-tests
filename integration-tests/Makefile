@@ -51,6 +51,8 @@ remove-samples:
 test-basic: clone-samples
 	cd $(PROJECT_ROOT)/test-cases/scenario-tests/; \
 	export IS_GCP=$(GCP_CLUSTER);\
+	export CELLERY_CLUSTER_WAIT_TIME=180;\
+	export CELLERY_SYSTEM_WAIT_TIME=180;\
 	mvn clean install -Dsuite=src/test/resources/basic.xml -fae
 	rm -rf $(PROJECT_ROOT)/test-cases/cells
 
@@ -58,6 +60,8 @@ test-basic: clone-samples
 test-complete: clone-samples
 	cd $(PROJECT_ROOT)/test-cases/scenario-tests/; \
 	export IS_GCP=$(GCP_CLUSTER);\
+	export CELLERY_CLUSTER_WAIT_TIME=180;\
+	export CELLERY_SYSTEM_WAIT_TIME=180;\
 	mvn clean install -Dsuite=src/test/resources/complete.xml
 	rm -rf test-cases/cells
 
