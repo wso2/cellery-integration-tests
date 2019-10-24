@@ -64,15 +64,15 @@ test-complete: clone-samples
 # Local setup targets
 .PHONY: setup-local-basic
 setup-local-basic:
-	export CELLERY_CLUSTER_WAIT_TIME=10800;\
-	export CELLERY_SYSTEM_WAIT_TIME=10800;\
+	export CELLERY_CLUSTER_WAIT_TIME_MINUTES=180;\
+	export CELLERY_SYSTEM_WAIT_TIME_MINUTES=180;\
 	cd $(PROJECT_ROOT)/setups/local-setup; \
 	bash setup.sh basic $(USERNAME) $(PASSWORD) $(CELLERY_REGISTRY)
 
 .PHONY: setup-local-complete
 setup-local-complete:
-	export CELLERY_CLUSTER_WAIT_TIME=10800;\
-	export CELLERY_SYSTEM_WAIT_TIME=10800;\
+	export CELLERY_CLUSTER_WAIT_TIME_MINUTES=180;\
+	export CELLERY_SYSTEM_WAIT_TIME_MINUTES=180;\
 	cd $(PROJECT_ROOT)/setups/local-setup; \
 	bash setup.sh complete $(USERNAME) $(PASSWORD) $(CELLERY_REGISTRY)
 
