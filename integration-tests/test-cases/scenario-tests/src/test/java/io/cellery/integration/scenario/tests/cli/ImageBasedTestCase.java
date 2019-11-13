@@ -80,8 +80,8 @@ public class ImageBasedTestCase extends BaseTestCase {
         try {
             readOutputResult(process, "", "");
         } catch (Exception ex) {
-            if (!ex.getMessage().contains("Failed to extract resources for image " + cellImageName) ||
-                    !ex.getMessage().contains("Image not Found")) {
+            if (!ex.getMessage().contains("failed to extract resources") ||
+                    !ex.getMessage().contains("image " + cellImageName + " not found")) {
                 throw ex;
             }
         }
