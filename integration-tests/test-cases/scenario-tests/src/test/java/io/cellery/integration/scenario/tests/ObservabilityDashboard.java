@@ -33,12 +33,13 @@ import org.testng.Assert;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 /**
- * This class includes the selenium tests related to observability dashboard
+ * This class includes the selenium tests related to observability dashboard.
  */
 public class ObservabilityDashboard {
 
@@ -359,11 +360,20 @@ public class ObservabilityDashboard {
         Process getDashboardDbPod = new ProcessBuilder().command("kubectl", "get", "pod", "-n", "cellery" +
                         "-system", "-l",
                 key + "=" + value, "-o", "jsonpath='{.items[0].metadata.name}'").start();
-        BufferedReader reader =
-                new BufferedReader(new InputStreamReader(getDashboardDbPod.getInputStream()));
-        String podName = reader.readLine();
-        podName = podName.substring(1, podName.length() - 1);
-        return podName;
+        BufferedReader reader = null;
+        try {
+            reader = new BufferedReader(new InputStreamReader(getDashboardDbPod.getInputStream(),
+                    StandardCharsets.UTF_8));
+            String podName = reader.readLine();
+            if (podName != null) {
+                podName = podName.substring(1, podName.length() - 1);
+            }
+            return podName;
+        } finally {
+            if (reader != null) {
+                reader.close();
+            }
+        }
     }
 
     private void clickOnObservabilityButton(String buttonXPath) {

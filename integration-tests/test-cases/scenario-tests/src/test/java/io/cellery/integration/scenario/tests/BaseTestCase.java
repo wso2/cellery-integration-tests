@@ -239,7 +239,7 @@ public class BaseTestCase {
      * @return cell instance prefix
      */
     private String getInstanceNamePrefix(String image, String version) {
-        return (image + version).replace(".", "");
+        return (image + "-" + version).replace(".", "");
     }
 
     /**
