@@ -21,6 +21,9 @@ package io.cellery.integration.scenario.tests.models;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * SequenceDiagram encapsulates a sequence diagram.
+ */
 public class SequenceDiagram {
 
     private Map<String, Integer> components;

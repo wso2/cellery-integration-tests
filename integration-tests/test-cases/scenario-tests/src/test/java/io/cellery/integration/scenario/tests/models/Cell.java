@@ -21,6 +21,9 @@ package io.cellery.integration.scenario.tests.models;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * Cell encapsulates a cell instance.
+ */
 public class Cell {
 
     private String cellName;
