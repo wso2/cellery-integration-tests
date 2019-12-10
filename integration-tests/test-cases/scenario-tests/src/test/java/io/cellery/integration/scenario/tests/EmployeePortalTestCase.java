@@ -31,7 +31,7 @@ public class EmployeePortalTestCase extends BaseTestCase {
 
     @BeforeClass
     public void setup() {
-        employeePortal.setEmployeeBalFile("employee.bal");
+        employeePortal.setEmployeeBuildSource("employee");
         employeePortal.setApplicationName("EmployeePortal");
     }
 

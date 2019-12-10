@@ -40,7 +40,7 @@ public class ScaleToZeroTestCase extends BaseTestCase {
 
     @BeforeClass
     public void setup() {
-        employeePortal.setEmployeeBalFile("employee-zero.bal");
+        employeePortal.setEmployeeBuildSource("employee-zero");
         employeePortal.setApplicationName("EmployeePortalZero");
         if (Boolean.parseBoolean(System.getenv("IS_GCP"))) {
             employeePodRunningOutput = "employee-inst--employee-service-deployment   1";
