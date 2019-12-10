@@ -83,8 +83,8 @@ public class PetStoreBaseTestCase extends BaseTestCase {
 
     @Test(description = "Tests the building of pet store backend image.")
     public void buildBackEnd() throws Exception {
-        build("pet-be.bal", Constants.CELL_ORG_NAME, BACKEND_IMAGE_NAME, VERSION,
-                Paths.get(CELLERY_SCENARIO_TEST_ROOT, "pet-care-store", "pet-be").toFile().getAbsolutePath());
+        build("pet-be", Constants.CELL_ORG_NAME, BACKEND_IMAGE_NAME, VERSION,
+                Paths.get(CELLERY_SCENARIO_TEST_ROOT, "pet-care-store").toFile().getAbsolutePath());
     }
 
     @Test(description = "Tests the running of pet store back end instance.", dependsOnMethods = "buildBackEnd")

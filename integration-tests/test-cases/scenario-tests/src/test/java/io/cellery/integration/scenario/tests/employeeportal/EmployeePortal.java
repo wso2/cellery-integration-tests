@@ -54,12 +54,12 @@ public class EmployeePortal extends BaseTestCase {
     private static final String HR_INST_API = "hr_inst_global_1_0_1_hr";
     private static final String AUTHENTICATION_TYPE_BEARER = "Bearer";
 
-    private String employeeBalFile;
+    private String employeeBuildSource;
     private String applicationName;
     private ApimHelper apimHelper = new ApimHelper();
 
-    public void setEmployeeBalFile(String employeeBalFile) {
-        this.employeeBalFile = employeeBalFile;
+    public void setEmployeeBuildSource(String employeeBalSource) {
+        this.employeeBuildSource = employeeBalSource;
     }
 
     public void setApplicationName(String applicationName) {
@@ -75,8 +75,8 @@ public class EmployeePortal extends BaseTestCase {
         build("stocks.bal", Constants.TEST_CELL_ORG_NAME, STOCK_IMAGE_NAME, VERSION,
                 Paths.get(CELLERY_SCENARIO_TEST_ROOT, "employee-portal", "cellery", "stock")
                         .toFile().getAbsolutePath());
-        build(employeeBalFile, Constants.TEST_CELL_ORG_NAME, EMPLOYEE_IMAGE_NAME, VERSION,
-                Paths.get(CELLERY_SCENARIO_TEST_ROOT, "employee-portal", "cellery", "employee")
+        build(employeeBuildSource, Constants.TEST_CELL_ORG_NAME, EMPLOYEE_IMAGE_NAME, VERSION,
+                Paths.get(CELLERY_SCENARIO_TEST_ROOT, "employee-portal", "cellery")
                         .toFile().getAbsolutePath());
         build("hr.bal", Constants.TEST_CELL_ORG_NAME, HR_IMAGE_NAME, VERSION,
                 Paths.get(CELLERY_SCENARIO_TEST_ROOT, "employee-portal", "cellery", "hr").toFile().getAbsolutePath());
