@@ -36,9 +36,8 @@ public class ImageBasedTestCase extends BaseTestCase {
     @Test
     public void buildResourceImage() throws Exception {
         // Build employee image
-        build("employee.bal", Constants.TEST_CELL_ORG_NAME, EMPLOYEE_IMAGE, Constants.SAMPLE_CELLS_VERSION,
-                Paths.get(CELLERY_SCENARIO_TEST_ROOT, "employee-portal", "cellery",
-                        "employee").toFile().getAbsolutePath());
+        build("employee", Constants.TEST_CELL_ORG_NAME, EMPLOYEE_IMAGE, Constants.SAMPLE_CELLS_VERSION,
+                Paths.get(CELLERY_SCENARIO_TEST_ROOT, "employee-portal", "cellery").toFile().getAbsolutePath());
         // Build hello-world image
         build("web.bal", Constants.TEST_CELL_ORG_NAME, HELLO_WORLD_IMAGE, Constants.SAMPLE_CELLS_VERSION,
                 Paths.get(CELLERY_SCENARIO_TEST_ROOT, "hello-web").toFile().getAbsolutePath());
