@@ -23,6 +23,6 @@ sudo mv /etc/hosts.back /etc/hosts
 source cluster.properties
 
 log_info "Destroying gcp cluster $CLUSTER_NAME..."
-cellery setup cleanup gcp $CLUSTER_NAME
+cellery setup cleanup gcp $CLUSTER_NAME -y
 
 log_info "Cleanup complete."
