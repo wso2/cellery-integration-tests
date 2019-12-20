@@ -138,10 +138,9 @@ public class EmployeePortal extends BaseTestCase {
      *
      * @param token An access token
      * @throws NoSuchAlgorithmException if sendGet method fails
-     * @throws IOException              if sendGet method fails
      * @throws KeyManagementException   if sendGet method fails
      */
-    private void validateData(String token) throws NoSuchAlgorithmException, IOException,
+    private void validateData(String token) throws NoSuchAlgorithmException,
             KeyManagementException, InterruptedException {
         //Add headers
         Map<String, String> headers = new HashMap<>();
