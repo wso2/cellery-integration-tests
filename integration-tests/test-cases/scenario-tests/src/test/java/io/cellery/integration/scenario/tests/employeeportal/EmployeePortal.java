@@ -146,7 +146,7 @@ public class EmployeePortal extends BaseTestCase {
         //Add headers
         Map<String, String> headers = new HashMap<>();
         headers.put(HttpHeaders.AUTHORIZATION, AUTHENTICATION_TYPE_BEARER + " " + token);
-        String response = HttpClient.sendGet(HR_URL, headers, 180, 3);
+        String response = HttpClient.sendGet(HR_URL, headers, 30, 10);
         JsonObject responseJson = new JsonParser().parse(response).getAsJsonObject();
         Assert.assertTrue(responseJson.isJsonObject());
         String employeeId =
