@@ -46,20 +46,22 @@ public class HttpClient {
      * @param timeout          Waiting time before resending the request
      * @param maxRetryAttempts Maximum number of retry attempts
      * @return response message
-     * @throws IOException              exception if http connection fails
      * @throws KeyManagementException   if TLS verification skip fails
      * @throws NoSuchAlgorithmException if TLS verification skip fails
      */
     public static String sendGet(String url, Map<String, String> headers, int timeout, int maxRetryAttempts)
-            throws NoSuchAlgorithmException, IOException, KeyManagementException, InterruptedException {
+            throws NoSuchAlgorithmException, KeyManagementException, InterruptedException {
         String output = "";
         for (int i = 0; i < maxRetryAttempts; i++) {
-            output = sendGet(url, headers);
-            if (!(output.contains("Server returned HTTP response code: 500"))) {
+            try {
+                output = sendGet(url, headers);
+                if (!(output.contains("Server returned HTTP response code: 500"))) {
+                    break;
+                }
+            } catch (IOException e) {
                 // If server returned 500 wait for a timeout and resend the request
-                break;
+                TimeUnit.SECONDS.sleep(timeout);
             }
-            TimeUnit.SECONDS.sleep(timeout);
         }
         return output;
     }
