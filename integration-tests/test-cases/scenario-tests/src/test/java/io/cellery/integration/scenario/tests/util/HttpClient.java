@@ -57,9 +57,8 @@ public class HttpClient {
             output = sendGet(url, headers);
             if (!(output.contains("Server returned HTTP response code: 500"))) {
                 // If server returned 500 wait for a timeout and resend the request
-                break;
+                TimeUnit.SECONDS.sleep(timeout);
             }
-            TimeUnit.SECONDS.sleep(timeout);
         }
         return output;
     }
